@@ -1,0 +1,14 @@
+name: browserslist-update-action
+description: Runs `npx browserslist@latest --update-db` on a repository and proposes a pull request to merge updates.
+author: Camptocamp Association
+inputs:
+  github_token:
+    description: Github secret
+    required: true
+  branch:
+    description: Branch used for pull request
+    required: false
+    default: browserslist-update
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

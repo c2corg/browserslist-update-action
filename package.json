@@ -1,0 +1,51 @@
+{
+  "name": "browserslist-update-action",
+  "version": "1.0.0",
+  "private": "true",
+  "description": "A Github Action to run `npx browserslist@latest --update-db` on a repository and propose a pull request to merge updates",
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "tsc",
+    "lint": "prettier --check \"**/*.{ts,js,json,css,scss,less,md,html}\" && eslint src/**",
+    "pack": "ncc build && cp src/*.sh dist/",
+    "types": "apollo codegen:generate --localSchemaFile=github-graphql-schema.json --target=typescript --includes=src/**/* --tagName=gql --globalTypesFile=src/types/graphql-types.ts --useReadOnlyTypes --addTypename types",
+    "all": "npm run types && npm run lint && npm run build && npm run pack",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/c2corg/browserslist-update-action.git"
+  },
+  "keywords": [
+    "actions",
+    "node"
+  ],
+  "author": "Camptocamp Association",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/c2corg/browserslist-update-action/issues"
+  },
+  "homepage": "https://github.com/c2corg/browserslist-update-action#readme",
+  "dependencies": {
+    "@actions/core": "1.2.7",
+    "@actions/exec": "1.0.4",
+    "@actions/github": "5.0.0",
+    "@octokit/graphql": "4.6.2"
+  },
+  "devDependencies": {
+    "@tsconfig/recommended": "1.0.1",
+    "@types/gettext-parser": "4.0.0",
+    "@types/node": "15.3.1",
+    "@typescript-eslint/eslint-plugin": "4.24.0",
+    "@typescript-eslint/parser": "4.24.0",
+    "@vercel/ncc": "0.28.5",
+    "apollo": "2.33.2",
+    "eslint": "7.26.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-prettier": "3.4.0",
+    "husky": "6.0.0",
+    "prettier": "2.3.0",
+    "pretty-quick": "3.1.0",
+    "typescript": "4.2.4"
+  }
+}
