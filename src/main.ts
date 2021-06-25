@@ -2,7 +2,6 @@ import { join as path } from 'path';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { exec } from '@actions/exec';
-import { RequestParameters } from '@octokit/graphql/dist-types/types';
 
 import createPRMutation from './create-pr-mutation';
 import { CreatePRMutationVariables, CreatePRMutation } from './types/CreatePRMutation';
@@ -23,22 +22,17 @@ const branch = core.getInput('branch');
 
 const octokit = github.getOctokit(githubToken);
 
-// helper function to make apollo generated types work with octokit graphql queries
-const graphql = <Q, V>(query: string, variables: V): Promise<Q | null> => {
-  return octokit.graphql(query, variables as unknown as RequestParameters) as Promise<Q | null>;
-};
-
 async function run(): Promise<void> {
   try {
     // check if there is a branch and a pull request matching already existing for translations
-    const query = await graphql<BrowserslistUpdateBranchQuery, BrowserslistUpdateBranchQueryVariables>(
-      browserslistUpdateBranchQuery,
-      {
-        owner: repositoryOwner,
-        name: repositoryName,
-        branch,
-      },
-    );
+    const queryData: BrowserslistUpdateBranchQueryVariables = {
+      owner: repositoryOwner,
+      name: repositoryName,
+      branch,
+    };
+    const query = await octokit.graphql<BrowserslistUpdateBranchQuery>(browserslistUpdateBranchQuery, {
+      data: queryData,
+    });
 
     let browserslistUpdateBranchExists = query?.repository?.refs?.totalCount || false;
     let browserslistUpdatePR: string | undefined = undefined;
@@ -55,14 +49,15 @@ async function run(): Promise<void> {
     if (browserslistUpdateBranchExists && !browserslistUpdatePR) {
       // delete branch first, it should have been done anyway when previous PR was merged
       core.info(`Branch ${branch} already exists but no PR associated, delete it first`);
-      graphql<DeleteBranchMutation, DeleteBranchMutationVariables>(deleteBranchMutation, {
+      const queryData: DeleteBranchMutationVariables = {
         input: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
           refId: (
             query?.repository?.refs?.edges as ReadonlyArray<BrowserslistUpdateBranchQuery_repository_refs_edges>
           )[0].node?.id!,
         },
-      });
+      };
+      octokit.graphql<DeleteBranchMutation>(deleteBranchMutation, { data: queryData });
       browserslistUpdateBranchExists = !browserslistUpdateBranchExists;
     }
 
@@ -120,7 +115,7 @@ async function run(): Promise<void> {
     // create PR if not exists
     if (!browserslistUpdatePR) {
       core.info(`Creating new PR for branch ${branch}`);
-      await graphql<CreatePRMutation, CreatePRMutationVariables>(createPRMutation, {
+      const queryData: CreatePRMutationVariables = {
         input: {
           title: '📈 Update caniuse database',
           body: 'Caniuse database has been updated. Review changes, merge this PR and have a 🍺.',
@@ -129,7 +124,8 @@ async function run(): Promise<void> {
           baseRefName: 'master',
           headRefName: branch,
         },
-      });
+      };
+      await octokit.graphql<CreatePRMutation>(createPRMutation, { data: queryData });
     } else {
       core.info('PR already exists');
     }
