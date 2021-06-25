@@ -1,6 +1,9 @@
 name: browserslist-update-action
 description: Runs `npx browserslist@latest --update-db` on a repository and proposes a pull request to merge updates.
 author: Camptocamp Association
+branding:
+  icon: bar-chart-2
+  color: green
 inputs:
   github_token:
     description: Github secret
