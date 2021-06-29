@@ -1,6 +1,6 @@
 {
   "name": "browserslist-update-action",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": "true",
   "description": "A Github Action to run `npx browserslist@latest --update-db` on a repository and propose a pull request to merge updates",
   "main": "lib/main.js",
