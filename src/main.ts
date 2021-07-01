@@ -24,14 +24,15 @@ const octokit = github.getOctokit(githubToken);
 
 async function run(): Promise<void> {
   try {
-    // check if there is a branch and a pull request matching already existing for translations
+    core.info('Check if there is a branch and a matching PR already existing for caniuse db update');
     const queryData: BrowserslistUpdateBranchQueryVariables = {
       owner: repositoryOwner,
       name: repositoryName,
       branch,
     };
-    const query = await octokit.graphql<BrowserslistUpdateBranchQuery>(browserslistUpdateBranchQuery, {
-      data: queryData,
+    const query = await octokit.graphql<BrowserslistUpdateBranchQuery>({
+      query: browserslistUpdateBranchQuery,
+      ...queryData,
     });
 
     let browserslistUpdateBranchExists = query?.repository?.refs?.totalCount || false;
@@ -49,7 +50,7 @@ async function run(): Promise<void> {
     if (browserslistUpdateBranchExists && !browserslistUpdatePR) {
       // delete branch first, it should have been done anyway when previous PR was merged
       core.info(`Branch ${branch} already exists but no PR associated, delete it first`);
-      const queryData: DeleteBranchMutationVariables = {
+      const mutationData: DeleteBranchMutationVariables = {
         input: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
           refId: (
@@ -57,7 +58,7 @@ async function run(): Promise<void> {
           )[0].node?.id!,
         },
       };
-      octokit.graphql<DeleteBranchMutation>(deleteBranchMutation, { data: queryData });
+      octokit.graphql<DeleteBranchMutation>({ query: deleteBranchMutation, ...mutationData });
       browserslistUpdateBranchExists = !browserslistUpdateBranchExists;
     }
 
@@ -115,7 +116,7 @@ async function run(): Promise<void> {
     // create PR if not exists
     if (!browserslistUpdatePR) {
       core.info(`Creating new PR for branch ${branch}`);
-      const queryData: CreatePRMutationVariables = {
+      const mutationData: CreatePRMutationVariables = {
         input: {
           title: '📈 Update caniuse database',
           body: 'Caniuse database has been updated. Review changes, merge this PR and have a 🍺.',
@@ -125,7 +126,7 @@ async function run(): Promise<void> {
           headRefName: branch,
         },
       };
-      await octokit.graphql<CreatePRMutation>(createPRMutation, { data: queryData });
+      await octokit.graphql<CreatePRMutation>({ query: createPRMutation, ...mutationData });
     } else {
       core.info('PR already exists');
     }
