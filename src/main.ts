@@ -116,10 +116,13 @@ async function run(): Promise<void> {
     // create PR if not exists
     if (!browserslistUpdatePR) {
       core.info(`Creating new PR for branch ${branch}`);
+      const title = core.getInput('title') || '📈 Update caniuse database';
+      const body =
+        core.getInput('body') || 'Caniuse database has been updated. Review changes, merge this PR and have a 🍺.';
       const mutationData: CreatePRMutationVariables = {
         input: {
-          title: '📈 Update caniuse database',
-          body: 'Caniuse database has been updated. Review changes, merge this PR and have a 🍺.',
+          title,
+          body,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
           repositoryId: query?.repository?.id!,
           baseRefName: 'master',
