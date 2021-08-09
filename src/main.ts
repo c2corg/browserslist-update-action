@@ -101,7 +101,7 @@ async function run(): Promise<void> {
 
     core.info('Add files and commit on master');
     await exec('git', ['add', '.']);
-    await exec('git', ['commit', '-m', 'Update caniuse database']);
+    await exec('git', ['commit', '-m', core.getInput('commit_message') || 'Update caniuse database']);
 
     // setup credentials
     await exec('bash', [path(__dirname, 'setup-credentials.sh')]);
