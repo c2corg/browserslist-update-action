@@ -3,9 +3,11 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+
 // ====================================================
 // GraphQL query operation: BrowserslistUpdateBranchQuery
 // ====================================================
+
 
 export interface BrowserslistUpdateBranchQuery_repository_refs_edges_node_associatedPullRequests_edges_node {
   readonly __typename: "PullRequest";
