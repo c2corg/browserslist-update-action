@@ -41,7 +41,7 @@
     "@vercel/ncc": "0.33.3",
     "apollo": "2.33.9",
     "eslint": "8.10.0",
-    "eslint-config-prettier": "8.3.0",
+    "eslint-config-prettier": "8.4.0",
     "eslint-plugin-prettier": "4.0.0",
     "husky": "7.0.4",
     "prettier": "2.5.1",
