@@ -36,7 +36,7 @@
     "@tsconfig/recommended": "1.0.1",
     "@types/gettext-parser": "4.0.1",
     "@types/node": "16.11.7",
-    "@typescript-eslint/eslint-plugin": "5.14.0",
+    "@typescript-eslint/eslint-plugin": "5.15.0",
     "@typescript-eslint/parser": "5.15.0",
     "@vercel/ncc": "0.33.3",
     "apollo": "2.33.9",
