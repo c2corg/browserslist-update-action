@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/c2corg/browserslist-update-action#readme",
   "dependencies": {
-    "@actions/core": "1.8.0",
+    "@actions/core": "1.8.1",
     "@actions/exec": "1.1.1",
     "@actions/github": "5.0.1",
     "@octokit/graphql": "4.8.0"
