@@ -40,7 +40,7 @@
     "@typescript-eslint/parser": "5.26.0",
     "@vercel/ncc": "0.33.4",
     "apollo": "2.34.0",
-    "eslint": "8.15.0",
+    "eslint": "8.16.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",
     "husky": "8.0.1",
