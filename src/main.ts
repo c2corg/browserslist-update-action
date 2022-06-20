@@ -4,10 +4,10 @@ import * as github from '@actions/github';
 import { exec } from '@actions/exec';
 
 import createPRMutation from './create-pr-mutation';
-import { CreatePRMutationVariables, CreatePRMutation } from './types/CreatePRMutation';
+import type { CreatePRMutationVariables, CreatePRMutation } from './types/CreatePRMutation';
 import deleteBranchMutation from './delete-branch-mutation';
-import { DeleteBranchMutation, DeleteBranchMutationVariables } from './types/DeleteBranchMutation';
-import {
+import type { DeleteBranchMutation, DeleteBranchMutationVariables } from './types/DeleteBranchMutation';
+import type {
   BrowserslistUpdateBranchQuery,
   BrowserslistUpdateBranchQueryVariables,
   BrowserslistUpdateBranchQuery_repository_refs_edges,
@@ -40,11 +40,11 @@ async function run(): Promise<void> {
     if (browserslistUpdateBranchExists) {
       const pullRequests = (
         query?.repository?.refs?.edges as ReadonlyArray<BrowserslistUpdateBranchQuery_repository_refs_edges>
-      )[0].node?.associatedPullRequests;
+      )[0]?.node?.associatedPullRequests;
       if (pullRequests?.totalCount === 1) {
         browserslistUpdatePR = (
           pullRequests.edges as ReadonlyArray<BrowserslistUpdateBranchQuery_repository_refs_edges_node_associatedPullRequests_edges>
-        )[0].node?.id;
+        )[0]?.node?.id;
       }
     }
     if (browserslistUpdateBranchExists && !browserslistUpdatePR) {
@@ -55,7 +55,7 @@ async function run(): Promise<void> {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
           refId: (
             query?.repository?.refs?.edges as ReadonlyArray<BrowserslistUpdateBranchQuery_repository_refs_edges>
-          )[0].node?.id!,
+          )[0]?.node?.id!,
         },
       };
       octokit.graphql<DeleteBranchMutation>({ query: deleteBranchMutation, ...mutationData });

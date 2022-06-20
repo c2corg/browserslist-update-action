@@ -33,7 +33,7 @@
     "@octokit/graphql": "4.8.0"
   },
   "devDependencies": {
-    "@tsconfig/recommended": "1.0.1",
+    "@tsconfig/node16": "1.0.3",
     "@types/gettext-parser": "4.0.1",
     "@types/node": "16.11.41",
     "@typescript-eslint/eslint-plugin": "5.28.0",
