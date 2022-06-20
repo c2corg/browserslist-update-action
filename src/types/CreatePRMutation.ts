@@ -3,13 +3,11 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-
 import { CreatePullRequestInput } from "./graphql-types";
 
 // ====================================================
 // GraphQL mutation operation: CreatePRMutation
 // ====================================================
-
 
 export interface CreatePRMutation_createPullRequest_pullRequest {
   readonly __typename: "PullRequest";

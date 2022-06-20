@@ -3,13 +3,11 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-
 import { DeleteRefInput } from "./graphql-types";
 
 // ====================================================
 // GraphQL mutation operation: DeleteBranchMutation
 // ====================================================
-
 
 export interface DeleteBranchMutation_deleteRef {
   readonly __typename: "DeleteRefPayload";
