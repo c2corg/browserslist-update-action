@@ -14,6 +14,7 @@ import {
   DeleteBranchMutation,
   DeleteBranchMutationVariables,
 } from './generated/graphql';
+import { print } from 'graphql/language/printer';
 
 const githubToken = core.getInput('github_token');
 const repositoryOwner = github.context.repo.owner;
@@ -31,7 +32,7 @@ async function run(): Promise<void> {
       branch,
     };
     const query = await octokit.graphql<BrowserslistUpdateBranchQuery>({
-      query: BrowserslistUpdateBranch.loc?.source.body,
+      query: print(BrowserslistUpdateBranch),
       ...queryData,
     });
 
@@ -52,7 +53,7 @@ async function run(): Promise<void> {
           refId: query?.repository?.refs?.edges?.[0]?.node?.id!,
         },
       };
-      octokit.graphql<DeleteBranchMutation>({ query: DeleteBranch.loc?.source.body, ...mutationData });
+      octokit.graphql<DeleteBranchMutation>({ query: print(DeleteBranch), ...mutationData });
       browserslistUpdateBranchExists = !browserslistUpdateBranchExists;
     }
 
@@ -123,7 +124,7 @@ async function run(): Promise<void> {
           headRefName: branch,
         },
       };
-      await octokit.graphql<CreatePrMutation>({ query: CreatePr.loc?.source.body, ...mutationData });
+      await octokit.graphql<CreatePrMutation>({ query: print(CreatePr), ...mutationData });
     } else {
       core.info('PR already exists');
     }
