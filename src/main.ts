@@ -31,7 +31,7 @@ async function run(): Promise<void> {
       branch,
     };
     const query = await octokit.graphql<BrowserslistUpdateBranchQuery>({
-      query: BrowserslistUpdateBranch,
+      query: BrowserslistUpdateBranch.loc?.source.body,
       ...queryData,
     });
 
@@ -52,7 +52,7 @@ async function run(): Promise<void> {
           refId: query?.repository?.refs?.edges?.[0]?.node?.id!,
         },
       };
-      octokit.graphql<DeleteBranchMutation>({ query: DeleteBranch, ...mutationData });
+      octokit.graphql<DeleteBranchMutation>({ query: DeleteBranch.loc?.source.body, ...mutationData });
       browserslistUpdateBranchExists = !browserslistUpdateBranchExists;
     }
 
@@ -123,7 +123,7 @@ async function run(): Promise<void> {
           headRefName: branch,
         },
       };
-      await octokit.graphql<CreatePrMutation>({ query: CreatePr, ...mutationData });
+      await octokit.graphql<CreatePrMutation>({ query: CreatePr.loc?.source.body, ...mutationData });
     } else {
       core.info('PR already exists');
     }
