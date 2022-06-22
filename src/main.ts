@@ -3,17 +3,17 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { exec } from '@actions/exec';
 
-import createPRMutation from './create-pr-mutation';
-import type { CreatePRMutationVariables, CreatePRMutation } from './types/CreatePRMutation';
-import deleteBranchMutation from './delete-branch-mutation';
-import type { DeleteBranchMutation, DeleteBranchMutationVariables } from './types/DeleteBranchMutation';
-import type {
+import {
+  BrowserslistUpdateBranch,
   BrowserslistUpdateBranchQuery,
   BrowserslistUpdateBranchQueryVariables,
-  BrowserslistUpdateBranchQuery_repository_refs_edges,
-  BrowserslistUpdateBranchQuery_repository_refs_edges_node_associatedPullRequests_edges,
-} from './types/BrowserslistUpdateBranchQuery';
-import browserslistUpdateBranchQuery from './browserslist-update-branch-query';
+  CreatePr,
+  CreatePrMutation,
+  CreatePrMutationVariables,
+  DeleteBranch,
+  DeleteBranchMutation,
+  DeleteBranchMutationVariables,
+} from './generated/graphql';
 
 const githubToken = core.getInput('github_token');
 const repositoryOwner = github.context.repo.owner;
@@ -31,20 +31,16 @@ async function run(): Promise<void> {
       branch,
     };
     const query = await octokit.graphql<BrowserslistUpdateBranchQuery>({
-      query: browserslistUpdateBranchQuery,
+      query: BrowserslistUpdateBranch,
       ...queryData,
     });
 
     let browserslistUpdateBranchExists = query?.repository?.refs?.totalCount || false;
     let browserslistUpdatePR: string | undefined = undefined;
     if (browserslistUpdateBranchExists) {
-      const pullRequests = (
-        query?.repository?.refs?.edges as ReadonlyArray<BrowserslistUpdateBranchQuery_repository_refs_edges>
-      )[0]?.node?.associatedPullRequests;
+      const pullRequests = query?.repository?.refs?.edges?.[0]?.node?.associatedPullRequests;
       if (pullRequests?.totalCount === 1) {
-        browserslistUpdatePR = (
-          pullRequests.edges as ReadonlyArray<BrowserslistUpdateBranchQuery_repository_refs_edges_node_associatedPullRequests_edges>
-        )[0]?.node?.id;
+        browserslistUpdatePR = pullRequests.edges?.[0]?.node?.id;
       }
     }
     if (browserslistUpdateBranchExists && !browserslistUpdatePR) {
@@ -53,12 +49,10 @@ async function run(): Promise<void> {
       const mutationData: DeleteBranchMutationVariables = {
         input: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-          refId: (
-            query?.repository?.refs?.edges as ReadonlyArray<BrowserslistUpdateBranchQuery_repository_refs_edges>
-          )[0]?.node?.id!,
+          refId: query?.repository?.refs?.edges?.[0]?.node?.id!,
         },
       };
-      octokit.graphql<DeleteBranchMutation>({ query: deleteBranchMutation, ...mutationData });
+      octokit.graphql<DeleteBranchMutation>({ query: DeleteBranch, ...mutationData });
       browserslistUpdateBranchExists = !browserslistUpdateBranchExists;
     }
 
@@ -119,7 +113,7 @@ async function run(): Promise<void> {
       const title = core.getInput('title') || '📈 Update caniuse database';
       const body =
         core.getInput('body') || 'Caniuse database has been updated. Review changes, merge this PR and have a 🍺.';
-      const mutationData: CreatePRMutationVariables = {
+      const mutationData: CreatePrMutationVariables = {
         input: {
           title,
           body,
@@ -129,7 +123,7 @@ async function run(): Promise<void> {
           headRefName: branch,
         },
       };
-      await octokit.graphql<CreatePRMutation>({ query: createPRMutation, ...mutationData });
+      await octokit.graphql<CreatePrMutation>({ query: CreatePr, ...mutationData });
     } else {
       core.info('PR already exists');
     }

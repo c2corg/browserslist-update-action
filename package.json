@@ -8,9 +8,9 @@
     "build": "tsc",
     "lint": "prettier --check \"**/*.{ts,js,json,css,scss,less,md,html}\" && eslint src/**",
     "pack": "ncc build && cp src/*.sh dist/",
-    "types": "apollo codegen:generate --localSchemaFile=github-graphql-schema.json --target=typescript --includes=src/**/* --tagName=gql --globalTypesFile=src/types/graphql-types.ts --useReadOnlyTypes --addTypename types",
-    "all": "npm run types && npm run lint && npm run build && npm run pack",
-    "prepare": "husky install"
+    "all": "npm run graphql && npm run lint && npm run build && npm run pack",
+    "prepare": "husky install",
+    "graphql": "graphql-codegen --config codegen.yml"
   },
   "repository": {
     "type": "git",
@@ -33,19 +33,26 @@
     "@octokit/graphql": "4.8.0"
   },
   "devDependencies": {
-    "@tsconfig/node16": "1.0.3",
+    "@graphql-codegen/cli": "2.6.2",
+    "@graphql-codegen/typescript": "2.5.1",
+    "@graphql-codegen/typescript-document-nodes": "2.2.13",
+    "@graphql-codegen/typescript-operations": "2.4.2",
+    "@graphql-codegen/typescript-resolvers": "2.6.6",
+    "@octokit/graphql-schema": "10.73.0",
+    "@tsconfig/node16-strictest": "1.0.3",
     "@types/gettext-parser": "4.0.1",
     "@types/node": "16.11.41",
     "@typescript-eslint/eslint-plugin": "5.29.0",
     "@typescript-eslint/parser": "5.29.0",
     "@vercel/ncc": "0.34.0",
-    "apollo": "2.34.0",
     "eslint": "8.18.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",
+    "graphql": "16.5.0",
     "husky": "8.0.1",
     "prettier": "2.7.1",
     "pretty-quick": "3.1.3",
+    "ts-node": "10.8.1",
     "typescript": "4.7.4"
   }
 }

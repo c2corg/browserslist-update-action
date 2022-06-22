@@ -1,11 +1,10 @@
 {
-  "extends": "@tsconfig/node16/tsconfig.json",
+  "extends": "@tsconfig/node16-strictest/tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
-    "noImplicitAny": true,
-    "noUnusedLocals": true,
     "outDir": "./lib",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "importsNotUsedAsValues": "remove"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.test.ts"]
