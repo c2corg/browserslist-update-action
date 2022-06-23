@@ -1870,6 +1870,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const exec_1 = __nccwpck_require__(1514);
 const graphql_1 = __nccwpck_require__(9088);
+const printer_1 = __nccwpck_require__(8203);
 const githubToken = core.getInput('github_token');
 const repositoryOwner = github.context.repo.owner;
 const repositoryName = github.context.repo.repo;
@@ -1884,7 +1885,7 @@ async function run() {
             branch,
         };
         const query = await octokit.graphql({
-            query: graphql_1.BrowserslistUpdateBranch,
+            query: (0, printer_1.print)(graphql_1.BrowserslistUpdateBranch),
             ...queryData,
         });
         let browserslistUpdateBranchExists = query?.repository?.refs?.totalCount || false;
@@ -1904,7 +1905,7 @@ async function run() {
                     refId: query?.repository?.refs?.edges?.[0]?.node?.id,
                 },
             };
-            octokit.graphql({ query: graphql_1.DeleteBranch, ...mutationData });
+            octokit.graphql({ query: (0, printer_1.print)(graphql_1.DeleteBranch), ...mutationData });
             browserslistUpdateBranchExists = !browserslistUpdateBranchExists;
         }
         // keep track of current branch
@@ -1968,7 +1969,7 @@ async function run() {
                     headRefName: branch,
                 },
             };
-            await octokit.graphql({ query: graphql_1.CreatePr, ...mutationData });
+            await octokit.graphql({ query: (0, printer_1.print)(graphql_1.CreatePr), ...mutationData });
         }
         else {
             core.info('PR already exists');
