@@ -10,11 +10,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.MergeableState = exports.LockReason = exports.LanguageOrderField = exports.LabelOrderField = exports.IssueTimelineItemsItemType = exports.IssueState = exports.IssueOrderField = exports.IssueCommentOrderField = exports.IpAllowListForInstalledAppsEnabledSettingValue = exports.IpAllowListEntryOrderField = exports.IpAllowListEnabledSettingValue = exports.IdentityProviderConfigurationState = exports.GitSignatureState = exports.GistPrivacy = exports.GistOrderField = exports.FundingPlatform = exports.FileViewedState = exports.EnterpriseUserDeployment = exports.EnterpriseUserAccountMembershipRole = exports.EnterpriseServerUserAccountsUploadSyncState = exports.EnterpriseServerUserAccountsUploadOrderField = exports.EnterpriseServerUserAccountOrderField = exports.EnterpriseServerUserAccountEmailOrderField = exports.EnterpriseServerInstallationOrderField = exports.EnterpriseMembersCanMakePurchasesSettingValue = exports.EnterpriseMembersCanCreateRepositoriesSettingValue = exports.EnterpriseMemberOrderField = exports.EnterpriseEnabledSettingValue = exports.EnterpriseEnabledDisabledSettingValue = exports.EnterpriseDefaultRepositoryPermissionSettingValue = exports.EnterpriseAdministratorRole = exports.EnterpriseAdministratorInvitationOrderField = exports.DiscussionOrderField = exports.DiffSide = exports.DeploymentStatusState = exports.DeploymentState = exports.DeploymentReviewState = exports.DeploymentProtectionRuleType = exports.DeploymentOrderField = exports.DefaultRepositoryPermissionField = exports.ContributionLevel = exports.CommitContributionOrderField = exports.CommentCannotUpdateReason = exports.CommentAuthorAssociation = exports.CollaboratorAffiliation = exports.CheckStatusState = exports.CheckRunType = exports.CheckConclusionState = exports.CheckAnnotationLevel = exports.AuditLogOrderField = void 0;
-exports.RepoArchivedAuditEntryVisibility = exports.RepoAddMemberAuditEntryVisibility = exports.RepoAccessAuditEntryVisibility = exports.ReleaseOrderField = exports.RefOrderField = exports.ReactionOrderField = exports.ReactionContent = exports.PullRequestUpdateState = exports.PullRequestTimelineItemsItemType = exports.PullRequestState = exports.PullRequestReviewState = exports.PullRequestReviewEvent = exports.PullRequestReviewDecision = exports.PullRequestReviewCommentState = exports.PullRequestOrderField = exports.PullRequestMergeMethod = exports.ProjectTemplate = exports.ProjectState = exports.ProjectOrderField = exports.ProjectColumnPurpose = exports.ProjectCardState = exports.ProjectCardArchivedState = exports.PinnedDiscussionPattern = exports.PinnedDiscussionGradient = exports.PinnableItemType = exports.PackageVersionOrderField = exports.PackageType = exports.PackageOrderField = exports.PackageFileOrderField = exports.OrganizationOrderField = exports.OrganizationMembersCanCreateRepositoriesSettingValue = exports.OrganizationMemberRole = exports.OrganizationInvitationType = exports.OrganizationInvitationRole = exports.OrgUpdateMemberRepositoryCreationPermissionAuditEntryVisibility = exports.OrgUpdateMemberAuditEntryPermission = exports.OrgUpdateDefaultRepositoryPermissionAuditEntryPermission = exports.OrgRemoveOutsideCollaboratorAuditEntryReason = exports.OrgRemoveOutsideCollaboratorAuditEntryMembershipType = exports.OrgRemoveMemberAuditEntryReason = exports.OrgRemoveMemberAuditEntryMembershipType = exports.OrgRemoveBillingManagerAuditEntryReason = exports.OrgCreateAuditEntryBillingPlan = exports.OrgAddMemberAuditEntryPermission = exports.OrderDirection = exports.OperationType = exports.OauthApplicationCreateAuditEntryState = exports.NotificationRestrictionSettingValue = exports.MilestoneState = exports.MilestoneOrderField = void 0;
-exports.UserBlockDuration = exports.TopicSuggestionDeclineReason = exports.TeamRole = exports.TeamRepositoryOrderField = exports.TeamPrivacy = exports.TeamOrderField = exports.TeamMembershipType = exports.TeamMemberRole = exports.TeamMemberOrderField = exports.TeamDiscussionOrderField = exports.TeamDiscussionCommentOrderField = exports.SubscriptionState = exports.StatusState = exports.StarOrderField = exports.SponsorshipPrivacy = exports.SponsorshipOrderField = exports.SponsorshipNewsletterOrderField = exports.SponsorsTierOrderField = exports.SponsorsGoalKind = exports.SponsorsActivityPeriod = exports.SponsorsActivityOrderField = exports.SponsorsActivityAction = exports.SponsorableOrderField = exports.SponsorOrderField = exports.SecurityVulnerabilityOrderField = exports.SecurityAdvisorySeverity = exports.SecurityAdvisoryOrderField = exports.SecurityAdvisoryIdentifierType = exports.SecurityAdvisoryEcosystem = exports.SearchType = exports.SavedReplyOrderField = exports.SamlSignatureAlgorithm = exports.SamlDigestAlgorithm = exports.RequestableCheckStatusState = exports.RepositoryVisibility = exports.RepositoryPrivacy = exports.RepositoryPermission = exports.RepositoryOrderField = exports.RepositoryLockReason = exports.RepositoryInvitationOrderField = exports.RepositoryInteractionLimitOrigin = exports.RepositoryInteractionLimitExpiry = exports.RepositoryInteractionLimit = exports.RepositoryContributionType = exports.RepositoryAffiliation = exports.ReportedContentClassifiers = exports.RepoRemoveMemberAuditEntryVisibility = exports.RepoDestroyAuditEntryVisibility = exports.RepoCreateAuditEntryVisibility = exports.RepoChangeMergeSettingAuditEntryMergeType = void 0;
-exports.BrowserslistUpdateBranch = exports.DeleteBranch = exports.CreatePr = exports.VerifiableDomainOrderField = exports.UserStatusOrderField = void 0;
+exports.IssueState = exports.IssueOrderField = exports.IssueCommentOrderField = exports.IssueClosedStateReason = exports.IpAllowListForInstalledAppsEnabledSettingValue = exports.IpAllowListEntryOrderField = exports.IpAllowListEnabledSettingValue = exports.IdentityProviderConfigurationState = exports.GitSignatureState = exports.GistPrivacy = exports.GistOrderField = exports.FundingPlatform = exports.FileViewedState = exports.EnterpriseUserDeployment = exports.EnterpriseUserAccountMembershipRole = exports.EnterpriseServerUserAccountsUploadSyncState = exports.EnterpriseServerUserAccountsUploadOrderField = exports.EnterpriseServerUserAccountOrderField = exports.EnterpriseServerUserAccountEmailOrderField = exports.EnterpriseServerInstallationOrderField = exports.EnterpriseMembersCanMakePurchasesSettingValue = exports.EnterpriseMembersCanCreateRepositoriesSettingValue = exports.EnterpriseMemberOrderField = exports.EnterpriseEnabledSettingValue = exports.EnterpriseEnabledDisabledSettingValue = exports.EnterpriseDefaultRepositoryPermissionSettingValue = exports.EnterpriseAdministratorRole = exports.EnterpriseAdministratorInvitationOrderField = exports.DismissReason = exports.DiscussionPollOptionOrderField = exports.DiscussionOrderField = exports.DiffSide = exports.DeploymentStatusState = exports.DeploymentState = exports.DeploymentReviewState = exports.DeploymentProtectionRuleType = exports.DeploymentOrderField = exports.DependencyGraphEcosystem = exports.DefaultRepositoryPermissionField = exports.ContributionLevel = exports.CommitContributionOrderField = exports.CommentCannotUpdateReason = exports.CommentAuthorAssociation = exports.CollaboratorAffiliation = exports.CheckStatusState = exports.CheckRunType = exports.CheckConclusionState = exports.CheckAnnotationLevel = exports.AuditLogOrderField = exports.ActorType = void 0;
+exports.ProjectV2ItemType = exports.ProjectV2FieldType = exports.ProjectTemplate = exports.ProjectState = exports.ProjectOrderField = exports.ProjectNextOrderField = exports.ProjectNextFieldType = exports.ProjectItemType = exports.ProjectColumnPurpose = exports.ProjectCardState = exports.ProjectCardArchivedState = exports.PinnedDiscussionPattern = exports.PinnedDiscussionGradient = exports.PinnableItemType = exports.PatchStatus = exports.PackageVersionOrderField = exports.PackageType = exports.PackageOrderField = exports.PackageFileOrderField = exports.OrganizationOrderField = exports.OrganizationMembersCanCreateRepositoriesSettingValue = exports.OrganizationMemberRole = exports.OrganizationInvitationType = exports.OrganizationInvitationRole = exports.OrgUpdateMemberRepositoryCreationPermissionAuditEntryVisibility = exports.OrgUpdateMemberAuditEntryPermission = exports.OrgUpdateDefaultRepositoryPermissionAuditEntryPermission = exports.OrgRemoveOutsideCollaboratorAuditEntryReason = exports.OrgRemoveOutsideCollaboratorAuditEntryMembershipType = exports.OrgRemoveMemberAuditEntryReason = exports.OrgRemoveMemberAuditEntryMembershipType = exports.OrgRemoveBillingManagerAuditEntryReason = exports.OrgEnterpriseOwnerOrderField = exports.OrgCreateAuditEntryBillingPlan = exports.OrgAddMemberAuditEntryPermission = exports.OrderDirection = exports.OperationType = exports.OauthApplicationCreateAuditEntryState = exports.OidcProviderType = exports.NotificationRestrictionSettingValue = exports.MilestoneState = exports.MilestoneOrderField = exports.MigrationState = exports.MigrationSourceType = exports.MergeableState = exports.LockReason = exports.LanguageOrderField = exports.LabelOrderField = exports.IssueTimelineItemsItemType = exports.IssueStateReason = void 0;
+exports.SecurityVulnerabilityOrderField = exports.SecurityAdvisorySeverity = exports.SecurityAdvisoryOrderField = exports.SecurityAdvisoryIdentifierType = exports.SecurityAdvisoryEcosystem = exports.SecurityAdvisoryClassification = exports.SearchType = exports.SavedReplyOrderField = exports.SamlSignatureAlgorithm = exports.SamlDigestAlgorithm = exports.RoleInOrganization = exports.RequestableCheckStatusState = exports.RepositoryVulnerabilityAlertState = exports.RepositoryVisibility = exports.RepositoryPrivacy = exports.RepositoryPermission = exports.RepositoryOrderField = exports.RepositoryMigrationOrderField = exports.RepositoryMigrationOrderDirection = exports.RepositoryLockReason = exports.RepositoryInvitationOrderField = exports.RepositoryInteractionLimitOrigin = exports.RepositoryInteractionLimitExpiry = exports.RepositoryInteractionLimit = exports.RepositoryContributionType = exports.RepositoryAffiliation = exports.ReportedContentClassifiers = exports.RepoRemoveMemberAuditEntryVisibility = exports.RepoDestroyAuditEntryVisibility = exports.RepoCreateAuditEntryVisibility = exports.RepoChangeMergeSettingAuditEntryMergeType = exports.RepoArchivedAuditEntryVisibility = exports.RepoAddMemberAuditEntryVisibility = exports.RepoAccessAuditEntryVisibility = exports.ReleaseOrderField = exports.RefOrderField = exports.ReactionOrderField = exports.ReactionContent = exports.PullRequestUpdateState = exports.PullRequestTimelineItemsItemType = exports.PullRequestState = exports.PullRequestReviewState = exports.PullRequestReviewEvent = exports.PullRequestReviewDecision = exports.PullRequestReviewCommentState = exports.PullRequestOrderField = exports.PullRequestMergeMethod = exports.ProjectViewLayout = exports.ProjectV2ViewLayout = exports.ProjectV2OrderField = void 0;
+exports.BrowserslistUpdateBranch = exports.UpdatePullRequest = exports.DeleteBranch = exports.CreatePr = exports.VerifiableDomainOrderField = exports.UserStatusOrderField = exports.UserBlockDuration = exports.TrackedIssueStates = exports.TopicSuggestionDeclineReason = exports.TeamRole = exports.TeamRepositoryOrderField = exports.TeamPrivacy = exports.TeamOrderField = exports.TeamMembershipType = exports.TeamMemberRole = exports.TeamMemberOrderField = exports.TeamDiscussionOrderField = exports.TeamDiscussionCommentOrderField = exports.SubscriptionState = exports.StatusState = exports.StarOrderField = exports.SponsorshipPrivacy = exports.SponsorshipOrderField = exports.SponsorshipNewsletterOrderField = exports.SponsorsTierOrderField = exports.SponsorsGoalKind = exports.SponsorsActivityPeriod = exports.SponsorsActivityOrderField = exports.SponsorsActivityAction = exports.SponsorableOrderField = exports.SponsorOrderField = void 0;
 const graphql_tag_1 = __importDefault(__nccwpck_require__(8435));
+/** The actor's type. */
+var ActorType;
+(function (ActorType) {
+    /** Indicates a team actor. */
+    ActorType["Team"] = "TEAM";
+    /** Indicates a user actor. */
+    ActorType["User"] = "USER";
+})(ActorType = exports.ActorType || (exports.ActorType = {}));
 /** Properties by which Audit Log connections can be ordered. */
 var AuditLogOrderField;
 (function (AuditLogOrderField) {
@@ -159,6 +167,28 @@ var DefaultRepositoryPermissionField;
     /** Can read and write repos by default */
     DefaultRepositoryPermissionField["Write"] = "WRITE";
 })(DefaultRepositoryPermissionField = exports.DefaultRepositoryPermissionField || (exports.DefaultRepositoryPermissionField = {}));
+/** The possible ecosystems of a dependency graph package. */
+var DependencyGraphEcosystem;
+(function (DependencyGraphEcosystem) {
+    /** GitHub Actions */
+    DependencyGraphEcosystem["Actions"] = "ACTIONS";
+    /** PHP packages hosted at packagist.org */
+    DependencyGraphEcosystem["Composer"] = "COMPOSER";
+    /** Go modules */
+    DependencyGraphEcosystem["Go"] = "GO";
+    /** Java artifacts hosted at the Maven central repository */
+    DependencyGraphEcosystem["Maven"] = "MAVEN";
+    /** JavaScript packages hosted at npmjs.com */
+    DependencyGraphEcosystem["Npm"] = "NPM";
+    /** .NET packages hosted at the NuGet Gallery */
+    DependencyGraphEcosystem["Nuget"] = "NUGET";
+    /** Python packages hosted at PyPI.org */
+    DependencyGraphEcosystem["Pip"] = "PIP";
+    /** Ruby gems hosted at RubyGems.org */
+    DependencyGraphEcosystem["Rubygems"] = "RUBYGEMS";
+    /** Rust crates */
+    DependencyGraphEcosystem["Rust"] = "RUST";
+})(DependencyGraphEcosystem = exports.DependencyGraphEcosystem || (exports.DependencyGraphEcosystem = {}));
 /** Properties by which deployment connections can be ordered. */
 var DeploymentOrderField;
 (function (DeploymentOrderField) {
@@ -241,6 +271,28 @@ var DiscussionOrderField;
     /** Order discussions by most recent modification time. */
     DiscussionOrderField["UpdatedAt"] = "UPDATED_AT";
 })(DiscussionOrderField = exports.DiscussionOrderField || (exports.DiscussionOrderField = {}));
+/** Properties by which discussion poll option connections can be ordered. */
+var DiscussionPollOptionOrderField;
+(function (DiscussionPollOptionOrderField) {
+    /** Order poll options by the order that the poll author specified when creating the poll. */
+    DiscussionPollOptionOrderField["AuthoredOrder"] = "AUTHORED_ORDER";
+    /** Order poll options by the number of votes it has. */
+    DiscussionPollOptionOrderField["VoteCount"] = "VOTE_COUNT";
+})(DiscussionPollOptionOrderField = exports.DiscussionPollOptionOrderField || (exports.DiscussionPollOptionOrderField = {}));
+/** The possible reasons that a Dependabot alert was dismissed. */
+var DismissReason;
+(function (DismissReason) {
+    /** A fix has already been started */
+    DismissReason["FixStarted"] = "FIX_STARTED";
+    /** This alert is inaccurate or incorrect */
+    DismissReason["Inaccurate"] = "INACCURATE";
+    /** Vulnerable code is not actually used */
+    DismissReason["NotUsed"] = "NOT_USED";
+    /** No bandwidth to fix this */
+    DismissReason["NoBandwidth"] = "NO_BANDWIDTH";
+    /** Risk is tolerable to this project */
+    DismissReason["TolerableRisk"] = "TOLERABLE_RISK";
+})(DismissReason = exports.DismissReason || (exports.DismissReason = {}));
 /** Properties by which enterprise administrator invitation connections can be ordered. */
 var EnterpriseAdministratorInvitationOrderField;
 (function (EnterpriseAdministratorInvitationOrderField) {
@@ -360,9 +412,9 @@ var EnterpriseServerUserAccountsUploadSyncState;
 /** The possible roles for enterprise membership. */
 var EnterpriseUserAccountMembershipRole;
 (function (EnterpriseUserAccountMembershipRole) {
-    /** The user is a member of the enterprise membership. */
+    /** The user is a member of an organization in the enterprise. */
     EnterpriseUserAccountMembershipRole["Member"] = "MEMBER";
-    /** The user is an owner of the enterprise membership. */
+    /** The user is an owner of an organization in the enterprise. */
     EnterpriseUserAccountMembershipRole["Owner"] = "OWNER";
 })(EnterpriseUserAccountMembershipRole = exports.EnterpriseUserAccountMembershipRole || (exports.EnterpriseUserAccountMembershipRole = {}));
 /** The possible GitHub Enterprise deployments where this user can exist. */
@@ -396,6 +448,8 @@ var FundingPlatform;
     FundingPlatform["Issuehunt"] = "ISSUEHUNT";
     /** Ko-fi funding platform. */
     FundingPlatform["KoFi"] = "KO_FI";
+    /** LFX Crowdfunding funding platform. */
+    FundingPlatform["LfxCrowdfunding"] = "LFX_CROWDFUNDING";
     /** Liberapay funding platform. */
     FundingPlatform["Liberapay"] = "LIBERAPAY";
     /** Open Collective funding platform. */
@@ -499,6 +553,14 @@ var IpAllowListForInstalledAppsEnabledSettingValue;
     /** The setting is enabled for the owner. */
     IpAllowListForInstalledAppsEnabledSettingValue["Enabled"] = "ENABLED";
 })(IpAllowListForInstalledAppsEnabledSettingValue = exports.IpAllowListForInstalledAppsEnabledSettingValue || (exports.IpAllowListForInstalledAppsEnabledSettingValue = {}));
+/** The possible state reasons of a closed issue. */
+var IssueClosedStateReason;
+(function (IssueClosedStateReason) {
+    /** An issue that has been closed as completed */
+    IssueClosedStateReason["Completed"] = "COMPLETED";
+    /** An issue that has been closed as not planned */
+    IssueClosedStateReason["NotPlanned"] = "NOT_PLANNED";
+})(IssueClosedStateReason = exports.IssueClosedStateReason || (exports.IssueClosedStateReason = {}));
 /** Properties by which issue comment connections can be ordered. */
 var IssueCommentOrderField;
 (function (IssueCommentOrderField) {
@@ -523,6 +585,16 @@ var IssueState;
     /** An issue that is still open */
     IssueState["Open"] = "OPEN";
 })(IssueState = exports.IssueState || (exports.IssueState = {}));
+/** The possible state reasons of an issue. */
+var IssueStateReason;
+(function (IssueStateReason) {
+    /** An issue that has been closed as completed */
+    IssueStateReason["Completed"] = "COMPLETED";
+    /** An issue that has been closed as not planned */
+    IssueStateReason["NotPlanned"] = "NOT_PLANNED";
+    /** An issue that has been reopened */
+    IssueStateReason["Reopened"] = "REOPENED";
+})(IssueStateReason = exports.IssueStateReason || (exports.IssueStateReason = {}));
 /** The possible item types found in a timeline. */
 var IssueTimelineItemsItemType;
 (function (IssueTimelineItemsItemType) {
@@ -538,6 +610,8 @@ var IssueTimelineItemsItemType;
     IssueTimelineItemsItemType["ConnectedEvent"] = "CONNECTED_EVENT";
     /** Represents a 'converted_note_to_issue' event on a given issue or pull request. */
     IssueTimelineItemsItemType["ConvertedNoteToIssueEvent"] = "CONVERTED_NOTE_TO_ISSUE_EVENT";
+    /** Represents a 'converted_to_discussion' event on a given issue. */
+    IssueTimelineItemsItemType["ConvertedToDiscussionEvent"] = "CONVERTED_TO_DISCUSSION_EVENT";
     /** Represents a mention made by one issue or pull request to another. */
     IssueTimelineItemsItemType["CrossReferencedEvent"] = "CROSS_REFERENCED_EVENT";
     /** Represents a 'demilestoned' event on a given issue or pull request. */
@@ -623,6 +697,38 @@ var MergeableState;
     /** The mergeability of the pull request is still being calculated. */
     MergeableState["Unknown"] = "UNKNOWN";
 })(MergeableState = exports.MergeableState || (exports.MergeableState = {}));
+/** Represents the different Octoshift migration sources. */
+var MigrationSourceType;
+(function (MigrationSourceType) {
+    /** An Azure DevOps migration source. */
+    MigrationSourceType["AzureDevops"] = "AZURE_DEVOPS";
+    /** A Bitbucket Server migration source. */
+    MigrationSourceType["BitbucketServer"] = "BITBUCKET_SERVER";
+    /** A GitHub migration source. */
+    MigrationSourceType["Github"] = "GITHUB";
+    /** A GitHub Migration API source. */
+    MigrationSourceType["GithubArchive"] = "GITHUB_ARCHIVE";
+    /** A GitLab migration source. */
+    MigrationSourceType["Gitlab"] = "GITLAB";
+})(MigrationSourceType = exports.MigrationSourceType || (exports.MigrationSourceType = {}));
+/** The Octoshift migration state. */
+var MigrationState;
+(function (MigrationState) {
+    /** The Octoshift migration has failed. */
+    MigrationState["Failed"] = "FAILED";
+    /** The Octoshift migration has invalid credentials. */
+    MigrationState["FailedValidation"] = "FAILED_VALIDATION";
+    /** The Octoshift migration is in progress. */
+    MigrationState["InProgress"] = "IN_PROGRESS";
+    /** The Octoshift migration has not started. */
+    MigrationState["NotStarted"] = "NOT_STARTED";
+    /** The Octoshift migration needs to have its credentials validated. */
+    MigrationState["PendingValidation"] = "PENDING_VALIDATION";
+    /** The Octoshift migration has been queued. */
+    MigrationState["Queued"] = "QUEUED";
+    /** The Octoshift migration has succeeded. */
+    MigrationState["Succeeded"] = "SUCCEEDED";
+})(MigrationState = exports.MigrationState || (exports.MigrationState = {}));
 /** Properties by which milestone connections can be ordered. */
 var MilestoneOrderField;
 (function (MilestoneOrderField) {
@@ -651,6 +757,12 @@ var NotificationRestrictionSettingValue;
     /** The setting is enabled for the owner. */
     NotificationRestrictionSettingValue["Enabled"] = "ENABLED";
 })(NotificationRestrictionSettingValue = exports.NotificationRestrictionSettingValue || (exports.NotificationRestrictionSettingValue = {}));
+/** The OIDC identity provider type */
+var OidcProviderType;
+(function (OidcProviderType) {
+    /** Azure Active Directory */
+    OidcProviderType["Aad"] = "AAD";
+})(OidcProviderType = exports.OidcProviderType || (exports.OidcProviderType = {}));
 /** The state of an OAuth Application when it was created. */
 var OauthApplicationCreateAuditEntryState;
 (function (OauthApplicationCreateAuditEntryState) {
@@ -709,6 +821,12 @@ var OrgCreateAuditEntryBillingPlan;
     /** Legacy Unlimited Plan */
     OrgCreateAuditEntryBillingPlan["Unlimited"] = "UNLIMITED";
 })(OrgCreateAuditEntryBillingPlan = exports.OrgCreateAuditEntryBillingPlan || (exports.OrgCreateAuditEntryBillingPlan = {}));
+/** Properties by which enterprise owners can be ordered. */
+var OrgEnterpriseOwnerOrderField;
+(function (OrgEnterpriseOwnerOrderField) {
+    /** Order enterprise owners by login. */
+    OrgEnterpriseOwnerOrderField["Login"] = "LOGIN";
+})(OrgEnterpriseOwnerOrderField = exports.OrgEnterpriseOwnerOrderField || (exports.OrgEnterpriseOwnerOrderField = {}));
 /** The reason a billing manager was removed from an Organization. */
 var OrgRemoveBillingManagerAuditEntryReason;
 (function (OrgRemoveBillingManagerAuditEntryReason) {
@@ -730,6 +848,8 @@ var OrgRemoveMemberAuditEntryMembershipType;
     OrgRemoveMemberAuditEntryMembershipType["DirectMember"] = "DIRECT_MEMBER";
     /** An outside collaborator is a person who isn't explicitly a member of the Organization, but who has Read, Write, or Admin permissions to one or more repositories in the organization. */
     OrgRemoveMemberAuditEntryMembershipType["OutsideCollaborator"] = "OUTSIDE_COLLABORATOR";
+    /** A suspended member. */
+    OrgRemoveMemberAuditEntryMembershipType["Suspended"] = "SUSPENDED";
     /** An unaffiliated collaborator is a person who is not a member of the Organization and does not have access to any repositories in the Organization. */
     OrgRemoveMemberAuditEntryMembershipType["Unaffiliated"] = "UNAFFILIATED";
 })(OrgRemoveMemberAuditEntryMembershipType = exports.OrgRemoveMemberAuditEntryMembershipType || (exports.OrgRemoveMemberAuditEntryMembershipType = {}));
@@ -892,6 +1012,22 @@ var PackageVersionOrderField;
     /** Order package versions by creation time */
     PackageVersionOrderField["CreatedAt"] = "CREATED_AT";
 })(PackageVersionOrderField = exports.PackageVersionOrderField || (exports.PackageVersionOrderField = {}));
+/** The possible types of patch statuses. */
+var PatchStatus;
+(function (PatchStatus) {
+    /** The file was added. Git status 'A'. */
+    PatchStatus["Added"] = "ADDED";
+    /** The file's type was changed. Git status 'T'. */
+    PatchStatus["Changed"] = "CHANGED";
+    /** The file was copied. Git status 'C'. */
+    PatchStatus["Copied"] = "COPIED";
+    /** The file was deleted. Git status 'D'. */
+    PatchStatus["Deleted"] = "DELETED";
+    /** The file's contents were changed. Git status 'M'. */
+    PatchStatus["Modified"] = "MODIFIED";
+    /** The file was renamed. Git status 'R'. */
+    PatchStatus["Renamed"] = "RENAMED";
+})(PatchStatus = exports.PatchStatus || (exports.PatchStatus = {}));
 /** Represents items that can be pinned to a profile page or dashboard. */
 var PinnableItemType;
 (function (PinnableItemType) {
@@ -970,6 +1106,111 @@ var ProjectColumnPurpose;
     /** The column contains cards still to be worked on */
     ProjectColumnPurpose["Todo"] = "TODO";
 })(ProjectColumnPurpose = exports.ProjectColumnPurpose || (exports.ProjectColumnPurpose = {}));
+/** The type of a project item. */
+var ProjectItemType;
+(function (ProjectItemType) {
+    /** Draft Issue */
+    ProjectItemType["DraftIssue"] = "DRAFT_ISSUE";
+    /** Issue */
+    ProjectItemType["Issue"] = "ISSUE";
+    /** Pull Request */
+    ProjectItemType["PullRequest"] = "PULL_REQUEST";
+    /** Redacted Item */
+    ProjectItemType["Redacted"] = "REDACTED";
+})(ProjectItemType = exports.ProjectItemType || (exports.ProjectItemType = {}));
+/** The type of a project next field. */
+var ProjectNextFieldType;
+(function (ProjectNextFieldType) {
+    /**
+     * Assignees
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextFieldType["Assignees"] = "ASSIGNEES";
+    /**
+     * Date
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextFieldType["Date"] = "DATE";
+    /**
+     * Iteration
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextFieldType["Iteration"] = "ITERATION";
+    /**
+     * Labels
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextFieldType["Labels"] = "LABELS";
+    /**
+     * Linked Pull Requests
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextFieldType["LinkedPullRequests"] = "LINKED_PULL_REQUESTS";
+    /**
+     * Milestone
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextFieldType["Milestone"] = "MILESTONE";
+    /**
+     * Number
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextFieldType["Number"] = "NUMBER";
+    /**
+     * Repository
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextFieldType["Repository"] = "REPOSITORY";
+    /**
+     * Reviewers
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextFieldType["Reviewers"] = "REVIEWERS";
+    /**
+     * Single Select
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextFieldType["SingleSelect"] = "SINGLE_SELECT";
+    /**
+     * Text
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextFieldType["Text"] = "TEXT";
+    /**
+     * Title
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextFieldType["Title"] = "TITLE";
+    /**
+     * Tracks
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextFieldType["Tracks"] = "TRACKS";
+})(ProjectNextFieldType = exports.ProjectNextFieldType || (exports.ProjectNextFieldType = {}));
+/** Properties by which the return project can be ordered. */
+var ProjectNextOrderField;
+(function (ProjectNextOrderField) {
+    /**
+     * The project's date and time of creation
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextOrderField["CreatedAt"] = "CREATED_AT";
+    /**
+     * The project's number
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextOrderField["Number"] = "NUMBER";
+    /**
+     * The project's title
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextOrderField["Title"] = "TITLE";
+    /**
+     * The project's date and time of update
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2022-10-01 UTC.
+     */
+    ProjectNextOrderField["UpdatedAt"] = "UPDATED_AT";
+})(ProjectNextOrderField = exports.ProjectNextOrderField || (exports.ProjectNextOrderField = {}));
 /** Properties by which project connections can be ordered. */
 var ProjectOrderField;
 (function (ProjectOrderField) {
@@ -1000,6 +1241,76 @@ var ProjectTemplate;
     /** Create a board to triage and prioritize bugs with To do, priority, and Done columns. */
     ProjectTemplate["BugTriage"] = "BUG_TRIAGE";
 })(ProjectTemplate = exports.ProjectTemplate || (exports.ProjectTemplate = {}));
+/** The type of a project field. */
+var ProjectV2FieldType;
+(function (ProjectV2FieldType) {
+    /** Assignees */
+    ProjectV2FieldType["Assignees"] = "ASSIGNEES";
+    /** Date */
+    ProjectV2FieldType["Date"] = "DATE";
+    /** Iteration */
+    ProjectV2FieldType["Iteration"] = "ITERATION";
+    /** Labels */
+    ProjectV2FieldType["Labels"] = "LABELS";
+    /** Linked Pull Requests */
+    ProjectV2FieldType["LinkedPullRequests"] = "LINKED_PULL_REQUESTS";
+    /** Milestone */
+    ProjectV2FieldType["Milestone"] = "MILESTONE";
+    /** Number */
+    ProjectV2FieldType["Number"] = "NUMBER";
+    /** Repository */
+    ProjectV2FieldType["Repository"] = "REPOSITORY";
+    /** Reviewers */
+    ProjectV2FieldType["Reviewers"] = "REVIEWERS";
+    /** Single Select */
+    ProjectV2FieldType["SingleSelect"] = "SINGLE_SELECT";
+    /** Text */
+    ProjectV2FieldType["Text"] = "TEXT";
+    /** Title */
+    ProjectV2FieldType["Title"] = "TITLE";
+    /** Tracks */
+    ProjectV2FieldType["Tracks"] = "TRACKS";
+})(ProjectV2FieldType = exports.ProjectV2FieldType || (exports.ProjectV2FieldType = {}));
+/** The type of a project item. */
+var ProjectV2ItemType;
+(function (ProjectV2ItemType) {
+    /** Draft Issue */
+    ProjectV2ItemType["DraftIssue"] = "DRAFT_ISSUE";
+    /** Issue */
+    ProjectV2ItemType["Issue"] = "ISSUE";
+    /** Pull Request */
+    ProjectV2ItemType["PullRequest"] = "PULL_REQUEST";
+    /** Redacted Item */
+    ProjectV2ItemType["Redacted"] = "REDACTED";
+})(ProjectV2ItemType = exports.ProjectV2ItemType || (exports.ProjectV2ItemType = {}));
+/** Properties by which projects can be ordered. */
+var ProjectV2OrderField;
+(function (ProjectV2OrderField) {
+    /** The project's date and time of creation */
+    ProjectV2OrderField["CreatedAt"] = "CREATED_AT";
+    /** The project's number */
+    ProjectV2OrderField["Number"] = "NUMBER";
+    /** The project's title */
+    ProjectV2OrderField["Title"] = "TITLE";
+    /** The project's date and time of update */
+    ProjectV2OrderField["UpdatedAt"] = "UPDATED_AT";
+})(ProjectV2OrderField = exports.ProjectV2OrderField || (exports.ProjectV2OrderField = {}));
+/** The layout of a project v2 view. */
+var ProjectV2ViewLayout;
+(function (ProjectV2ViewLayout) {
+    /** Board layout */
+    ProjectV2ViewLayout["BoardLayout"] = "BOARD_LAYOUT";
+    /** Table layout */
+    ProjectV2ViewLayout["TableLayout"] = "TABLE_LAYOUT";
+})(ProjectV2ViewLayout = exports.ProjectV2ViewLayout || (exports.ProjectV2ViewLayout = {}));
+/** The layout of a project view. */
+var ProjectViewLayout;
+(function (ProjectViewLayout) {
+    /** Board layout */
+    ProjectViewLayout["BoardLayout"] = "BOARD_LAYOUT";
+    /** Table layout */
+    ProjectViewLayout["TableLayout"] = "TABLE_LAYOUT";
+})(ProjectViewLayout = exports.ProjectViewLayout || (exports.ProjectViewLayout = {}));
 /** Represents available types of methods to use when merging a pull request. */
 var PullRequestMergeMethod;
 (function (PullRequestMergeMethod) {
@@ -1075,6 +1386,8 @@ var PullRequestState;
 /** The possible item types found in a timeline. */
 var PullRequestTimelineItemsItemType;
 (function (PullRequestTimelineItemsItemType) {
+    /** Represents an 'added_to_merge_queue' event on a given pull request. */
+    PullRequestTimelineItemsItemType["AddedToMergeQueueEvent"] = "ADDED_TO_MERGE_QUEUE_EVENT";
     /** Represents a 'added_to_project' event on a given issue or pull request. */
     PullRequestTimelineItemsItemType["AddedToProjectEvent"] = "ADDED_TO_PROJECT_EVENT";
     /** Represents an 'assigned' event on any assignable object. */
@@ -1105,6 +1418,8 @@ var PullRequestTimelineItemsItemType;
     PullRequestTimelineItemsItemType["ConnectedEvent"] = "CONNECTED_EVENT";
     /** Represents a 'converted_note_to_issue' event on a given issue or pull request. */
     PullRequestTimelineItemsItemType["ConvertedNoteToIssueEvent"] = "CONVERTED_NOTE_TO_ISSUE_EVENT";
+    /** Represents a 'converted_to_discussion' event on a given issue. */
+    PullRequestTimelineItemsItemType["ConvertedToDiscussionEvent"] = "CONVERTED_TO_DISCUSSION_EVENT";
     /** Represents a 'convert_to_draft' event on a given pull request. */
     PullRequestTimelineItemsItemType["ConvertToDraftEvent"] = "CONVERT_TO_DRAFT_EVENT";
     /** Represents a mention made by one issue or pull request to another. */
@@ -1155,6 +1470,8 @@ var PullRequestTimelineItemsItemType;
     PullRequestTimelineItemsItemType["ReadyForReviewEvent"] = "READY_FOR_REVIEW_EVENT";
     /** Represents a 'referenced' event on a given `ReferencedSubject`. */
     PullRequestTimelineItemsItemType["ReferencedEvent"] = "REFERENCED_EVENT";
+    /** Represents a 'removed_from_merge_queue' event on a given pull request. */
+    PullRequestTimelineItemsItemType["RemovedFromMergeQueueEvent"] = "REMOVED_FROM_MERGE_QUEUE_EVENT";
     /** Represents a 'removed_from_project' event on a given issue or pull request. */
     PullRequestTimelineItemsItemType["RemovedFromProjectEvent"] = "REMOVED_FROM_PROJECT_EVENT";
     /** Represents a 'renamed' event on a given issue or pull request */
@@ -1387,11 +1704,6 @@ var RepositoryInvitationOrderField;
 (function (RepositoryInvitationOrderField) {
     /** Order repository invitations by creation time */
     RepositoryInvitationOrderField["CreatedAt"] = "CREATED_AT";
-    /**
-     * Order repository invitations by invitee login
-     * @deprecated `INVITEE_LOGIN` is no longer a valid field value. Repository invitations can now be associated with an email, not only an invitee. Removal on 2020-10-01 UTC.
-     */
-    RepositoryInvitationOrderField["InviteeLogin"] = "INVITEE_LOGIN";
 })(RepositoryInvitationOrderField = exports.RepositoryInvitationOrderField || (exports.RepositoryInvitationOrderField = {}));
 /** The possible reasons a given repository could be in a locked state. */
 var RepositoryLockReason;
@@ -1405,6 +1717,20 @@ var RepositoryLockReason;
     /** The repository is locked due to a rename. */
     RepositoryLockReason["Rename"] = "RENAME";
 })(RepositoryLockReason = exports.RepositoryLockReason || (exports.RepositoryLockReason = {}));
+/** Possible directions in which to order a list of repository migrations when provided an `orderBy` argument. */
+var RepositoryMigrationOrderDirection;
+(function (RepositoryMigrationOrderDirection) {
+    /** Specifies an ascending order for a given `orderBy` argument. */
+    RepositoryMigrationOrderDirection["Asc"] = "ASC";
+    /** Specifies a descending order for a given `orderBy` argument. */
+    RepositoryMigrationOrderDirection["Desc"] = "DESC";
+})(RepositoryMigrationOrderDirection = exports.RepositoryMigrationOrderDirection || (exports.RepositoryMigrationOrderDirection = {}));
+/** Properties by which repository migrations can be ordered. */
+var RepositoryMigrationOrderField;
+(function (RepositoryMigrationOrderField) {
+    /** Order mannequins why when they were created. */
+    RepositoryMigrationOrderField["CreatedAt"] = "CREATED_AT";
+})(RepositoryMigrationOrderField = exports.RepositoryMigrationOrderField || (exports.RepositoryMigrationOrderField = {}));
 /** Properties by which repository connections can be ordered. */
 var RepositoryOrderField;
 (function (RepositoryOrderField) {
@@ -1451,6 +1777,16 @@ var RepositoryVisibility;
     /** The repository is visible to everyone. */
     RepositoryVisibility["Public"] = "PUBLIC";
 })(RepositoryVisibility = exports.RepositoryVisibility || (exports.RepositoryVisibility = {}));
+/** The possible states of an alert */
+var RepositoryVulnerabilityAlertState;
+(function (RepositoryVulnerabilityAlertState) {
+    /** An alert that has been manually closed by a user. */
+    RepositoryVulnerabilityAlertState["Dismissed"] = "DISMISSED";
+    /** An alert that has been resolved by a code change. */
+    RepositoryVulnerabilityAlertState["Fixed"] = "FIXED";
+    /** An alert that is still open. */
+    RepositoryVulnerabilityAlertState["Open"] = "OPEN";
+})(RepositoryVulnerabilityAlertState = exports.RepositoryVulnerabilityAlertState || (exports.RepositoryVulnerabilityAlertState = {}));
 /** The possible states that can be requested when creating a check run. */
 var RequestableCheckStatusState;
 (function (RequestableCheckStatusState) {
@@ -1465,6 +1801,16 @@ var RequestableCheckStatusState;
     /** The check suite or run is in waiting state. */
     RequestableCheckStatusState["Waiting"] = "WAITING";
 })(RequestableCheckStatusState = exports.RequestableCheckStatusState || (exports.RequestableCheckStatusState = {}));
+/** Possible roles a user may have in relation to an organization. */
+var RoleInOrganization;
+(function (RoleInOrganization) {
+    /** A user who is a direct member of the organization. */
+    RoleInOrganization["DirectMember"] = "DIRECT_MEMBER";
+    /** A user with full administrative access to the organization. */
+    RoleInOrganization["Owner"] = "OWNER";
+    /** A user who is unaffiliated with the organization. */
+    RoleInOrganization["Unaffiliated"] = "UNAFFILIATED";
+})(RoleInOrganization = exports.RoleInOrganization || (exports.RoleInOrganization = {}));
 /** The possible digest algorithms used to sign SAML requests for an identity provider. */
 var SamlDigestAlgorithm;
 (function (SamlDigestAlgorithm) {
@@ -1507,11 +1853,21 @@ var SearchType;
     /** Returns results matching users and organizations on GitHub. */
     SearchType["User"] = "USER";
 })(SearchType = exports.SearchType || (exports.SearchType = {}));
+/** Classification of the advisory. */
+var SecurityAdvisoryClassification;
+(function (SecurityAdvisoryClassification) {
+    /** Classification of general advisories. */
+    SecurityAdvisoryClassification["General"] = "GENERAL";
+    /** Classification of malware advisories. */
+    SecurityAdvisoryClassification["Malware"] = "MALWARE";
+})(SecurityAdvisoryClassification = exports.SecurityAdvisoryClassification || (exports.SecurityAdvisoryClassification = {}));
 /** The possible ecosystems of a security vulnerability's package. */
 var SecurityAdvisoryEcosystem;
 (function (SecurityAdvisoryEcosystem) {
     /** PHP packages hosted at packagist.org */
     SecurityAdvisoryEcosystem["Composer"] = "COMPOSER";
+    /** Erlang/Elixir packages hosted at hex.pm */
+    SecurityAdvisoryEcosystem["Erlang"] = "ERLANG";
     /** Go modules */
     SecurityAdvisoryEcosystem["Go"] = "GO";
     /** Java artifacts hosted at the Maven central repository */
@@ -1763,6 +2119,14 @@ var TopicSuggestionDeclineReason;
     /** The suggested topic is too specific for the repository (e.g. #ruby-on-rails-version-4-2-1). */
     TopicSuggestionDeclineReason["TooSpecific"] = "TOO_SPECIFIC";
 })(TopicSuggestionDeclineReason = exports.TopicSuggestionDeclineReason || (exports.TopicSuggestionDeclineReason = {}));
+/** The possible states of a tracked issue. */
+var TrackedIssueStates;
+(function (TrackedIssueStates) {
+    /** The tracked issue is closed */
+    TrackedIssueStates["Closed"] = "CLOSED";
+    /** The tracked issue is open */
+    TrackedIssueStates["Open"] = "OPEN";
+})(TrackedIssueStates = exports.TrackedIssueStates || (exports.TrackedIssueStates = {}));
 /** The possible durations that a user can be blocked for. */
 var UserBlockDuration;
 (function (UserBlockDuration) {
@@ -1805,6 +2169,13 @@ exports.CreatePr = (0, graphql_tag_1.default) `
 exports.DeleteBranch = (0, graphql_tag_1.default) `
     mutation DeleteBranch($input: DeleteRefInput!) {
   deleteRef(input: $input) {
+    clientMutationId
+  }
+}
+    `;
+exports.UpdatePullRequest = (0, graphql_tag_1.default) `
+    mutation UpdatePullRequest($input: UpdatePullRequestInput!) {
+  updatePullRequest(input: $input) {
     clientMutationId
   }
 }
@@ -1869,6 +2240,7 @@ const path_1 = __nccwpck_require__(1017);
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const exec_1 = __nccwpck_require__(1514);
+const parse_browserslist_output_1 = __nccwpck_require__(6834);
 const graphql_1 = __nccwpck_require__(9088);
 const printer_1 = __nccwpck_require__(8203);
 const githubToken = core.getInput('github_token');
@@ -1928,7 +2300,14 @@ async function run() {
             await (0, exec_1.exec)('git', ['checkout', '-b', branch]);
         }
         // Run npx browserslist update
-        await (0, exec_1.exec)('npx', ['browserslist@latest', '--update-db']);
+        let browserslistOutput = '';
+        await (0, exec_1.exec)('npx', ['browserslist@latest', '--update-db'], {
+            listeners: {
+                stdout: (data) => {
+                    browserslistOutput += data.toString();
+                },
+            },
+        });
         core.info('Check whether new files bring modifications to the current branch');
         let gitStatus = '';
         await (0, exec_1.exec)('git', ['status', '-s'], {
@@ -1958,7 +2337,7 @@ async function run() {
         if (!browserslistUpdatePR) {
             core.info(`Creating new PR for branch ${branch}`);
             const title = core.getInput('title') || '📈 Update caniuse database';
-            const body = core.getInput('body') || 'Caniuse database has been updated. Review changes, merge this PR and have a 🍺.';
+            const body = core.getInput('body') || prBody(browserslistOutput);
             const mutationData = {
                 input: {
                     title,
@@ -1972,7 +2351,15 @@ async function run() {
             await octokit.graphql({ query: (0, printer_1.print)(graphql_1.CreatePr), ...mutationData });
         }
         else {
-            core.info('PR already exists');
+            core.info('PR already exists, updating');
+            const body = core.getInput('body') || prBody(browserslistOutput);
+            const mutationData = {
+                input: {
+                    pullRequestId: browserslistUpdatePR,
+                    body,
+                },
+            };
+            await octokit.graphql({ query: (0, printer_1.print)(graphql_1.UpdatePullRequest), ...mutationData });
         }
         // go back to previous branch
         await (0, exec_1.exec)('git', ['checkout', currentBranch]);
@@ -1986,7 +2373,77 @@ async function run() {
         }
     }
 }
+function prBody(browserslistOutput) {
+    const info = (0, parse_browserslist_output_1.parse)(browserslistOutput);
+    const msg = ['Caniuse database has been updated. Review changes, merge this PR and have a 🍺.'];
+    if (info.installedVersion) {
+        msg.push(`Installed version: ${info.installedVersion}`);
+    }
+    if (info.latestVersion) {
+        msg.push(`Latest version: ${info.latestVersion}`);
+    }
+    if (info.browsersAdded.length || info.browsersRemoved.length) {
+        msg.push('Target browsers changes: ');
+        msg.push('\n');
+        msg.push('```diff');
+        info.browsersRemoved.forEach((value) => msg.push('- ' + value));
+        info.browsersAdded.forEach((value) => msg.push('+ ' + value));
+        msg.push('```');
+    }
+    return msg.join('\n');
+}
 run();
+
+
+/***/ }),
+
+/***/ 6834:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.parse = void 0;
+const parse = (output) => {
+    let latestVersion = '';
+    let installedVersion = '';
+    const browsersAdded = [];
+    const browsersRemoved = [];
+    let isListingChanges = false;
+    output.split('\n').forEach((line) => {
+        let match;
+        if (isListingChanges) {
+            match = line.match('([-+])\\s(.*)');
+            if (match?.[1] === '+') {
+                browsersAdded.push(match[2]);
+            }
+            else if (match?.[1] === '-') {
+                browsersRemoved.push(match[2]);
+            }
+            return;
+        }
+        match = line.match('Latest version:\\s+(.*)');
+        if (match?.[1]) {
+            latestVersion = match?.[1];
+            return;
+        }
+        match = line.match('Installed version:\\s+(.*)');
+        if (match?.[1]) {
+            installedVersion = match?.[1];
+            return;
+        }
+        if (line.match('Target browser changes:')) {
+            isListingChanges = true;
+        }
+    });
+    return {
+        installedVersion,
+        latestVersion,
+        browsersAdded,
+        browsersRemoved,
+    };
+};
+exports.parse = parse;
 
 
 /***/ }),
