@@ -1,0 +1,5 @@
+mutation DeleteBranch($input: DeleteRefInput!) {
+  deleteRef(input: $input) {
+    clientMutationId
+  }
+}
