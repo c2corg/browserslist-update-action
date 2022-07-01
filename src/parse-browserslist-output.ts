@@ -1,3 +1,5 @@
+import stripAnsi from 'strip-ansi';
+
 export type BrowserslistInfo = {
   latestVersion: string;
   installedVersion: string;
@@ -12,31 +14,33 @@ export const parse = (output: string): BrowserslistInfo => {
   const browsersRemoved: string[] = [];
 
   let isListingChanges = false;
-  output.split('\n').forEach((line) => {
-    let match: string[] | null;
-    if (isListingChanges) {
-      match = line.match('([-+])\\s(.*)');
-      if (match?.[1] === '+') {
-        browsersAdded.push(match[2] as string);
-      } else if (match?.[1] === '-') {
-        browsersRemoved.push(match[2] as string);
+  stripAnsi(output)
+    .split('\n')
+    .forEach((line) => {
+      let match: string[] | null;
+      if (isListingChanges) {
+        match = line.match('([-+])\\s(.*)');
+        if (match?.[1] === '+') {
+          browsersAdded.push(match[2] as string);
+        } else if (match?.[1] === '-') {
+          browsersRemoved.push(match[2] as string);
+        }
+        return;
       }
-      return;
-    }
-    match = line.match('Latest version:\\s+(.*)');
-    if (match?.[1]) {
-      latestVersion = match?.[1];
-      return;
-    }
-    match = line.match('Installed version:\\s+(.*)');
-    if (match?.[1]) {
-      installedVersion = match?.[1];
-      return;
-    }
-    if (line.match('Target browser changes:')) {
-      isListingChanges = true;
-    }
-  });
+      match = line.match('Latest version:\\s+(.*)');
+      if (match?.[1]) {
+        latestVersion = match?.[1];
+        return;
+      }
+      match = line.match('Installed version:\\s+(.*)');
+      if (match?.[1]) {
+        installedVersion = match?.[1];
+        return;
+      }
+      if (line.match('Target browser changes:')) {
+        isListingChanges = true;
+      }
+    });
   return {
     installedVersion,
     latestVersion,
