@@ -1,6 +1,6 @@
 dist/
 lib/
 node_modules/
-src/generated/
+src/generated/graphql.ts
 *.sh
 *.graphql
