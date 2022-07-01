@@ -32769,6 +32769,13 @@ export const DeleteBranch = gql`
   }
 }
     `;
+export const UpdatePullRequest = gql`
+    mutation UpdatePullRequest($input: UpdatePullRequestInput!) {
+  updatePullRequest(input: $input) {
+    clientMutationId
+  }
+}
+    `;
 export const BrowserslistUpdateBranch = gql`
     query BrowserslistUpdateBranch($owner: String!, $name: String!, $branch: String!) {
   repository(owner: $owner, name: $name) {
@@ -32805,6 +32812,13 @@ export type DeleteBranchMutationVariables = Exact<{
 
 
 export type DeleteBranchMutation = { __typename?: 'Mutation', deleteRef?: { __typename?: 'DeleteRefPayload', clientMutationId?: string | null } | null };
+
+export type UpdatePullRequestMutationVariables = Exact<{
+  input: UpdatePullRequestInput;
+}>;
+
+
+export type UpdatePullRequestMutation = { __typename?: 'Mutation', updatePullRequest?: { __typename?: 'UpdatePullRequestPayload', clientMutationId?: string | null } | null };
 
 export type BrowserslistUpdateBranchQueryVariables = Exact<{
   owner: Scalars['String'];

@@ -2,6 +2,7 @@ import { join as path } from 'path';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { exec } from '@actions/exec';
+import { parse } from './parse-browserslist-output';
 
 import {
   BrowserslistUpdateBranch,
@@ -13,6 +14,9 @@ import {
   DeleteBranch,
   DeleteBranchMutation,
   DeleteBranchMutationVariables,
+  UpdatePullRequest,
+  UpdatePullRequestMutation,
+  UpdatePullRequestMutationVariables,
 } from './generated/graphql';
 import { print } from 'graphql/language/printer';
 
@@ -78,7 +82,14 @@ async function run(): Promise<void> {
     }
 
     // Run npx browserslist update
-    await exec('npx', ['browserslist@latest', '--update-db']);
+    let browserslistOutput = '';
+    await exec('npx', ['browserslist@latest', '--update-db'], {
+      listeners: {
+        stdout: (data: Buffer) => {
+          browserslistOutput += data.toString();
+        },
+      },
+    });
 
     core.info('Check whether new files bring modifications to the current branch');
     let gitStatus = '';
@@ -112,8 +123,7 @@ async function run(): Promise<void> {
     if (!browserslistUpdatePR) {
       core.info(`Creating new PR for branch ${branch}`);
       const title = core.getInput('title') || '📈 Update caniuse database';
-      const body =
-        core.getInput('body') || 'Caniuse database has been updated. Review changes, merge this PR and have a 🍺.';
+      const body = core.getInput('body') || prBody(browserslistOutput);
       const mutationData: CreatePrMutationVariables = {
         input: {
           title,
@@ -126,7 +136,15 @@ async function run(): Promise<void> {
       };
       await octokit.graphql<CreatePrMutation>({ query: print(CreatePr), ...mutationData });
     } else {
-      core.info('PR already exists');
+      core.info('PR already exists, updating');
+      const body = core.getInput('body') || prBody(browserslistOutput);
+      const mutationData: UpdatePullRequestMutationVariables = {
+        input: {
+          pullRequestId: browserslistUpdatePR,
+          body,
+        },
+      };
+      await octokit.graphql<UpdatePullRequestMutation>({ query: print(UpdatePullRequest), ...mutationData });
     }
 
     // go back to previous branch
@@ -138,6 +156,26 @@ async function run(): Promise<void> {
       core.setFailed('Error');
     }
   }
+}
+
+function prBody(browserslistOutput: string): string {
+  const info = parse(browserslistOutput);
+  const msg = ['Caniuse database has been updated. Review changes, merge this PR and have a 🍺.'];
+  if (info.installedVersion) {
+    msg.push(`Installed version: ${info.installedVersion}`);
+  }
+  if (info.latestVersion) {
+    msg.push(`Latest version: ${info.latestVersion}`);
+  }
+  if (info.browsersAdded.length || info.browsersRemoved.length) {
+    msg.push('Target browsers changes: ');
+    msg.push('\n');
+    msg.push('```diff');
+    info.browsersRemoved.forEach((value) => msg.push('- ' + value));
+    info.browsersAdded.forEach((value) => msg.push('+ ' + value));
+    msg.push('```');
+  }
+  return msg.join('\n');
 }
 
 run();
