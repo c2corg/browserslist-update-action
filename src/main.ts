@@ -1,4 +1,5 @@
 import { join as path } from 'path';
+import { chdir, cwd } from 'process';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { exec } from '@actions/exec';
@@ -82,6 +83,12 @@ async function run(): Promise<void> {
     }
 
     // Run npx browserslist update
+    const subDir = (core.getInput('directory') || '.').trim();
+    const currentDir = cwd();
+    if (subDir !== '.') {
+      core.info(`Switching to dir ${subDir} to run update db command`);
+      chdir(subDir);
+    }
     let browserslistOutput = '';
     await exec('npx', ['browserslist@latest', '--update-db'], {
       listeners: {
@@ -90,6 +97,7 @@ async function run(): Promise<void> {
         },
       },
     });
+    subDir !== '.' && chdir(currentDir);
 
     core.info('Check whether new files bring modifications to the current branch');
     let gitStatus = '';

@@ -14,25 +14,15 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A (potentially binary) string encoded using base64. */
   Base64String: any;
-  /** An ISO-8601 encoded date string. */
   Date: any;
-  /** An ISO-8601 encoded UTC date string. */
   DateTime: any;
-  /** A Git object ID. */
   GitObjectID: any;
-  /** Git SSH string */
   GitSSHRemote: any;
-  /** An ISO-8601 encoded date string. Unlike the DateTime type, GitTimestamp is not converted in UTC. */
   GitTimestamp: any;
-  /** A string containing HTML code. */
   HTML: any;
-  /** An ISO-8601 encoded UTC date string with millisecond precision. */
   PreciseDateTime: any;
-  /** An RFC 3986, RFC 3987, and RFC 6570 (level 4) compliant URI string. */
   URI: any;
-  /** A valid x509 certificate string */
   X509Certificate: any;
 };
 
