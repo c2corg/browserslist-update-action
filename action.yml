@@ -9,9 +9,25 @@ inputs:
     description: Github secret
     required: true
   branch:
-    description: Branch used for pull request
+    description: The pull request branch name
     required: false
     default: browserslist-update
+  directory:
+    description: For monorepos, directory to switch to
+    required: false
+    default: .
+  commit_message:
+    description: The message to use when committing changes
+    required: false
+    default: Update caniuse database
+  title:
+    description: The title of the pull request
+    required: false
+    default: 📈 Update caniuse database
+  body:
+    description: The body of the pull request
+    required: false
+    default: Caniuse database has been updated. Review changes, merge this PR and have a 🍺.
 runs:
   using: 'node16'
   main: 'dist/index.js'
