@@ -1,6 +1,6 @@
 # browserslist-update-action
 
-A Github Action that runs `npx browserslist@latest --update-db` on a repository and proposes a pull request to merge updates.
+A GitHub Action that runs `npx browserslist@latest --update-db` on a repository and proposes a pull request to merge updates.
 
 ## Usage
 
