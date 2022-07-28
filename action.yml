@@ -6,7 +6,7 @@ branding:
   color: green
 inputs:
   github_token:
-    description: Github secret
+    description: GitHub secret
     required: true
   branch:
     description: The pull request branch name
