@@ -1,6 +1,6 @@
 # browserslist-update-action
 
-A GitHub Action that runs `npx browserslist@latest --update-db` on a repository and proposes a pull request to merge updates.
+A GitHub Action that runs `npx update-browserslist-db@latest` on a repository and proposes a pull request to merge updates.
 
 ## Usage
 
@@ -70,4 +70,4 @@ npm run all
 
 Then bump version number in `package.json` and `package-lock.json`. Push commits.
 
-Keep a major version tag synchronized with updates, e.g. if you publish version `v2.0.3`, then a `v2` tag should be positioned at the same location.
+Keep a major version tag synchronized with updates, e.g. if you publish version `v2.0.3`, then a `v2` branch should be positioned at the same location.
