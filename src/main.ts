@@ -90,7 +90,7 @@ async function run(): Promise<void> {
       chdir(subDir);
     }
     let browserslistOutput = '';
-    await exec('npx', ['browserslist@latest', '--update-db'], {
+    await exec('npx', ['update-browserslist-db@latest'], {
       listeners: {
         stdout: (data: Buffer) => {
           browserslistOutput += data.toString();
