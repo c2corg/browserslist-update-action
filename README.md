@@ -52,7 +52,7 @@ One will usually run this action on a cron basis (say, every day or week)
 
 ### Edit / add GraphQL queries and mutations
 
-`src/types` folder contains generated type definitions based on queries. Run `npm run types` to update.
+`src/generated` folder contains generated type definitions based on queries. Run `npm run graphql` to update.
 
 ### Release a version
 
