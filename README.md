@@ -2,6 +2,10 @@
 
 A GitHub Action that runs `npx update-browserslist-db@latest` on a repository and proposes a pull request to merge updates.
 
+## v2 vs v1
+
+v1 uses command `npx browserslist@latest --update-db` which is now deprecated and to be removed in a future major `browserslist` release. It should be dropped in favor of v2 which uses new command `npx update-browserslist-db@latest`.
+
 ## Usage
 
 ```yaml
