@@ -9,7 +9,7 @@ v1 uses command `npx browserslist@latest --update-db` which is now deprecated an
 ## Usage
 
 ```yaml
-name: Update caniuse database
+name: Update Browserslist database
 
 on:
   schedule:
@@ -20,7 +20,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  update-caniuse-database:
+  update-browserslist-database:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
