@@ -42,7 +42,7 @@
     "@octokit/graphql-schema": "12.4.1",
     "@tsconfig/node16-strictest": "1.0.3",
     "@types/gettext-parser": "4.0.1",
-    "@types/node": "16.11.58",
+    "@types/node": "16.11.59",
     "@typescript-eslint/eslint-plugin": "5.37.0",
     "@typescript-eslint/parser": "5.37.0",
     "@vercel/ncc": "0.34.0",
