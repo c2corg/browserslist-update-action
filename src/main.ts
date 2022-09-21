@@ -42,10 +42,10 @@ async function run(): Promise<void> {
       ...queryData,
     });
 
-    let browserslistUpdateBranchExists = query?.repository?.refs?.totalCount || false;
+    let browserslistUpdateBranchExists = query.repository?.refs?.totalCount || false;
     let browserslistUpdatePR: string | undefined = undefined;
     if (browserslistUpdateBranchExists) {
-      const pullRequests = query?.repository?.refs?.edges?.[0]?.node?.associatedPullRequests;
+      const pullRequests = query.repository?.refs?.edges?.[0]?.node?.associatedPullRequests;
       if (pullRequests?.totalCount === 1) {
         browserslistUpdatePR = pullRequests.edges?.[0]?.node?.id;
       }
@@ -56,7 +56,7 @@ async function run(): Promise<void> {
       const mutationData: DeleteBranchMutationVariables = {
         input: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-          refId: query?.repository?.refs?.edges?.[0]?.node?.id!,
+          refId: query.repository?.refs?.edges?.[0]?.node?.id!,
         },
       };
       octokit.graphql<DeleteBranchMutation>({ query: print(DeleteBranch), ...mutationData });
@@ -110,9 +110,12 @@ async function run(): Promise<void> {
       },
     });
     if (!gitStatus.trim()) {
+      core.setOutput('has_pr', false);
       core.info('No changes. Exiting');
       return;
     }
+
+    core.setOutput('has_pr', true);
 
     core.info('Add files and commit on master');
     await exec('git', ['add', '.']);
@@ -138,12 +141,14 @@ async function run(): Promise<void> {
           title,
           body,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-          repositoryId: query?.repository?.id!,
+          repositoryId: query.repository?.id!,
           baseRefName: baseBranch,
           headRefName: branch,
         },
       };
-      await octokit.graphql<CreatePrMutation>({ query: print(CreatePr), ...mutationData });
+      const response = await octokit.graphql<CreatePrMutation>({ query: print(CreatePr), ...mutationData });
+      core.setOutput('pr_number', response.createPullRequest?.pullRequest?.number);
+      core.setOutput('pr_status', 'created');
     } else {
       core.info('PR already exists, updating');
       const body = core.getInput('body') || prBody(browserslistOutput);
@@ -153,7 +158,12 @@ async function run(): Promise<void> {
           body,
         },
       };
-      await octokit.graphql<UpdatePullRequestMutation>({ query: print(UpdatePullRequest), ...mutationData });
+      const response = await octokit.graphql<UpdatePullRequestMutation>({
+        query: print(UpdatePullRequest),
+        ...mutationData,
+      });
+      core.setOutput('pr_number', response.updatePullRequest?.pullRequest?.number);
+      core.setOutput('pr_status', 'updated');
     }
 
     // go back to previous branch

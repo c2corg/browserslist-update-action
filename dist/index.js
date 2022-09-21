@@ -2288,10 +2288,8 @@ var WorkflowRunOrderField;
 exports.CreatePr = (0, graphql_tag_1.default) `
     mutation CreatePR($input: CreatePullRequestInput!) {
   createPullRequest(input: $input) {
-    clientMutationId
     pullRequest {
-      body
-      title
+      number
     }
   }
 }
@@ -2306,7 +2304,9 @@ exports.DeleteBranch = (0, graphql_tag_1.default) `
 exports.UpdatePullRequest = (0, graphql_tag_1.default) `
     mutation UpdatePullRequest($input: UpdatePullRequestInput!) {
   updatePullRequest(input: $input) {
-    clientMutationId
+    pullRequest {
+      number
+    }
   }
 }
     `;
@@ -2392,10 +2392,10 @@ async function run() {
             query: (0, printer_1.print)(graphql_1.BrowserslistUpdateBranch),
             ...queryData,
         });
-        let browserslistUpdateBranchExists = query?.repository?.refs?.totalCount || false;
+        let browserslistUpdateBranchExists = query.repository?.refs?.totalCount || false;
         let browserslistUpdatePR = undefined;
         if (browserslistUpdateBranchExists) {
-            const pullRequests = query?.repository?.refs?.edges?.[0]?.node?.associatedPullRequests;
+            const pullRequests = query.repository?.refs?.edges?.[0]?.node?.associatedPullRequests;
             if (pullRequests?.totalCount === 1) {
                 browserslistUpdatePR = pullRequests.edges?.[0]?.node?.id;
             }
@@ -2406,7 +2406,7 @@ async function run() {
             const mutationData = {
                 input: {
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-                    refId: query?.repository?.refs?.edges?.[0]?.node?.id,
+                    refId: query.repository?.refs?.edges?.[0]?.node?.id,
                 },
             };
             octokit.graphql({ query: (0, printer_1.print)(graphql_1.DeleteBranch), ...mutationData });
@@ -2457,9 +2457,11 @@ async function run() {
             },
         });
         if (!gitStatus.trim()) {
+            core.setOutput('changes', false);
             core.info('No changes. Exiting');
             return;
         }
+        core.setOutput('changes', true);
         core.info('Add files and commit on master');
         await (0, exec_1.exec)('git', ['add', '.']);
         await (0, exec_1.exec)('git', ['commit', '-m', core.getInput('commit_message') || 'Update caniuse database']);
@@ -2482,12 +2484,14 @@ async function run() {
                     title,
                     body,
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-                    repositoryId: query?.repository?.id,
+                    repositoryId: query.repository?.id,
                     baseRefName: baseBranch,
                     headRefName: branch,
                 },
             };
-            await octokit.graphql({ query: (0, printer_1.print)(graphql_1.CreatePr), ...mutationData });
+            const response = await octokit.graphql({ query: (0, printer_1.print)(graphql_1.CreatePr), ...mutationData });
+            core.setOutput('pr_number', response.createPullRequest?.pullRequest?.number);
+            core.setOutput('pr_status', 'created');
         }
         else {
             core.info('PR already exists, updating');
@@ -2498,7 +2502,12 @@ async function run() {
                     body,
                 },
             };
-            await octokit.graphql({ query: (0, printer_1.print)(graphql_1.UpdatePullRequest), ...mutationData });
+            const response = await octokit.graphql({
+                query: (0, printer_1.print)(graphql_1.UpdatePullRequest),
+                ...mutationData,
+            });
+            core.setOutput('pr_number', response.updatePullRequest?.pullRequest?.number);
+            core.setOutput('pr_status', 'updated');
         }
         // go back to previous branch
         await (0, exec_1.exec)('git', ['checkout', currentBranch]);

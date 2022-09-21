@@ -57,6 +57,14 @@ Inputs with defaults are **optional**.
 
 One will usually run this action on a cron basis (say, every day or week)
 
+## Action outputs
+
+| Name      | Description                                                                                        |
+| --------- | -------------------------------------------------------------------------------------------------- |
+| has_pr    | `true` if changes were found and a pull request was created or updated, `false` otherwise.         |
+| pr_number | The number of the pull requested created or updated, if applies.                                   |
+| pr_status | Can be either `created` or `updated` depending on whether the pull request was created or updated. |
+
 ## Contributing
 
 ### Edit / add GraphQL queries and mutations

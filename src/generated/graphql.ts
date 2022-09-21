@@ -38358,10 +38358,8 @@ export type DirectiveResolvers<ContextType = any> = {
 export const CreatePr = gql`
     mutation CreatePR($input: CreatePullRequestInput!) {
   createPullRequest(input: $input) {
-    clientMutationId
     pullRequest {
-      body
-      title
+      number
     }
   }
 }
@@ -38376,7 +38374,9 @@ export const DeleteBranch = gql`
 export const UpdatePullRequest = gql`
     mutation UpdatePullRequest($input: UpdatePullRequestInput!) {
   updatePullRequest(input: $input) {
-    clientMutationId
+    pullRequest {
+      number
+    }
   }
 }
     `;
@@ -38408,7 +38408,7 @@ export type CreatePrMutationVariables = Exact<{
 }>;
 
 
-export type CreatePrMutation = { __typename?: 'Mutation', createPullRequest?: { __typename?: 'CreatePullRequestPayload', clientMutationId?: string | null, pullRequest?: { __typename?: 'PullRequest', body: string, title: string } | null } | null };
+export type CreatePrMutation = { __typename?: 'Mutation', createPullRequest?: { __typename?: 'CreatePullRequestPayload', pullRequest?: { __typename?: 'PullRequest', number: number } | null } | null };
 
 export type DeleteBranchMutationVariables = Exact<{
   input: DeleteRefInput;
@@ -38422,7 +38422,7 @@ export type UpdatePullRequestMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePullRequestMutation = { __typename?: 'Mutation', updatePullRequest?: { __typename?: 'UpdatePullRequestPayload', clientMutationId?: string | null } | null };
+export type UpdatePullRequestMutation = { __typename?: 'Mutation', updatePullRequest?: { __typename?: 'UpdatePullRequestPayload', pullRequest?: { __typename?: 'PullRequest', number: number } | null } | null };
 
 export type BrowserslistUpdateBranchQueryVariables = Exact<{
   owner: Scalars['String'];
