@@ -25,7 +25,7 @@ const githubToken = core.getInput('github_token');
 const repositoryOwner = github.context.repo.owner;
 const repositoryName = github.context.repo.repo;
 const branch = core.getInput('branch');
-const baseBranch = core.getInput( 'base_branch' ) || 'master';
+const baseBranch = core.getInput('base_branch') || 'master';
 
 const octokit = github.getOctokit(githubToken);
 
