@@ -1587,12 +1587,8 @@ export type CheckRunFilter = {
   checkName?: InputMaybe<Scalars['String']>;
   /** Filters the check runs by this type. */
   checkType?: InputMaybe<CheckRunType>;
-  /** Filters the check runs by these conclusions. */
-  conclusions?: InputMaybe<Array<CheckConclusionState>>;
-  /** Filters the check runs by this status. Superceded by statuses. */
+  /** Filters the check runs by this status. */
   status?: InputMaybe<CheckStatusState>;
-  /** Filters the check runs by this status. Overrides status. */
-  statuses?: InputMaybe<Array<CheckStatusState>>;
 };
 
 /** Descriptive details about the check run. */
@@ -1617,47 +1613,6 @@ export type CheckRunOutputImage = {
   caption?: InputMaybe<Scalars['String']>;
   /** The full URL of the image. */
   imageUrl: Scalars['URI'];
-};
-
-/** The possible states of a check run in a status rollup. */
-export enum CheckRunState {
-  /** The check run requires action. */
-  ActionRequired = 'ACTION_REQUIRED',
-  /** The check run has been cancelled. */
-  Cancelled = 'CANCELLED',
-  /** The check run has been completed. */
-  Completed = 'COMPLETED',
-  /** The check run has failed. */
-  Failure = 'FAILURE',
-  /** The check run is in progress. */
-  InProgress = 'IN_PROGRESS',
-  /** The check run was neutral. */
-  Neutral = 'NEUTRAL',
-  /** The check run is in pending state. */
-  Pending = 'PENDING',
-  /** The check run has been queued. */
-  Queued = 'QUEUED',
-  /** The check run was skipped. */
-  Skipped = 'SKIPPED',
-  /** The check run was marked stale by GitHub. Only GitHub can use this conclusion. */
-  Stale = 'STALE',
-  /** The check run has failed at startup. */
-  StartupFailure = 'STARTUP_FAILURE',
-  /** The check run has succeeded. */
-  Success = 'SUCCESS',
-  /** The check run has timed out. */
-  TimedOut = 'TIMED_OUT',
-  /** The check run is in waiting state. */
-  Waiting = 'WAITING'
-}
-
-/** Represents a count of the state of a check run. */
-export type CheckRunStateCount = {
-  __typename?: 'CheckRunStateCount';
-  /** The number of check runs with this state. */
-  count: Scalars['Int'];
-  /** The state of a check run. */
-  state: CheckRunState;
 };
 
 /** The possible types of check runs. */
@@ -2110,13 +2065,8 @@ export type Commit = GitObject & Node & Subscribable & UniformResourceLocatable 
   authors: GitActorConnection;
   /** Fetches `git blame` information. */
   blame: Blame;
-  /**
-   * We recommend using the `changedFielsIfAvailable` field instead of `changedFiles`, as `changedFiles` will cause your request to return an error if GitHub is unable to calculate the number of changed files.
-   * @deprecated `changedFiles` will be removed. Use `changedFilesIfAvailable` instead. Removal on 2023-01-01 UTC.
-   */
+  /** The number of changed files in this commit. */
   changedFiles: Scalars['Int'];
-  /** The number of changed files in this commit. If GitHub is unable to calculate the number of changed files (for example due to a timeout), this will return `null`. We recommend using this field instead of `changedFiles`. */
-  changedFilesIfAvailable?: Maybe<Scalars['Int']>;
   /** The check suites associated with a commit. */
   checkSuites?: Maybe<CheckSuiteConnection>;
   /** Comments made on the commit. */
@@ -5388,22 +5338,6 @@ export enum EnterpriseAdministratorRole {
   Owner = 'OWNER'
 }
 
-/** The possible values for the enterprise allow private repository forking policy value. */
-export enum EnterpriseAllowPrivateRepositoryForkingPolicyValue {
-  /** Members can fork a repository to an organization within this enterprise. */
-  EnterpriseOrganizations = 'ENTERPRISE_ORGANIZATIONS',
-  /** Members can fork a repository to their enterprise-managed user account or an organization inside this enterprise. */
-  EnterpriseOrganizationsUserAccounts = 'ENTERPRISE_ORGANIZATIONS_USER_ACCOUNTS',
-  /** Members can fork a repository to their user account or an organization, either inside or outside of this enterprise. */
-  Everywhere = 'EVERYWHERE',
-  /** Members can fork a repository only within the same organization (intra-org). */
-  SameOrganization = 'SAME_ORGANIZATION',
-  /** Members can fork a repository to their user account or within the same organization. */
-  SameOrganizationUserAccounts = 'SAME_ORGANIZATION_USER_ACCOUNTS',
-  /** Members can fork a repository to their user account. */
-  UserAccounts = 'USER_ACCOUNTS'
-}
-
 /** Metadata for an audit entry containing enterprise account information. */
 export type EnterpriseAuditEntryData = {
   /** The HTTP path for this enterprise. */
@@ -5639,8 +5573,6 @@ export type EnterpriseOwnerInfo = {
   allowPrivateRepositoryForkingSetting: EnterpriseEnabledDisabledSettingValue;
   /** A list of enterprise organizations configured with the provided private repository forking setting value. */
   allowPrivateRepositoryForkingSettingOrganizations: OrganizationConnection;
-  /** The value for the allow private repository forking policy on the enterprise. */
-  allowPrivateRepositoryForkingSettingPolicyValue?: Maybe<EnterpriseAllowPrivateRepositoryForkingPolicyValue>;
   /** The setting value for base repository permissions for organizations in this enterprise. */
   defaultRepositoryPermissionSetting: EnterpriseDefaultRepositoryPermissionSettingValue;
   /** A list of enterprise organizations configured with the provided base repository permission. */
@@ -16624,8 +16556,6 @@ export type PullRequestThread = Node & {
   __typename?: 'PullRequestThread';
   /** A list of pull request comments associated with the thread. */
   comments: PullRequestReviewCommentConnection;
-  /** The side of the diff on which this thread was placed. */
-  diffSide: DiffSide;
   id: Scalars['ID'];
   /** Whether or not the thread has been collapsed (resolved) */
   isCollapsed: Scalars['Boolean'];
@@ -16633,18 +16563,12 @@ export type PullRequestThread = Node & {
   isOutdated: Scalars['Boolean'];
   /** Whether this thread has been resolved */
   isResolved: Scalars['Boolean'];
-  /** The line in the file to which this thread refers */
-  line?: Maybe<Scalars['Int']>;
   /** Identifies the pull request associated with this thread. */
   pullRequest: PullRequest;
   /** Identifies the repository associated with this thread. */
   repository: Repository;
   /** The user who resolved this thread */
   resolvedBy?: Maybe<User>;
-  /** The side of the diff that the first line of the thread starts on (multi-line only) */
-  startDiffSide?: Maybe<DiffSide>;
-  /** The line of the first file diff in the thread. */
-  startLine?: Maybe<Scalars['Int']>;
   /** Indicates whether the current viewer can reply to this thread. */
   viewerCanReply: Scalars['Boolean'];
   /** Whether or not the viewer can resolve this thread */
@@ -16941,7 +16865,7 @@ export type Query = {
   repositoryOwner?: Maybe<RepositoryOwner>;
   /** Lookup resource by a URL. */
   resource?: Maybe<UniformResourceLocatable>;
-  /** Perform a search across resources, returning a maximum of 1,000 results. */
+  /** Perform a search across resources. */
   search: SearchResultItemConnection;
   /** GitHub Security Advisories */
   securityAdvisories: SecurityAdvisoryConnection;
@@ -20844,26 +20768,26 @@ export enum SavedReplyOrderField {
 /** The results of a search. */
 export type SearchResultItem = App | Discussion | Issue | MarketplaceListing | Organization | PullRequest | Repository | User;
 
-/** A list of results that matched against a search query. Regardless of the number of matches, a maximum of 1,000 results will be available across all types, potentially split across many pages. */
+/** A list of results that matched against a search query. */
 export type SearchResultItemConnection = {
   __typename?: 'SearchResultItemConnection';
-  /** The total number of pieces of code that matched the search query. Regardless of the total number of matches, a maximum of 1,000 results will be available across all types. */
+  /** The number of pieces of code that matched the search query. */
   codeCount: Scalars['Int'];
-  /** The total number of discussions that matched the search query. Regardless of the total number of matches, a maximum of 1,000 results will be available across all types. */
+  /** The number of discussions that matched the search query. */
   discussionCount: Scalars['Int'];
   /** A list of edges. */
   edges?: Maybe<Array<Maybe<SearchResultItemEdge>>>;
-  /** The total number of issues that matched the search query. Regardless of the total number of matches, a maximum of 1,000 results will be available across all types. */
+  /** The number of issues that matched the search query. */
   issueCount: Scalars['Int'];
   /** A list of nodes. */
   nodes?: Maybe<Array<Maybe<SearchResultItem>>>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The total number of repositories that matched the search query. Regardless of the total number of matches, a maximum of 1,000 results will be available across all types. */
+  /** The number of repositories that matched the search query. */
   repositoryCount: Scalars['Int'];
-  /** The total number of users that matched the search query. Regardless of the total number of matches, a maximum of 1,000 results will be available across all types. */
+  /** The number of users that matched the search query. */
   userCount: Scalars['Int'];
-  /** The total number of wiki pages that matched the search query. Regardless of the total number of matches, a maximum of 1,000 results will be available across all types. */
+  /** The number of wiki pages that matched the search query. */
   wikiCount: Scalars['Int'];
 };
 
@@ -21830,27 +21754,6 @@ export enum SquashMergeCommitTitle {
   PrTitle = 'PR_TITLE'
 }
 
-/** Represents an SSH signature on a Commit or Tag. */
-export type SshSignature = GitSignature & {
-  __typename?: 'SshSignature';
-  /** Email used to sign this object. */
-  email: Scalars['String'];
-  /** True if the signature is valid and verified by GitHub. */
-  isValid: Scalars['Boolean'];
-  /** Hex-encoded fingerprint of the key that signed this object. */
-  keyFingerprint?: Maybe<Scalars['String']>;
-  /** Payload for GPG signing object. Raw ODB object without the signature header. */
-  payload: Scalars['String'];
-  /** ASCII-armored signature header from object. */
-  signature: Scalars['String'];
-  /** GitHub user corresponding to the email signing this commit. */
-  signer?: Maybe<User>;
-  /** The state of this signature. `VALID` if signature is valid and verified by GitHub, otherwise represents reason why signature is considered invalid. */
-  state: GitSignatureState;
-  /** True if the signature was made with GitHub's signing key. */
-  wasSignedByGitHub: Scalars['Boolean'];
-};
-
 /** Ways in which star connections can be ordered. */
 export type StarOrder = {
   /** The direction in which to order nodes. */
@@ -22034,20 +21937,12 @@ export type StatusCheckRollupContext = CheckRun | StatusContext;
 /** The connection type for StatusCheckRollupContext. */
 export type StatusCheckRollupContextConnection = {
   __typename?: 'StatusCheckRollupContextConnection';
-  /** The number of check runs in this rollup. */
-  checkRunCount: Scalars['Int'];
-  /** Counts of check runs by state. */
-  checkRunCountsByState?: Maybe<Array<CheckRunStateCount>>;
   /** A list of edges. */
   edges?: Maybe<Array<Maybe<StatusCheckRollupContextEdge>>>;
   /** A list of nodes. */
   nodes?: Maybe<Array<Maybe<StatusCheckRollupContext>>>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The number of status contexts in this rollup. */
-  statusContextCount: Scalars['Int'];
-  /** Counts of status contexts by state. */
-  statusContextCountsByState?: Maybe<Array<StatusContextStateCount>>;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int'];
 };
@@ -22096,15 +21991,6 @@ export type StatusContextAvatarUrlArgs = {
 export type StatusContextIsRequiredArgs = {
   pullRequestId?: InputMaybe<Scalars['ID']>;
   pullRequestNumber?: InputMaybe<Scalars['Int']>;
-};
-
-/** Represents a count of the state of a status context. */
-export type StatusContextStateCount = {
-  __typename?: 'StatusContextStateCount';
-  /** The number of statuses with this state. */
-  count: Scalars['Int'];
-  /** The state of a status context. */
-  state: StatusState;
 };
 
 /** The possible commit status states. */
@@ -23818,8 +23704,6 @@ export type UpdateEnterpriseAllowPrivateRepositoryForkingSettingInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
   /** The ID of the enterprise on which to set the allow private repository forking setting. */
   enterpriseId: Scalars['ID'];
-  /** The value for the allow private repository forking policy on the enterprise. */
-  policyValue?: InputMaybe<EnterpriseAllowPrivateRepositoryForkingPolicyValue>;
   /** The value for the allow private repository forking setting on the enterprise. */
   settingValue: EnterpriseEnabledDisabledSettingValue;
 };
@@ -25870,20 +25754,8 @@ export type Workflow = Node & {
   id: Scalars['ID'];
   /** The name of the workflow. */
   name: Scalars['String'];
-  /** The runs of the workflow. */
-  runs: WorkflowRunConnection;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
-};
-
-
-/** A workflow contains meta information about an Actions workflow file. */
-export type WorkflowRunsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<WorkflowRunOrder>;
 };
 
 /** A workflow run. */
@@ -25929,42 +25801,6 @@ export type WorkflowRunPendingDeploymentRequestsArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
 };
-
-/** The connection type for WorkflowRun. */
-export type WorkflowRunConnection = {
-  __typename?: 'WorkflowRunConnection';
-  /** A list of edges. */
-  edges?: Maybe<Array<Maybe<WorkflowRunEdge>>>;
-  /** A list of nodes. */
-  nodes?: Maybe<Array<Maybe<WorkflowRun>>>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** Identifies the total count of items in the connection. */
-  totalCount: Scalars['Int'];
-};
-
-/** An edge in a connection. */
-export type WorkflowRunEdge = {
-  __typename?: 'WorkflowRunEdge';
-  /** A cursor for use in pagination. */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge. */
-  node?: Maybe<WorkflowRun>;
-};
-
-/** Ways in which lists of workflow runs can be ordered upon return. */
-export type WorkflowRunOrder = {
-  /** The direction in which to order workflow runs by the specified field. */
-  direction: OrderDirection;
-  /** The field by which to order workflows. */
-  field: WorkflowRunOrderField;
-};
-
-/** Properties by which workflow run connections can be ordered. */
-export enum WorkflowRunOrderField {
-  /** Order workflow runs by most recently created */
-  CreatedAt = 'CREATED_AT'
-}
 
 
 
@@ -26152,8 +25988,6 @@ export type ResolversTypes = {
   CheckRunFilter: CheckRunFilter;
   CheckRunOutput: CheckRunOutput;
   CheckRunOutputImage: CheckRunOutputImage;
-  CheckRunState: CheckRunState;
-  CheckRunStateCount: ResolverTypeWrapper<CheckRunStateCount>;
   CheckRunType: CheckRunType;
   CheckStatusState: CheckStatusState;
   CheckStep: ResolverTypeWrapper<CheckStep>;
@@ -26387,7 +26221,6 @@ export type ResolversTypes = {
   EnterpriseAdministratorInvitationOrder: EnterpriseAdministratorInvitationOrder;
   EnterpriseAdministratorInvitationOrderField: EnterpriseAdministratorInvitationOrderField;
   EnterpriseAdministratorRole: EnterpriseAdministratorRole;
-  EnterpriseAllowPrivateRepositoryForkingPolicyValue: EnterpriseAllowPrivateRepositoryForkingPolicyValue;
   EnterpriseAuditEntryData: ResolversTypes['MembersCanDeleteReposClearAuditEntry'] | ResolversTypes['MembersCanDeleteReposDisableAuditEntry'] | ResolversTypes['MembersCanDeleteReposEnableAuditEntry'] | ResolversTypes['OrgInviteToBusinessAuditEntry'] | ResolversTypes['PrivateRepositoryForkingDisableAuditEntry'] | ResolversTypes['PrivateRepositoryForkingEnableAuditEntry'] | ResolversTypes['RepositoryVisibilityChangeDisableAuditEntry'] | ResolversTypes['RepositoryVisibilityChangeEnableAuditEntry'];
   EnterpriseBillingInfo: ResolverTypeWrapper<EnterpriseBillingInfo>;
   EnterpriseDefaultRepositoryPermissionSettingValue: EnterpriseDefaultRepositoryPermissionSettingValue;
@@ -26475,7 +26308,7 @@ export type ResolversTypes = {
   GitObject: ResolversTypes['Blob'] | ResolversTypes['Commit'] | ResolversTypes['Tag'] | ResolversTypes['Tree'];
   GitObjectID: ResolverTypeWrapper<Scalars['GitObjectID']>;
   GitSSHRemote: ResolverTypeWrapper<Scalars['GitSSHRemote']>;
-  GitSignature: ResolversTypes['GpgSignature'] | ResolversTypes['SmimeSignature'] | ResolversTypes['SshSignature'] | ResolversTypes['UnknownSignature'];
+  GitSignature: ResolversTypes['GpgSignature'] | ResolversTypes['SmimeSignature'] | ResolversTypes['UnknownSignature'];
   GitSignatureState: GitSignatureState;
   GitTimestamp: ResolverTypeWrapper<Scalars['GitTimestamp']>;
   GpgSignature: ResolverTypeWrapper<GpgSignature>;
@@ -27108,7 +26941,6 @@ export type ResolversTypes = {
   SponsorshipPrivacy: SponsorshipPrivacy;
   SquashMergeCommitMessage: SquashMergeCommitMessage;
   SquashMergeCommitTitle: SquashMergeCommitTitle;
-  SshSignature: ResolverTypeWrapper<SshSignature>;
   StarOrder: StarOrder;
   StarOrderField: StarOrderField;
   StargazerConnection: ResolverTypeWrapper<StargazerConnection>;
@@ -27124,7 +26956,6 @@ export type ResolversTypes = {
   StatusCheckRollupContextConnection: ResolverTypeWrapper<Omit<StatusCheckRollupContextConnection, 'nodes'> & { nodes?: Maybe<Array<Maybe<ResolversTypes['StatusCheckRollupContext']>>> }>;
   StatusCheckRollupContextEdge: ResolverTypeWrapper<Omit<StatusCheckRollupContextEdge, 'node'> & { node?: Maybe<ResolversTypes['StatusCheckRollupContext']> }>;
   StatusContext: ResolverTypeWrapper<StatusContext>;
-  StatusContextStateCount: ResolverTypeWrapper<StatusContextStateCount>;
   StatusState: StatusState;
   String: ResolverTypeWrapper<Scalars['String']>;
   SubmitPullRequestReviewInput: SubmitPullRequestReviewInput;
@@ -27348,10 +27179,6 @@ export type ResolversTypes = {
   Votable: ResolversTypes['Discussion'] | ResolversTypes['DiscussionComment'];
   Workflow: ResolverTypeWrapper<Workflow>;
   WorkflowRun: ResolverTypeWrapper<WorkflowRun>;
-  WorkflowRunConnection: ResolverTypeWrapper<WorkflowRunConnection>;
-  WorkflowRunEdge: ResolverTypeWrapper<WorkflowRunEdge>;
-  WorkflowRunOrder: WorkflowRunOrder;
-  WorkflowRunOrderField: WorkflowRunOrderField;
   X509Certificate: ResolverTypeWrapper<Scalars['X509Certificate']>;
 };
 
@@ -27470,7 +27297,6 @@ export type ResolversParentTypes = {
   CheckRunFilter: CheckRunFilter;
   CheckRunOutput: CheckRunOutput;
   CheckRunOutputImage: CheckRunOutputImage;
-  CheckRunStateCount: CheckRunStateCount;
   CheckStep: CheckStep;
   CheckStepConnection: CheckStepConnection;
   CheckStepEdge: CheckStepEdge;
@@ -27754,7 +27580,7 @@ export type ResolversParentTypes = {
   GitObject: ResolversParentTypes['Blob'] | ResolversParentTypes['Commit'] | ResolversParentTypes['Tag'] | ResolversParentTypes['Tree'];
   GitObjectID: Scalars['GitObjectID'];
   GitSSHRemote: Scalars['GitSSHRemote'];
-  GitSignature: ResolversParentTypes['GpgSignature'] | ResolversParentTypes['SmimeSignature'] | ResolversParentTypes['SshSignature'] | ResolversParentTypes['UnknownSignature'];
+  GitSignature: ResolversParentTypes['GpgSignature'] | ResolversParentTypes['SmimeSignature'] | ResolversParentTypes['UnknownSignature'];
   GitTimestamp: Scalars['GitTimestamp'];
   GpgSignature: GpgSignature;
   GrantEnterpriseOrganizationsMigratorRoleInput: GrantEnterpriseOrganizationsMigratorRoleInput;
@@ -28259,7 +28085,6 @@ export type ResolversParentTypes = {
   SponsorshipNewsletterEdge: SponsorshipNewsletterEdge;
   SponsorshipNewsletterOrder: SponsorshipNewsletterOrder;
   SponsorshipOrder: SponsorshipOrder;
-  SshSignature: SshSignature;
   StarOrder: StarOrder;
   StargazerConnection: StargazerConnection;
   StargazerEdge: StargazerEdge;
@@ -28274,7 +28099,6 @@ export type ResolversParentTypes = {
   StatusCheckRollupContextConnection: Omit<StatusCheckRollupContextConnection, 'nodes'> & { nodes?: Maybe<Array<Maybe<ResolversParentTypes['StatusCheckRollupContext']>>> };
   StatusCheckRollupContextEdge: Omit<StatusCheckRollupContextEdge, 'node'> & { node?: Maybe<ResolversParentTypes['StatusCheckRollupContext']> };
   StatusContext: StatusContext;
-  StatusContextStateCount: StatusContextStateCount;
   String: Scalars['String'];
   SubmitPullRequestReviewInput: SubmitPullRequestReviewInput;
   SubmitPullRequestReviewPayload: SubmitPullRequestReviewPayload;
@@ -28482,9 +28306,6 @@ export type ResolversParentTypes = {
   Votable: ResolversParentTypes['Discussion'] | ResolversParentTypes['DiscussionComment'];
   Workflow: Workflow;
   WorkflowRun: WorkflowRun;
-  WorkflowRunConnection: WorkflowRunConnection;
-  WorkflowRunEdge: WorkflowRunEdge;
-  WorkflowRunOrder: WorkflowRunOrder;
   X509Certificate: Scalars['X509Certificate'];
 };
 
@@ -29113,12 +28934,6 @@ export type CheckRunEdgeResolvers<ContextType = any, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CheckRunStateCountResolvers<ContextType = any, ParentType extends ResolversParentTypes['CheckRunStateCount'] = ResolversParentTypes['CheckRunStateCount']> = {
-  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  state?: Resolver<ResolversTypes['CheckRunState'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type CheckStepResolvers<ContextType = any, ParentType extends ResolversParentTypes['CheckStep'] = ResolversParentTypes['CheckStep']> = {
   completedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   conclusion?: Resolver<Maybe<ResolversTypes['CheckConclusionState']>, ParentType, ContextType>;
@@ -29281,7 +29096,6 @@ export type CommitResolvers<ContextType = any, ParentType extends ResolversParen
   authors?: Resolver<ResolversTypes['GitActorConnection'], ParentType, ContextType, Partial<CommitAuthorsArgs>>;
   blame?: Resolver<ResolversTypes['Blame'], ParentType, ContextType, RequireFields<CommitBlameArgs, 'path'>>;
   changedFiles?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  changedFilesIfAvailable?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   checkSuites?: Resolver<Maybe<ResolversTypes['CheckSuiteConnection']>, ParentType, ContextType, Partial<CommitCheckSuitesArgs>>;
   comments?: Resolver<ResolversTypes['CommitCommentConnection'], ParentType, ContextType, Partial<CommitCommentsArgs>>;
   commitResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
@@ -30527,7 +30341,6 @@ export type EnterpriseOwnerInfoResolvers<ContextType = any, ParentType extends R
   affiliatedUsersWithTwoFactorDisabledExist?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   allowPrivateRepositoryForkingSetting?: Resolver<ResolversTypes['EnterpriseEnabledDisabledSettingValue'], ParentType, ContextType>;
   allowPrivateRepositoryForkingSettingOrganizations?: Resolver<ResolversTypes['OrganizationConnection'], ParentType, ContextType, RequireFields<EnterpriseOwnerInfoAllowPrivateRepositoryForkingSettingOrganizationsArgs, 'orderBy' | 'value'>>;
-  allowPrivateRepositoryForkingSettingPolicyValue?: Resolver<Maybe<ResolversTypes['EnterpriseAllowPrivateRepositoryForkingPolicyValue']>, ParentType, ContextType>;
   defaultRepositoryPermissionSetting?: Resolver<ResolversTypes['EnterpriseDefaultRepositoryPermissionSettingValue'], ParentType, ContextType>;
   defaultRepositoryPermissionSettingOrganizations?: Resolver<ResolversTypes['OrganizationConnection'], ParentType, ContextType, RequireFields<EnterpriseOwnerInfoDefaultRepositoryPermissionSettingOrganizationsArgs, 'orderBy' | 'value'>>;
   domains?: Resolver<ResolversTypes['VerifiableDomainConnection'], ParentType, ContextType, RequireFields<EnterpriseOwnerInfoDomainsArgs, 'isApproved' | 'isVerified' | 'orderBy'>>;
@@ -30984,7 +30797,7 @@ export interface GitSshRemoteScalarConfig extends GraphQLScalarTypeConfig<Resolv
 }
 
 export type GitSignatureResolvers<ContextType = any, ParentType extends ResolversParentTypes['GitSignature'] = ResolversParentTypes['GitSignature']> = {
-  __resolveType: TypeResolveFn<'GpgSignature' | 'SmimeSignature' | 'SshSignature' | 'UnknownSignature', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'GpgSignature' | 'SmimeSignature' | 'UnknownSignature', ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isValid?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   payload?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -34186,17 +33999,13 @@ export type PullRequestTemplateResolvers<ContextType = any, ParentType extends R
 
 export type PullRequestThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['PullRequestThread'] = ResolversParentTypes['PullRequestThread']> = {
   comments?: Resolver<ResolversTypes['PullRequestReviewCommentConnection'], ParentType, ContextType, Partial<PullRequestThreadCommentsArgs>>;
-  diffSide?: Resolver<ResolversTypes['DiffSide'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isCollapsed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isOutdated?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isResolved?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  line?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   pullRequest?: Resolver<ResolversTypes['PullRequest'], ParentType, ContextType>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   resolvedBy?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  startDiffSide?: Resolver<Maybe<ResolversTypes['DiffSide']>, ParentType, ContextType>;
-  startLine?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   viewerCanReply?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanResolve?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanUnresolve?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -36112,18 +35921,6 @@ export type SponsorshipNewsletterEdgeResolvers<ContextType = any, ParentType ext
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type SshSignatureResolvers<ContextType = any, ParentType extends ResolversParentTypes['SshSignature'] = ResolversParentTypes['SshSignature']> = {
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  isValid?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  keyFingerprint?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  payload?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  signature?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  signer?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  state?: Resolver<ResolversTypes['GitSignatureState'], ParentType, ContextType>;
-  wasSignedByGitHub?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type StargazerConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['StargazerConnection'] = ResolversParentTypes['StargazerConnection']> = {
   edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['StargazerEdge']>>>, ParentType, ContextType>;
   nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
@@ -36192,13 +35989,9 @@ export type StatusCheckRollupContextResolvers<ContextType = any, ParentType exte
 };
 
 export type StatusCheckRollupContextConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['StatusCheckRollupContextConnection'] = ResolversParentTypes['StatusCheckRollupContextConnection']> = {
-  checkRunCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  checkRunCountsByState?: Resolver<Maybe<Array<ResolversTypes['CheckRunStateCount']>>, ParentType, ContextType>;
   edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['StatusCheckRollupContextEdge']>>>, ParentType, ContextType>;
   nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['StatusCheckRollupContext']>>>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  statusContextCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  statusContextCountsByState?: Resolver<Maybe<Array<ResolversTypes['StatusContextStateCount']>>, ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -36220,12 +36013,6 @@ export type StatusContextResolvers<ContextType = any, ParentType extends Resolve
   isRequired?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, Partial<StatusContextIsRequiredArgs>>;
   state?: Resolver<ResolversTypes['StatusState'], ParentType, ContextType>;
   targetUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type StatusContextStateCountResolvers<ContextType = any, ParentType extends ResolversParentTypes['StatusContextStateCount'] = ResolversParentTypes['StatusContextStateCount']> = {
-  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  state?: Resolver<ResolversTypes['StatusState'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -37447,7 +37234,6 @@ export type WorkflowResolvers<ContextType = any, ParentType extends ResolversPar
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  runs?: Resolver<ResolversTypes['WorkflowRunConnection'], ParentType, ContextType, RequireFields<WorkflowRunsArgs, 'orderBy'>>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -37464,20 +37250,6 @@ export type WorkflowRunResolvers<ContextType = any, ParentType extends Resolvers
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   workflow?: Resolver<ResolversTypes['Workflow'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type WorkflowRunConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['WorkflowRunConnection'] = ResolversParentTypes['WorkflowRunConnection']> = {
-  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['WorkflowRunEdge']>>>, ParentType, ContextType>;
-  nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['WorkflowRun']>>>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type WorkflowRunEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['WorkflowRunEdge'] = ResolversParentTypes['WorkflowRunEdge']> = {
-  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['WorkflowRun']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -37563,7 +37335,6 @@ export type Resolvers<ContextType = any> = {
   CheckRun?: CheckRunResolvers<ContextType>;
   CheckRunConnection?: CheckRunConnectionResolvers<ContextType>;
   CheckRunEdge?: CheckRunEdgeResolvers<ContextType>;
-  CheckRunStateCount?: CheckRunStateCountResolvers<ContextType>;
   CheckStep?: CheckStepResolvers<ContextType>;
   CheckStepConnection?: CheckStepConnectionResolvers<ContextType>;
   CheckStepEdge?: CheckStepEdgeResolvers<ContextType>;
@@ -38200,7 +37971,6 @@ export type Resolvers<ContextType = any> = {
   SponsorshipNewsletter?: SponsorshipNewsletterResolvers<ContextType>;
   SponsorshipNewsletterConnection?: SponsorshipNewsletterConnectionResolvers<ContextType>;
   SponsorshipNewsletterEdge?: SponsorshipNewsletterEdgeResolvers<ContextType>;
-  SshSignature?: SshSignatureResolvers<ContextType>;
   StargazerConnection?: StargazerConnectionResolvers<ContextType>;
   StargazerEdge?: StargazerEdgeResolvers<ContextType>;
   Starrable?: StarrableResolvers<ContextType>;
@@ -38213,7 +37983,6 @@ export type Resolvers<ContextType = any> = {
   StatusCheckRollupContextConnection?: StatusCheckRollupContextConnectionResolvers<ContextType>;
   StatusCheckRollupContextEdge?: StatusCheckRollupContextEdgeResolvers<ContextType>;
   StatusContext?: StatusContextResolvers<ContextType>;
-  StatusContextStateCount?: StatusContextStateCountResolvers<ContextType>;
   SubmitPullRequestReviewPayload?: SubmitPullRequestReviewPayloadResolvers<ContextType>;
   Submodule?: SubmoduleResolvers<ContextType>;
   SubmoduleConnection?: SubmoduleConnectionResolvers<ContextType>;
@@ -38345,8 +38114,6 @@ export type Resolvers<ContextType = any> = {
   Votable?: VotableResolvers<ContextType>;
   Workflow?: WorkflowResolvers<ContextType>;
   WorkflowRun?: WorkflowRunResolvers<ContextType>;
-  WorkflowRunConnection?: WorkflowRunConnectionResolvers<ContextType>;
-  WorkflowRunEdge?: WorkflowRunEdgeResolvers<ContextType>;
   X509Certificate?: GraphQLScalarType;
 };
 
@@ -38355,10 +38122,18 @@ export type DirectiveResolvers<ContextType = any> = {
 };
 
 
+export const AddLabels = gql`
+    mutation AddLabels($input: AddLabelsToLabelableInput!) {
+  addLabelsToLabelable(input: $input) {
+    clientMutationId
+  }
+}
+    `;
 export const CreatePr = gql`
     mutation CreatePR($input: CreatePullRequestInput!) {
   createPullRequest(input: $input) {
     pullRequest {
+      id
       number
     }
   }
@@ -38375,6 +38150,7 @@ export const UpdatePullRequest = gql`
     mutation UpdatePullRequest($input: UpdatePullRequestInput!) {
   updatePullRequest(input: $input) {
     pullRequest {
+      id
       number
     }
   }
@@ -38403,12 +38179,35 @@ export const BrowserslistUpdateBranch = gql`
   }
 }
     `;
+export const Labels = gql`
+    query Labels($owner: String!, $name: String!) {
+  repository(owner: $owner, name: $name) {
+    id
+    labels(first: 100) {
+      totalCount
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+export type AddLabelsMutationVariables = Exact<{
+  input: AddLabelsToLabelableInput;
+}>;
+
+
+export type AddLabelsMutation = { __typename?: 'Mutation', addLabelsToLabelable?: { __typename?: 'AddLabelsToLabelablePayload', clientMutationId?: string | null } | null };
+
 export type CreatePrMutationVariables = Exact<{
   input: CreatePullRequestInput;
 }>;
 
 
-export type CreatePrMutation = { __typename?: 'Mutation', createPullRequest?: { __typename?: 'CreatePullRequestPayload', pullRequest?: { __typename?: 'PullRequest', number: number } | null } | null };
+export type CreatePrMutation = { __typename?: 'Mutation', createPullRequest?: { __typename?: 'CreatePullRequestPayload', pullRequest?: { __typename?: 'PullRequest', id: string, number: number } | null } | null };
 
 export type DeleteBranchMutationVariables = Exact<{
   input: DeleteRefInput;
@@ -38422,7 +38221,7 @@ export type UpdatePullRequestMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePullRequestMutation = { __typename?: 'Mutation', updatePullRequest?: { __typename?: 'UpdatePullRequestPayload', pullRequest?: { __typename?: 'PullRequest', number: number } | null } | null };
+export type UpdatePullRequestMutation = { __typename?: 'Mutation', updatePullRequest?: { __typename?: 'UpdatePullRequestPayload', pullRequest?: { __typename?: 'PullRequest', id: string, number: number } | null } | null };
 
 export type BrowserslistUpdateBranchQueryVariables = Exact<{
   owner: Scalars['String'];
@@ -38432,3 +38231,11 @@ export type BrowserslistUpdateBranchQueryVariables = Exact<{
 
 
 export type BrowserslistUpdateBranchQuery = { __typename?: 'Query', repository?: { __typename?: 'Repository', id: string, refs?: { __typename?: 'RefConnection', totalCount: number, edges?: Array<{ __typename?: 'RefEdge', node?: { __typename?: 'Ref', id: string, associatedPullRequests: { __typename?: 'PullRequestConnection', totalCount: number, edges?: Array<{ __typename?: 'PullRequestEdge', node?: { __typename?: 'PullRequest', id: string } | null } | null> | null } } | null } | null> | null } | null } | null };
+
+export type LabelsQueryVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+}>;
+
+
+export type LabelsQuery = { __typename?: 'Query', repository?: { __typename?: 'Repository', id: string, labels?: { __typename?: 'LabelConnection', totalCount: number, edges?: Array<{ __typename?: 'LabelEdge', node?: { __typename?: 'Label', id: string, name: string } | null } | null> | null } | null } | null };

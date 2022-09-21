@@ -1,6 +1,7 @@
 mutation CreatePR($input: CreatePullRequestInput!) {
   createPullRequest(input: $input) {
     pullRequest {
+      id
       number
     }
   }

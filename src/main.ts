@@ -6,6 +6,9 @@ import { exec } from '@actions/exec';
 import { parse } from './parse-browserslist-output';
 
 import {
+  AddLabels,
+  AddLabelsMutation,
+  AddLabelsMutationVariables,
   BrowserslistUpdateBranch,
   BrowserslistUpdateBranchQuery,
   BrowserslistUpdateBranchQueryVariables,
@@ -15,37 +18,44 @@ import {
   DeleteBranch,
   DeleteBranchMutation,
   DeleteBranchMutationVariables,
+  Labels,
+  LabelsQuery,
+  LabelsQueryVariables,
   UpdatePullRequest,
   UpdatePullRequestMutation,
   UpdatePullRequestMutationVariables,
 } from './generated/graphql';
 import { print } from 'graphql/language/printer';
 
-const githubToken = core.getInput('github_token');
+const githubToken = core.getInput('github_token', { required: true });
 const repositoryOwner = github.context.repo.owner;
 const repositoryName = github.context.repo.repo;
-const branch = core.getInput('branch');
-const baseBranch = core.getInput('base_branch') || 'master';
+const branch = core.getInput('branch', { required: true });
+const baseBranch = core.getInput('base_branch', { required: true });
+const labels = (core.getInput('labels') || '')
+  .split(',')
+  .map((label) => label.trim())
+  .filter((label) => !!label);
 
 const octokit = github.getOctokit(githubToken);
 
 async function run(): Promise<void> {
   try {
     core.info('Check if there is a branch and a matching PR already existing for caniuse db update');
-    const queryData: BrowserslistUpdateBranchQueryVariables = {
+    const browserslistUpdateBranchQueryData: BrowserslistUpdateBranchQueryVariables = {
       owner: repositoryOwner,
       name: repositoryName,
       branch,
     };
-    const query = await octokit.graphql<BrowserslistUpdateBranchQuery>({
+    const browserslistUpdateBranchQuery = await octokit.graphql<BrowserslistUpdateBranchQuery>({
       query: print(BrowserslistUpdateBranch),
-      ...queryData,
+      ...browserslistUpdateBranchQueryData,
     });
 
-    let browserslistUpdateBranchExists = query.repository?.refs?.totalCount || false;
+    let browserslistUpdateBranchExists = browserslistUpdateBranchQuery.repository?.refs?.totalCount || false;
     let browserslistUpdatePR: string | undefined = undefined;
     if (browserslistUpdateBranchExists) {
-      const pullRequests = query.repository?.refs?.edges?.[0]?.node?.associatedPullRequests;
+      const pullRequests = browserslistUpdateBranchQuery.repository?.refs?.edges?.[0]?.node?.associatedPullRequests;
       if (pullRequests?.totalCount === 1) {
         browserslistUpdatePR = pullRequests.edges?.[0]?.node?.id;
       }
@@ -56,7 +66,7 @@ async function run(): Promise<void> {
       const mutationData: DeleteBranchMutationVariables = {
         input: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-          refId: query.repository?.refs?.edges?.[0]?.node?.id!,
+          refId: browserslistUpdateBranchQuery.repository?.refs?.edges?.[0]?.node?.id!,
         },
       };
       octokit.graphql<DeleteBranchMutation>({ query: print(DeleteBranch), ...mutationData });
@@ -131,6 +141,9 @@ async function run(): Promise<void> {
       await exec('git', ['push', '--set-upstream', 'origin', branch]);
     }
 
+    let prNumber: number;
+    let prId: string;
+
     // create PR if not exists
     if (!browserslistUpdatePR) {
       core.info(`Creating new PR for branch ${branch}`);
@@ -141,13 +154,16 @@ async function run(): Promise<void> {
           title,
           body,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-          repositoryId: query.repository?.id!,
+          repositoryId: browserslistUpdateBranchQuery.repository?.id!,
           baseRefName: baseBranch,
           headRefName: branch,
         },
       };
       const response = await octokit.graphql<CreatePrMutation>({ query: print(CreatePr), ...mutationData });
-      core.setOutput('pr_number', response.createPullRequest?.pullRequest?.number);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+      prNumber = response.createPullRequest?.pullRequest?.number!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+      prId = response.createPullRequest?.pullRequest?.id!;
       core.setOutput('pr_status', 'created');
     } else {
       core.info('PR already exists, updating');
@@ -162,8 +178,34 @@ async function run(): Promise<void> {
         query: print(UpdatePullRequest),
         ...mutationData,
       });
-      core.setOutput('pr_number', response.updatePullRequest?.pullRequest?.number);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+      prNumber = response.updatePullRequest?.pullRequest?.number!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+      prId = response.updatePullRequest?.pullRequest?.id!;
+
       core.setOutput('pr_status', 'updated');
+    }
+    core.setOutput('pr_number', prNumber);
+
+    // apply labels (if matching label found, do not attempt to create missing label)
+    const labelsQueryData: LabelsQueryVariables = {
+      owner: repositoryOwner,
+      name: repositoryName,
+    };
+    const labelIds =
+      (await octokit.graphql<LabelsQuery>({ query: print(Labels), ...labelsQueryData })).repository?.labels?.edges
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+        ?.filter((edge) => labels.includes(edge?.node?.name!))
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+        .map((edge) => edge?.node?.id!) ?? [];
+    if (labelIds.length) {
+      const addLabelsMutationData: AddLabelsMutationVariables = {
+        input: {
+          labelableId: prId,
+          labelIds,
+        },
+      };
+      await octokit.graphql<AddLabelsMutation>({ query: print(AddLabels), ...addLabelsMutationData });
     }
 
     // go back to previous branch

@@ -10,10 +10,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.IssueCommentOrderField = exports.IssueClosedStateReason = exports.IpAllowListForInstalledAppsEnabledSettingValue = exports.IpAllowListEntryOrderField = exports.IpAllowListEnabledSettingValue = exports.IdentityProviderConfigurationState = exports.GitSignatureState = exports.GistPrivacy = exports.GistOrderField = exports.FundingPlatform = exports.FileViewedState = exports.EnterpriseUserDeployment = exports.EnterpriseUserAccountMembershipRole = exports.EnterpriseServerUserAccountsUploadSyncState = exports.EnterpriseServerUserAccountsUploadOrderField = exports.EnterpriseServerUserAccountOrderField = exports.EnterpriseServerUserAccountEmailOrderField = exports.EnterpriseServerInstallationOrderField = exports.EnterpriseMembersCanMakePurchasesSettingValue = exports.EnterpriseMembersCanCreateRepositoriesSettingValue = exports.EnterpriseMemberOrderField = exports.EnterpriseEnabledSettingValue = exports.EnterpriseEnabledDisabledSettingValue = exports.EnterpriseDefaultRepositoryPermissionSettingValue = exports.EnterpriseAllowPrivateRepositoryForkingPolicyValue = exports.EnterpriseAdministratorRole = exports.EnterpriseAdministratorInvitationOrderField = exports.DismissReason = exports.DiscussionPollOptionOrderField = exports.DiscussionOrderField = exports.DiffSide = exports.DeploymentStatusState = exports.DeploymentState = exports.DeploymentReviewState = exports.DeploymentProtectionRuleType = exports.DeploymentOrderField = exports.DependencyGraphEcosystem = exports.DefaultRepositoryPermissionField = exports.ContributionLevel = exports.CommitContributionOrderField = exports.CommentCannotUpdateReason = exports.CommentAuthorAssociation = exports.CollaboratorAffiliation = exports.CheckStatusState = exports.CheckRunType = exports.CheckRunState = exports.CheckConclusionState = exports.CheckAnnotationLevel = exports.AuditLogOrderField = exports.ActorType = void 0;
-exports.ProjectOrderField = exports.ProjectNextOrderField = exports.ProjectNextFieldType = exports.ProjectItemType = exports.ProjectColumnPurpose = exports.ProjectCardState = exports.ProjectCardArchivedState = exports.PinnedDiscussionPattern = exports.PinnedDiscussionGradient = exports.PinnableItemType = exports.PatchStatus = exports.PackageVersionOrderField = exports.PackageType = exports.PackageOrderField = exports.PackageFileOrderField = exports.OrganizationOrderField = exports.OrganizationMembersCanCreateRepositoriesSettingValue = exports.OrganizationMemberRole = exports.OrganizationInvitationType = exports.OrganizationInvitationRole = exports.OrgUpdateMemberRepositoryCreationPermissionAuditEntryVisibility = exports.OrgUpdateMemberAuditEntryPermission = exports.OrgUpdateDefaultRepositoryPermissionAuditEntryPermission = exports.OrgRemoveOutsideCollaboratorAuditEntryReason = exports.OrgRemoveOutsideCollaboratorAuditEntryMembershipType = exports.OrgRemoveMemberAuditEntryReason = exports.OrgRemoveMemberAuditEntryMembershipType = exports.OrgRemoveBillingManagerAuditEntryReason = exports.OrgEnterpriseOwnerOrderField = exports.OrgCreateAuditEntryBillingPlan = exports.OrgAddMemberAuditEntryPermission = exports.OrderDirection = exports.OperationType = exports.OauthApplicationCreateAuditEntryState = exports.OidcProviderType = exports.NotificationRestrictionSettingValue = exports.MilestoneState = exports.MilestoneOrderField = exports.MigrationState = exports.MigrationSourceType = exports.MergeableState = exports.MergeCommitTitle = exports.MergeCommitMessage = exports.LockReason = exports.LanguageOrderField = exports.LabelOrderField = exports.IssueTimelineItemsItemType = exports.IssueStateReason = exports.IssueState = exports.IssueOrderField = void 0;
-exports.SamlDigestAlgorithm = exports.RoleInOrganization = exports.RequestableCheckStatusState = exports.RepositoryVulnerabilityAlertState = exports.RepositoryVulnerabilityAlertDependencyScope = exports.RepositoryVisibility = exports.RepositoryPrivacy = exports.RepositoryPermission = exports.RepositoryOrderField = exports.RepositoryMigrationOrderField = exports.RepositoryMigrationOrderDirection = exports.RepositoryLockReason = exports.RepositoryInvitationOrderField = exports.RepositoryInteractionLimitOrigin = exports.RepositoryInteractionLimitExpiry = exports.RepositoryInteractionLimit = exports.RepositoryContributionType = exports.RepositoryAffiliation = exports.ReportedContentClassifiers = exports.RepoRemoveMemberAuditEntryVisibility = exports.RepoDestroyAuditEntryVisibility = exports.RepoCreateAuditEntryVisibility = exports.RepoChangeMergeSettingAuditEntryMergeType = exports.RepoArchivedAuditEntryVisibility = exports.RepoAddMemberAuditEntryVisibility = exports.RepoAccessAuditEntryVisibility = exports.ReleaseOrderField = exports.RefOrderField = exports.ReactionOrderField = exports.ReactionContent = exports.PullRequestUpdateState = exports.PullRequestTimelineItemsItemType = exports.PullRequestState = exports.PullRequestReviewState = exports.PullRequestReviewEvent = exports.PullRequestReviewDecision = exports.PullRequestReviewCommentState = exports.PullRequestOrderField = exports.PullRequestMergeMethod = exports.ProjectViewLayout = exports.ProjectV2ViewOrderField = exports.ProjectV2ViewLayout = exports.ProjectV2OrderField = exports.ProjectV2ItemType = exports.ProjectV2ItemOrderField = exports.ProjectV2ItemFieldValueOrderField = exports.ProjectV2FieldType = exports.ProjectV2FieldOrderField = exports.ProjectTemplate = exports.ProjectState = void 0;
-exports.BrowserslistUpdateBranch = exports.UpdatePullRequest = exports.DeleteBranch = exports.CreatePr = exports.WorkflowRunOrderField = exports.VerifiableDomainOrderField = exports.UserStatusOrderField = exports.UserBlockDuration = exports.TrackedIssueStates = exports.TopicSuggestionDeclineReason = exports.TeamRole = exports.TeamRepositoryOrderField = exports.TeamPrivacy = exports.TeamOrderField = exports.TeamMembershipType = exports.TeamMemberRole = exports.TeamMemberOrderField = exports.TeamDiscussionOrderField = exports.TeamDiscussionCommentOrderField = exports.SubscriptionState = exports.StatusState = exports.StarOrderField = exports.SquashMergeCommitTitle = exports.SquashMergeCommitMessage = exports.SponsorshipPrivacy = exports.SponsorshipOrderField = exports.SponsorshipNewsletterOrderField = exports.SponsorsTierOrderField = exports.SponsorsGoalKind = exports.SponsorsActivityPeriod = exports.SponsorsActivityOrderField = exports.SponsorsActivityAction = exports.SponsorableOrderField = exports.SponsorOrderField = exports.SecurityVulnerabilityOrderField = exports.SecurityAdvisorySeverity = exports.SecurityAdvisoryOrderField = exports.SecurityAdvisoryIdentifierType = exports.SecurityAdvisoryEcosystem = exports.SecurityAdvisoryClassification = exports.SearchType = exports.SavedReplyOrderField = exports.SamlSignatureAlgorithm = void 0;
+exports.IssueState = exports.IssueOrderField = exports.IssueCommentOrderField = exports.IssueClosedStateReason = exports.IpAllowListForInstalledAppsEnabledSettingValue = exports.IpAllowListEntryOrderField = exports.IpAllowListEnabledSettingValue = exports.IdentityProviderConfigurationState = exports.GitSignatureState = exports.GistPrivacy = exports.GistOrderField = exports.FundingPlatform = exports.FileViewedState = exports.EnterpriseUserDeployment = exports.EnterpriseUserAccountMembershipRole = exports.EnterpriseServerUserAccountsUploadSyncState = exports.EnterpriseServerUserAccountsUploadOrderField = exports.EnterpriseServerUserAccountOrderField = exports.EnterpriseServerUserAccountEmailOrderField = exports.EnterpriseServerInstallationOrderField = exports.EnterpriseMembersCanMakePurchasesSettingValue = exports.EnterpriseMembersCanCreateRepositoriesSettingValue = exports.EnterpriseMemberOrderField = exports.EnterpriseEnabledSettingValue = exports.EnterpriseEnabledDisabledSettingValue = exports.EnterpriseDefaultRepositoryPermissionSettingValue = exports.EnterpriseAdministratorRole = exports.EnterpriseAdministratorInvitationOrderField = exports.DismissReason = exports.DiscussionPollOptionOrderField = exports.DiscussionOrderField = exports.DiffSide = exports.DeploymentStatusState = exports.DeploymentState = exports.DeploymentReviewState = exports.DeploymentProtectionRuleType = exports.DeploymentOrderField = exports.DependencyGraphEcosystem = exports.DefaultRepositoryPermissionField = exports.ContributionLevel = exports.CommitContributionOrderField = exports.CommentCannotUpdateReason = exports.CommentAuthorAssociation = exports.CollaboratorAffiliation = exports.CheckStatusState = exports.CheckRunType = exports.CheckConclusionState = exports.CheckAnnotationLevel = exports.AuditLogOrderField = exports.ActorType = void 0;
+exports.ProjectTemplate = exports.ProjectState = exports.ProjectOrderField = exports.ProjectNextOrderField = exports.ProjectNextFieldType = exports.ProjectItemType = exports.ProjectColumnPurpose = exports.ProjectCardState = exports.ProjectCardArchivedState = exports.PinnedDiscussionPattern = exports.PinnedDiscussionGradient = exports.PinnableItemType = exports.PatchStatus = exports.PackageVersionOrderField = exports.PackageType = exports.PackageOrderField = exports.PackageFileOrderField = exports.OrganizationOrderField = exports.OrganizationMembersCanCreateRepositoriesSettingValue = exports.OrganizationMemberRole = exports.OrganizationInvitationType = exports.OrganizationInvitationRole = exports.OrgUpdateMemberRepositoryCreationPermissionAuditEntryVisibility = exports.OrgUpdateMemberAuditEntryPermission = exports.OrgUpdateDefaultRepositoryPermissionAuditEntryPermission = exports.OrgRemoveOutsideCollaboratorAuditEntryReason = exports.OrgRemoveOutsideCollaboratorAuditEntryMembershipType = exports.OrgRemoveMemberAuditEntryReason = exports.OrgRemoveMemberAuditEntryMembershipType = exports.OrgRemoveBillingManagerAuditEntryReason = exports.OrgEnterpriseOwnerOrderField = exports.OrgCreateAuditEntryBillingPlan = exports.OrgAddMemberAuditEntryPermission = exports.OrderDirection = exports.OperationType = exports.OauthApplicationCreateAuditEntryState = exports.OidcProviderType = exports.NotificationRestrictionSettingValue = exports.MilestoneState = exports.MilestoneOrderField = exports.MigrationState = exports.MigrationSourceType = exports.MergeableState = exports.MergeCommitTitle = exports.MergeCommitMessage = exports.LockReason = exports.LanguageOrderField = exports.LabelOrderField = exports.IssueTimelineItemsItemType = exports.IssueStateReason = void 0;
+exports.SavedReplyOrderField = exports.SamlSignatureAlgorithm = exports.SamlDigestAlgorithm = exports.RoleInOrganization = exports.RequestableCheckStatusState = exports.RepositoryVulnerabilityAlertState = exports.RepositoryVulnerabilityAlertDependencyScope = exports.RepositoryVisibility = exports.RepositoryPrivacy = exports.RepositoryPermission = exports.RepositoryOrderField = exports.RepositoryMigrationOrderField = exports.RepositoryMigrationOrderDirection = exports.RepositoryLockReason = exports.RepositoryInvitationOrderField = exports.RepositoryInteractionLimitOrigin = exports.RepositoryInteractionLimitExpiry = exports.RepositoryInteractionLimit = exports.RepositoryContributionType = exports.RepositoryAffiliation = exports.ReportedContentClassifiers = exports.RepoRemoveMemberAuditEntryVisibility = exports.RepoDestroyAuditEntryVisibility = exports.RepoCreateAuditEntryVisibility = exports.RepoChangeMergeSettingAuditEntryMergeType = exports.RepoArchivedAuditEntryVisibility = exports.RepoAddMemberAuditEntryVisibility = exports.RepoAccessAuditEntryVisibility = exports.ReleaseOrderField = exports.RefOrderField = exports.ReactionOrderField = exports.ReactionContent = exports.PullRequestUpdateState = exports.PullRequestTimelineItemsItemType = exports.PullRequestState = exports.PullRequestReviewState = exports.PullRequestReviewEvent = exports.PullRequestReviewDecision = exports.PullRequestReviewCommentState = exports.PullRequestOrderField = exports.PullRequestMergeMethod = exports.ProjectViewLayout = exports.ProjectV2ViewOrderField = exports.ProjectV2ViewLayout = exports.ProjectV2OrderField = exports.ProjectV2ItemType = exports.ProjectV2ItemOrderField = exports.ProjectV2ItemFieldValueOrderField = exports.ProjectV2FieldType = exports.ProjectV2FieldOrderField = void 0;
+exports.Labels = exports.BrowserslistUpdateBranch = exports.UpdatePullRequest = exports.DeleteBranch = exports.CreatePr = exports.AddLabels = exports.VerifiableDomainOrderField = exports.UserStatusOrderField = exports.UserBlockDuration = exports.TrackedIssueStates = exports.TopicSuggestionDeclineReason = exports.TeamRole = exports.TeamRepositoryOrderField = exports.TeamPrivacy = exports.TeamOrderField = exports.TeamMembershipType = exports.TeamMemberRole = exports.TeamMemberOrderField = exports.TeamDiscussionOrderField = exports.TeamDiscussionCommentOrderField = exports.SubscriptionState = exports.StatusState = exports.StarOrderField = exports.SquashMergeCommitTitle = exports.SquashMergeCommitMessage = exports.SponsorshipPrivacy = exports.SponsorshipOrderField = exports.SponsorshipNewsletterOrderField = exports.SponsorsTierOrderField = exports.SponsorsGoalKind = exports.SponsorsActivityPeriod = exports.SponsorsActivityOrderField = exports.SponsorsActivityAction = exports.SponsorableOrderField = exports.SponsorOrderField = exports.SecurityVulnerabilityOrderField = exports.SecurityAdvisorySeverity = exports.SecurityAdvisoryOrderField = exports.SecurityAdvisoryIdentifierType = exports.SecurityAdvisoryEcosystem = exports.SecurityAdvisoryClassification = exports.SearchType = void 0;
 const graphql_tag_1 = __importDefault(__nccwpck_require__(8435));
 /** The actor's type. */
 var ActorType;
@@ -61,38 +61,6 @@ var CheckConclusionState;
     /** The check suite or run has timed out. */
     CheckConclusionState["TimedOut"] = "TIMED_OUT";
 })(CheckConclusionState = exports.CheckConclusionState || (exports.CheckConclusionState = {}));
-/** The possible states of a check run in a status rollup. */
-var CheckRunState;
-(function (CheckRunState) {
-    /** The check run requires action. */
-    CheckRunState["ActionRequired"] = "ACTION_REQUIRED";
-    /** The check run has been cancelled. */
-    CheckRunState["Cancelled"] = "CANCELLED";
-    /** The check run has been completed. */
-    CheckRunState["Completed"] = "COMPLETED";
-    /** The check run has failed. */
-    CheckRunState["Failure"] = "FAILURE";
-    /** The check run is in progress. */
-    CheckRunState["InProgress"] = "IN_PROGRESS";
-    /** The check run was neutral. */
-    CheckRunState["Neutral"] = "NEUTRAL";
-    /** The check run is in pending state. */
-    CheckRunState["Pending"] = "PENDING";
-    /** The check run has been queued. */
-    CheckRunState["Queued"] = "QUEUED";
-    /** The check run was skipped. */
-    CheckRunState["Skipped"] = "SKIPPED";
-    /** The check run was marked stale by GitHub. Only GitHub can use this conclusion. */
-    CheckRunState["Stale"] = "STALE";
-    /** The check run has failed at startup. */
-    CheckRunState["StartupFailure"] = "STARTUP_FAILURE";
-    /** The check run has succeeded. */
-    CheckRunState["Success"] = "SUCCESS";
-    /** The check run has timed out. */
-    CheckRunState["TimedOut"] = "TIMED_OUT";
-    /** The check run is in waiting state. */
-    CheckRunState["Waiting"] = "WAITING";
-})(CheckRunState = exports.CheckRunState || (exports.CheckRunState = {}));
 /** The possible types of check runs. */
 var CheckRunType;
 (function (CheckRunType) {
@@ -339,22 +307,6 @@ var EnterpriseAdministratorRole;
     /** Represents an owner of the enterprise account. */
     EnterpriseAdministratorRole["Owner"] = "OWNER";
 })(EnterpriseAdministratorRole = exports.EnterpriseAdministratorRole || (exports.EnterpriseAdministratorRole = {}));
-/** The possible values for the enterprise allow private repository forking policy value. */
-var EnterpriseAllowPrivateRepositoryForkingPolicyValue;
-(function (EnterpriseAllowPrivateRepositoryForkingPolicyValue) {
-    /** Members can fork a repository to an organization within this enterprise. */
-    EnterpriseAllowPrivateRepositoryForkingPolicyValue["EnterpriseOrganizations"] = "ENTERPRISE_ORGANIZATIONS";
-    /** Members can fork a repository to their enterprise-managed user account or an organization inside this enterprise. */
-    EnterpriseAllowPrivateRepositoryForkingPolicyValue["EnterpriseOrganizationsUserAccounts"] = "ENTERPRISE_ORGANIZATIONS_USER_ACCOUNTS";
-    /** Members can fork a repository to their user account or an organization, either inside or outside of this enterprise. */
-    EnterpriseAllowPrivateRepositoryForkingPolicyValue["Everywhere"] = "EVERYWHERE";
-    /** Members can fork a repository only within the same organization (intra-org). */
-    EnterpriseAllowPrivateRepositoryForkingPolicyValue["SameOrganization"] = "SAME_ORGANIZATION";
-    /** Members can fork a repository to their user account or within the same organization. */
-    EnterpriseAllowPrivateRepositoryForkingPolicyValue["SameOrganizationUserAccounts"] = "SAME_ORGANIZATION_USER_ACCOUNTS";
-    /** Members can fork a repository to their user account. */
-    EnterpriseAllowPrivateRepositoryForkingPolicyValue["UserAccounts"] = "USER_ACCOUNTS";
-})(EnterpriseAllowPrivateRepositoryForkingPolicyValue = exports.EnterpriseAllowPrivateRepositoryForkingPolicyValue || (exports.EnterpriseAllowPrivateRepositoryForkingPolicyValue = {}));
 /** The possible values for the enterprise base repository permission setting. */
 var EnterpriseDefaultRepositoryPermissionSettingValue;
 (function (EnterpriseDefaultRepositoryPermissionSettingValue) {
@@ -2279,16 +2231,18 @@ var VerifiableDomainOrderField;
     /** Order verifiable domains by the domain name. */
     VerifiableDomainOrderField["Domain"] = "DOMAIN";
 })(VerifiableDomainOrderField = exports.VerifiableDomainOrderField || (exports.VerifiableDomainOrderField = {}));
-/** Properties by which workflow run connections can be ordered. */
-var WorkflowRunOrderField;
-(function (WorkflowRunOrderField) {
-    /** Order workflow runs by most recently created */
-    WorkflowRunOrderField["CreatedAt"] = "CREATED_AT";
-})(WorkflowRunOrderField = exports.WorkflowRunOrderField || (exports.WorkflowRunOrderField = {}));
+exports.AddLabels = (0, graphql_tag_1.default) `
+    mutation AddLabels($input: AddLabelsToLabelableInput!) {
+  addLabelsToLabelable(input: $input) {
+    clientMutationId
+  }
+}
+    `;
 exports.CreatePr = (0, graphql_tag_1.default) `
     mutation CreatePR($input: CreatePullRequestInput!) {
   createPullRequest(input: $input) {
     pullRequest {
+      id
       number
     }
   }
@@ -2305,6 +2259,7 @@ exports.UpdatePullRequest = (0, graphql_tag_1.default) `
     mutation UpdatePullRequest($input: UpdatePullRequestInput!) {
   updatePullRequest(input: $input) {
     pullRequest {
+      id
       number
     }
   }
@@ -2327,6 +2282,22 @@ exports.BrowserslistUpdateBranch = (0, graphql_tag_1.default) `
               }
             }
           }
+        }
+      }
+    }
+  }
+}
+    `;
+exports.Labels = (0, graphql_tag_1.default) `
+    query Labels($owner: String!, $name: String!) {
+  repository(owner: $owner, name: $name) {
+    id
+    labels(first: 100) {
+      totalCount
+      edges {
+        node {
+          id
+          name
         }
       }
     }
@@ -2374,28 +2345,32 @@ const exec_1 = __nccwpck_require__(1514);
 const parse_browserslist_output_1 = __nccwpck_require__(6834);
 const graphql_1 = __nccwpck_require__(9088);
 const printer_1 = __nccwpck_require__(8203);
-const githubToken = core.getInput('github_token');
+const githubToken = core.getInput('github_token', { required: true });
 const repositoryOwner = github.context.repo.owner;
 const repositoryName = github.context.repo.repo;
-const branch = core.getInput('branch');
-const baseBranch = core.getInput('base_branch') || 'master';
+const branch = core.getInput('branch', { required: true });
+const baseBranch = core.getInput('base_branch', { required: true });
+const labels = (core.getInput('labels') || '')
+    .split(',')
+    .map((label) => label.trim())
+    .filter((label) => !!label);
 const octokit = github.getOctokit(githubToken);
 async function run() {
     try {
         core.info('Check if there is a branch and a matching PR already existing for caniuse db update');
-        const queryData = {
+        const browserslistUpdateBranchQueryData = {
             owner: repositoryOwner,
             name: repositoryName,
             branch,
         };
-        const query = await octokit.graphql({
+        const browserslistUpdateBranchQuery = await octokit.graphql({
             query: (0, printer_1.print)(graphql_1.BrowserslistUpdateBranch),
-            ...queryData,
+            ...browserslistUpdateBranchQueryData,
         });
-        let browserslistUpdateBranchExists = query.repository?.refs?.totalCount || false;
+        let browserslistUpdateBranchExists = browserslistUpdateBranchQuery.repository?.refs?.totalCount || false;
         let browserslistUpdatePR = undefined;
         if (browserslistUpdateBranchExists) {
-            const pullRequests = query.repository?.refs?.edges?.[0]?.node?.associatedPullRequests;
+            const pullRequests = browserslistUpdateBranchQuery.repository?.refs?.edges?.[0]?.node?.associatedPullRequests;
             if (pullRequests?.totalCount === 1) {
                 browserslistUpdatePR = pullRequests.edges?.[0]?.node?.id;
             }
@@ -2406,7 +2381,7 @@ async function run() {
             const mutationData = {
                 input: {
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-                    refId: query.repository?.refs?.edges?.[0]?.node?.id,
+                    refId: browserslistUpdateBranchQuery.repository?.refs?.edges?.[0]?.node?.id,
                 },
             };
             octokit.graphql({ query: (0, printer_1.print)(graphql_1.DeleteBranch), ...mutationData });
@@ -2457,11 +2432,11 @@ async function run() {
             },
         });
         if (!gitStatus.trim()) {
-            core.setOutput('changes', false);
+            core.setOutput('has_pr', false);
             core.info('No changes. Exiting');
             return;
         }
-        core.setOutput('changes', true);
+        core.setOutput('has_pr', true);
         core.info('Add files and commit on master');
         await (0, exec_1.exec)('git', ['add', '.']);
         await (0, exec_1.exec)('git', ['commit', '-m', core.getInput('commit_message') || 'Update caniuse database']);
@@ -2474,6 +2449,8 @@ async function run() {
         else {
             await (0, exec_1.exec)('git', ['push', '--set-upstream', 'origin', branch]);
         }
+        let prNumber;
+        let prId;
         // create PR if not exists
         if (!browserslistUpdatePR) {
             core.info(`Creating new PR for branch ${branch}`);
@@ -2484,13 +2461,16 @@ async function run() {
                     title,
                     body,
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-                    repositoryId: query.repository?.id,
+                    repositoryId: browserslistUpdateBranchQuery.repository?.id,
                     baseRefName: baseBranch,
                     headRefName: branch,
                 },
             };
             const response = await octokit.graphql({ query: (0, printer_1.print)(graphql_1.CreatePr), ...mutationData });
-            core.setOutput('pr_number', response.createPullRequest?.pullRequest?.number);
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+            prNumber = response.createPullRequest?.pullRequest?.number;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+            prId = response.createPullRequest?.pullRequest?.id;
             core.setOutput('pr_status', 'created');
         }
         else {
@@ -2506,8 +2486,31 @@ async function run() {
                 query: (0, printer_1.print)(graphql_1.UpdatePullRequest),
                 ...mutationData,
             });
-            core.setOutput('pr_number', response.updatePullRequest?.pullRequest?.number);
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+            prNumber = response.updatePullRequest?.pullRequest?.number;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+            prId = response.updatePullRequest?.pullRequest?.id;
             core.setOutput('pr_status', 'updated');
+        }
+        core.setOutput('pr_number', prNumber);
+        // apply labels (if matching label found, do not attempt to create missing label)
+        const labelsQueryData = {
+            owner: repositoryOwner,
+            name: repositoryName,
+        };
+        const labelIds = (await octokit.graphql({ query: (0, printer_1.print)(graphql_1.Labels), ...labelsQueryData })).repository?.labels?.edges
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+            ?.filter((edge) => labels.includes(edge?.node?.name))
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+            .map((edge) => edge?.node?.id) ?? [];
+        if (labelIds.length) {
+            const addLabelsMutationData = {
+                input: {
+                    labelableId: prId,
+                    labelIds,
+                },
+            };
+            await octokit.graphql({ query: (0, printer_1.print)(graphql_1.AddLabels), ...addLabelsMutationData });
         }
         // go back to previous branch
         await (0, exec_1.exec)('git', ['checkout', currentBranch]);
