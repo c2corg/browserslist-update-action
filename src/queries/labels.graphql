@@ -1,0 +1,14 @@
+query Labels($owner: String!, $name: String!) {
+  repository(owner: $owner, name: $name) {
+    id
+    labels(first: 100) {
+      totalCount
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+}

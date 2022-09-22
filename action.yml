@@ -30,6 +30,9 @@ inputs:
     description: The body of the pull request
     required: false
     default: Caniuse database has been updated. Review changes, merge this PR and have a 🍺.
+  labels:
+    description: Labels to associate to the pull request
+    required: false
 outputs:
   has_pr:
     description: A boolean set to true when changes were found and a pull request was created or updated.
