@@ -39,7 +39,7 @@
     "@graphql-codegen/typescript-document-nodes": "2.3.3",
     "@graphql-codegen/typescript-operations": "2.5.3",
     "@graphql-codegen/typescript-resolvers": "2.7.3",
-    "@octokit/graphql-schema": "12.7.1",
+    "@octokit/graphql-schema": "12.8.0",
     "@tsconfig/node16-strictest": "1.0.4",
     "@types/gettext-parser": "4.0.1",
     "@types/node": "16.11.60",
