@@ -30,8 +30,8 @@ import { print } from 'graphql/language/printer';
 const githubToken = core.getInput('github_token', { required: true });
 const repositoryOwner = github.context.repo.owner;
 const repositoryName = github.context.repo.repo;
-const branch = core.getInput('branch', { required: true });
-const baseBranch = core.getInput('base_branch', { required: true });
+const branch = core.getInput('branch') || 'browserslist-update';
+const baseBranch = core.getInput('base_branch') || 'master';
 const labels = (core.getInput('labels') || '')
   .split(',')
   .map((label) => label.trim())
