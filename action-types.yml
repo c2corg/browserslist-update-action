@@ -25,6 +25,6 @@ outputs:
     type: integer
   pr_status:
     type: enum
-    allowd-values:
+    allowed-values:
       - created
       - updated
