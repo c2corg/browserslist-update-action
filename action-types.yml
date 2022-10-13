@@ -1,0 +1,20 @@
+inputs:
+  github_token:
+    type: string
+  branch:
+    type: string
+  base_branch:
+    type: string
+  directory:
+    type: string
+  commit_message:
+    type: string
+  title:
+    type: string
+  body:
+    type: string
+  labels:
+    type: list
+    separator: ','
+    list-item:
+      type: string
