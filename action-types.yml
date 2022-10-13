@@ -18,3 +18,13 @@ inputs:
     separator: ','
     list-item:
       type: string
+outputs:
+  has_pr:
+    type: boolean
+  pr_number:
+    type: integer
+  pr_status:
+    type: enum
+    allowd-values:
+      - created
+      - updated
