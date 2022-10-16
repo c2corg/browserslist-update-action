@@ -21,10 +21,11 @@ import {
 } from './generated/graphql';
 import { print } from 'graphql/language/printer';
 
-const githubToken = core.getInput('github_token');
+const githubToken = core.getInput('github_token', { required: true });
 const repositoryOwner = github.context.repo.owner;
 const repositoryName = github.context.repo.repo;
-const branch = core.getInput('branch');
+const branch = core.getInput('branch') || 'browserslist-update';
+const baseBranch = core.getInput('base_branch') || 'master';
 
 const octokit = github.getOctokit(githubToken);
 
@@ -76,7 +77,7 @@ async function run(): Promise<void> {
       core.info(`Checkout branch ${branch}`);
       await exec('git', ['fetch']);
       await exec('git', ['checkout', branch]);
-      await exec('git', ['rebase', 'origin/master']);
+      await exec('git', ['rebase', `origin/${baseBranch}`]);
     } else {
       core.info(`Create new branch ${branch}`);
       await exec('git', ['checkout', '-b', branch]);
@@ -138,7 +139,7 @@ async function run(): Promise<void> {
           body,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
           repositoryId: query?.repository?.id!,
-          baseRefName: 'master',
+          baseRefName: baseBranch,
           headRefName: branch,
         },
       };
