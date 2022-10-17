@@ -216,6 +216,8 @@ var DependencyGraphEcosystem;
     DependencyGraphEcosystem["Nuget"] = "NUGET";
     /** Python packages hosted at PyPI.org */
     DependencyGraphEcosystem["Pip"] = "PIP";
+    /** Dart packages hosted at pub.dev */
+    DependencyGraphEcosystem["Pub"] = "PUB";
     /** Ruby gems hosted at RubyGems.org */
     DependencyGraphEcosystem["Rubygems"] = "RUBYGEMS";
     /** Rust crates */
@@ -1984,6 +1986,8 @@ var SecurityAdvisoryEcosystem;
     SecurityAdvisoryEcosystem["Nuget"] = "NUGET";
     /** Python packages hosted at PyPI.org */
     SecurityAdvisoryEcosystem["Pip"] = "PIP";
+    /** Dart packages hosted at pub.dev */
+    SecurityAdvisoryEcosystem["Pub"] = "PUB";
     /** Ruby gems hosted at RubyGems.org */
     SecurityAdvisoryEcosystem["Rubygems"] = "RUBYGEMS";
     /** Rust crates */
@@ -2491,7 +2495,7 @@ async function run() {
             return;
         }
         core.setOutput('has_pr', true);
-        core.info('Add files and commit on master');
+        core.info('Add files and commit on base branch');
         await (0, exec_1.exec)('git', ['add', '.']);
         await (0, exec_1.exec)('git', ['commit', '-m', core.getInput('commit_message') || 'Update caniuse database']);
         // setup credentials
@@ -4567,7 +4571,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOctokitOptions = exports.GitHub = exports.context = void 0;
+exports.getOctokitOptions = exports.GitHub = exports.defaults = exports.context = void 0;
 const Context = __importStar(__nccwpck_require__(4087));
 const Utils = __importStar(__nccwpck_require__(7914));
 // octokit + plugins
@@ -4576,13 +4580,13 @@ const plugin_rest_endpoint_methods_1 = __nccwpck_require__(3044);
 const plugin_paginate_rest_1 = __nccwpck_require__(4193);
 exports.context = new Context.Context();
 const baseUrl = Utils.getApiBaseUrl();
-const defaults = {
+exports.defaults = {
     baseUrl,
     request: {
         agent: Utils.getProxyAgent(baseUrl)
     }
 };
-exports.GitHub = core_1.Octokit.plugin(plugin_rest_endpoint_methods_1.restEndpointMethods, plugin_paginate_rest_1.paginateRest).defaults(defaults);
+exports.GitHub = core_1.Octokit.plugin(plugin_rest_endpoint_methods_1.restEndpointMethods, plugin_paginate_rest_1.paginateRest).defaults(exports.defaults);
 /**
  * Convience function to correctly format Octokit Options to pass into the constructor.
  *
