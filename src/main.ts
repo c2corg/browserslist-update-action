@@ -127,7 +127,7 @@ async function run(): Promise<void> {
 
     core.setOutput('has_pr', true);
 
-    core.info('Add files and commit on master');
+    core.info('Add files and commit on base branch');
     await exec('git', ['add', '.']);
     await exec('git', ['commit', '-m', core.getInput('commit_message') || 'Update caniuse database']);
 
