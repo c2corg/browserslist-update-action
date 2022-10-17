@@ -2244,10 +2244,11 @@ const exec_1 = __nccwpck_require__(1514);
 const parse_browserslist_output_1 = __nccwpck_require__(6834);
 const graphql_1 = __nccwpck_require__(9088);
 const printer_1 = __nccwpck_require__(8203);
-const githubToken = core.getInput('github_token');
+const githubToken = core.getInput('github_token', { required: true });
 const repositoryOwner = github.context.repo.owner;
 const repositoryName = github.context.repo.repo;
-const branch = core.getInput('branch');
+const branch = core.getInput('branch') || 'browserslist-update';
+const baseBranch = core.getInput('base_branch') || 'master';
 const octokit = github.getOctokit(githubToken);
 async function run() {
     try {
@@ -2294,7 +2295,7 @@ async function run() {
             core.info(`Checkout branch ${branch}`);
             await (0, exec_1.exec)('git', ['fetch']);
             await (0, exec_1.exec)('git', ['checkout', branch]);
-            await (0, exec_1.exec)('git', ['rebase', 'origin/master']);
+            await (0, exec_1.exec)('git', ['rebase', `origin/${baseBranch}`]);
         }
         else {
             core.info(`Create new branch ${branch}`);
@@ -2329,7 +2330,7 @@ async function run() {
             core.info('No changes. Exiting');
             return;
         }
-        core.info('Add files and commit on master');
+        core.info('Add files and commit on base branch');
         await (0, exec_1.exec)('git', ['add', '.']);
         await (0, exec_1.exec)('git', ['commit', '-m', core.getInput('commit_message') || 'Update caniuse database']);
         // setup credentials
@@ -2352,7 +2353,7 @@ async function run() {
                     body,
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
                     repositoryId: query?.repository?.id,
-                    baseRefName: 'master',
+                    baseRefName: baseBranch,
                     headRefName: branch,
                 },
             };

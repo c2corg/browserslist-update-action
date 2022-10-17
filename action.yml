@@ -6,12 +6,14 @@ branding:
   color: green
 inputs:
   github_token:
-    description: Github secret
+    description: GitHub secret
     required: true
   branch:
     description: The pull request branch name
     required: false
     default: browserslist-update
+  base_branch:
+    description: The target branch into which the pull request will be merged
   directory:
     description: For monorepos, directory to switch to
     required: false
