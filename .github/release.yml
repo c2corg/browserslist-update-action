@@ -1,0 +1,31 @@
+changelog:
+  categories:
+    - title: 🚨 Breaking changes
+      labels:
+        - backwards-incompatible
+        - breaking
+    - title: ✨ New features and enhancements
+      labels:
+        - enhancement
+    - title: 🐞 Fixed bugs
+      labels:
+        - bug
+    - title: ⚠️ Deprecated
+      labels:
+        - deprecated
+    - title: ⛔ Removed
+      labels:
+        - removed
+    - title: 📚 Documentation
+      labels:
+        - documentation
+    - title: 🏗 Chores
+      labels:
+        - chore
+        - dependency
+        - dependencies
+        - security
+        - dependabot
+    - title: Other changes
+      labels:
+        - '*'
