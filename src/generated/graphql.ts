@@ -1032,6 +1032,10 @@ export type BranchProtectionRule = Node & {
   id: Scalars['ID'];
   /** Can admins overwrite branch protection. */
   isAdminEnforced: Scalars['Boolean'];
+  /** Whether users can pull changes from upstream when the branch is locked. Set to `true` to allow fork syncing. Set to `false` to prevent fork syncing. */
+  lockAllowsFetchAndMerge: Scalars['Boolean'];
+  /** Whether to set the branch as read-only. If this is true, users will not be able to push to the branch. */
+  lockBranch: Scalars['Boolean'];
   /** Repository refs that are protected by this rule */
   matchingRefs: RefConnection;
   /** Identifies the protection rule pattern. */
@@ -1040,6 +1044,8 @@ export type BranchProtectionRule = Node & {
   pushAllowances: PushAllowanceConnection;
   /** The repository associated with this branch protection rule. */
   repository?: Maybe<Repository>;
+  /** Whether someone other than the person who last pushed to the branch must approve this pull request */
+  requireLastPushApproval: Scalars['Boolean'];
   /** Number of approving reviews required to update matching branches. */
   requiredApprovingReviewCount?: Maybe<Scalars['Int']>;
   /** List of required status check contexts that must pass for commits to be accepted to matching branches. */
@@ -2564,6 +2570,60 @@ export type CommittableBranch = {
   repositoryNameWithOwner?: InputMaybe<Scalars['String']>;
 };
 
+/** Represents a comparison between two commit revisions. */
+export type Comparison = Node & {
+  __typename?: 'Comparison';
+  /** The number of commits ahead of the base branch. */
+  aheadBy: Scalars['Int'];
+  /** The base revision of this comparison. */
+  baseTarget: GitObject;
+  /** The number of commits behind the base branch. */
+  behindBy: Scalars['Int'];
+  /** The commits which compose this comparison. */
+  commits: ComparisonCommitConnection;
+  /** The head revision of this comparison. */
+  headTarget: GitObject;
+  id: Scalars['ID'];
+  /** The status of this comparison. */
+  status: ComparisonStatus;
+};
+
+
+/** Represents a comparison between two commit revisions. */
+export type ComparisonCommitsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+};
+
+/** The connection type for Commit. */
+export type ComparisonCommitConnection = {
+  __typename?: 'ComparisonCommitConnection';
+  /** The total count of authors and co-authors across all commits. */
+  authorCount: Scalars['Int'];
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<CommitEdge>>>;
+  /** A list of nodes. */
+  nodes?: Maybe<Array<Maybe<Commit>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** The status of a git comparison between two refs. */
+export enum ComparisonStatus {
+  /** The head ref is ahead of the base ref. */
+  Ahead = 'AHEAD',
+  /** The head ref is behind the base ref. */
+  Behind = 'BEHIND',
+  /** The head ref is both ahead and behind of the base ref, indicating git history has diverged. */
+  Diverged = 'DIVERGED',
+  /** The head ref and base ref are identical. */
+  Identical = 'IDENTICAL'
+}
+
 /** Represents a 'connected' event on a given issue or pull request. */
 export type ConnectedEvent = Node & {
   __typename?: 'ConnectedEvent';
@@ -2983,12 +3043,18 @@ export type CreateBranchProtectionRuleInput = {
   dismissesStaleReviews?: InputMaybe<Scalars['Boolean']>;
   /** Can admins overwrite branch protection. */
   isAdminEnforced?: InputMaybe<Scalars['Boolean']>;
+  /** Whether users can pull changes from upstream when the branch is locked. Set to `true` to allow fork syncing. Set to `false` to prevent fork syncing. */
+  lockAllowsFetchAndMerge?: InputMaybe<Scalars['Boolean']>;
+  /** Whether to set the branch as read-only. If this is true, users will not be able to push to the branch. */
+  lockBranch?: InputMaybe<Scalars['Boolean']>;
   /** The glob-like pattern used to determine matching branches. */
   pattern: Scalars['String'];
   /** A list of User, Team, or App IDs allowed to push to matching branches. */
   pushActorIds?: InputMaybe<Array<Scalars['ID']>>;
   /** The global relay id of the repository in which a new branch protection rule should be created in. */
   repositoryId: Scalars['ID'];
+  /** Whether someone other than the person who last pushed to the branch must approve this pull request */
+  requireLastPushApproval?: InputMaybe<Scalars['Boolean']>;
   /** Number of approving reviews required to update matching branches. */
   requiredApprovingReviewCount?: InputMaybe<Scalars['Int']>;
   /** List of required status check contexts that must pass for commits to be accepted to matching branches. */
@@ -5276,11 +5342,11 @@ export type EnablePullRequestAutoMergeInput = {
   authorEmail?: InputMaybe<Scalars['String']>;
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']>;
-  /** Commit body to use for the commit when the PR is mergable; if omitted, a default message will be used. */
+  /** Commit body to use for the commit when the PR is mergable; if omitted, a default message will be used. NOTE: when merging with a merge queue any input value for commit message is ignored. */
   commitBody?: InputMaybe<Scalars['String']>;
-  /** Commit headline to use for the commit when the PR is mergable; if omitted, a default message will be used. */
+  /** Commit headline to use for the commit when the PR is mergable; if omitted, a default message will be used. NOTE: when merging with a merge queue any input value for commit headline is ignored. */
   commitHeadline?: InputMaybe<Scalars['String']>;
-  /** The merge method to use. If omitted, defaults to `MERGE` */
+  /** The merge method to use. If omitted, defaults to `MERGE`. NOTE: when merging with a merge queue any input value for merge method is ignored. */
   mergeMethod?: InputMaybe<PullRequestMergeMethod>;
   /** ID of the pull request to enable auto-merge on. */
   pullRequestId: Scalars['ID'];
@@ -7991,6 +8057,8 @@ export type IssueTemplate = {
   about?: Maybe<Scalars['String']>;
   /** The suggested issue body. */
   body?: Maybe<Scalars['String']>;
+  /** The template filename. */
+  filename: Scalars['String'];
   /** The template name. */
   name: Scalars['String'];
   /** The suggested issue title. */
@@ -14377,6 +14445,11 @@ export enum ProjectNextFieldType {
    */
   Title = 'TITLE',
   /**
+   * Tracked by
+   * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2023-01-01 UTC.
+   */
+  TrackedBy = 'TRACKED_BY',
+  /**
    * Tracks
    * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2023-01-01 UTC.
    */
@@ -14716,6 +14789,8 @@ export type ProjectV2 = Closable & Node & Updatable & {
   resourcePath: Scalars['URI'];
   /** The project's short description. */
   shortDescription?: Maybe<Scalars['String']>;
+  /** The teams the project is linked to. */
+  teams: TeamConnection;
   /** The project's name. */
   title: Scalars['String'];
   /** Identifies the date and time when the object was last updated. */
@@ -14764,6 +14839,16 @@ export type ProjectV2RepositoriesArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<RepositoryOrder>;
+};
+
+
+/** New projects that manage issues, pull requests and drafts using tables and boards. */
+export type ProjectV2TeamsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<TeamOrder>;
 };
 
 
@@ -14930,6 +15015,8 @@ export enum ProjectV2FieldType {
   Text = 'TEXT',
   /** Title */
   Title = 'TITLE',
+  /** Tracked by */
+  TrackedBy = 'TRACKED_BY',
   /** Tracks */
   Tracks = 'TRACKS'
 }
@@ -15471,6 +15558,37 @@ export type ProjectV2SortByEdge = {
   node?: Maybe<ProjectV2SortBy>;
 };
 
+/** Represents a sort by field and direction. */
+export type ProjectV2SortByField = {
+  __typename?: 'ProjectV2SortByField';
+  /** The direction of the sorting. Possible values are ASC and DESC. */
+  direction: OrderDirection;
+  /** The field by which items are sorted. */
+  field: ProjectV2FieldConfiguration;
+};
+
+/** The connection type for ProjectV2SortByField. */
+export type ProjectV2SortByFieldConnection = {
+  __typename?: 'ProjectV2SortByFieldConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<ProjectV2SortByFieldEdge>>>;
+  /** A list of nodes. */
+  nodes?: Maybe<Array<Maybe<ProjectV2SortByField>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** An edge in a connection. */
+export type ProjectV2SortByFieldEdge = {
+  __typename?: 'ProjectV2SortByFieldEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<ProjectV2SortByField>;
+};
+
 /** A view within a ProjectV2. */
 export type ProjectV2View = Node & {
   __typename?: 'ProjectV2View';
@@ -15498,12 +15616,22 @@ export type ProjectV2View = Node & {
   number: Scalars['Int'];
   /** The project that contains this view. */
   project: ProjectV2;
-  /** The view's sort-by config. */
+  /**
+   * The view's sort-by config.
+   * @deprecated The `ProjectV2View#sort_by` API is deprecated in favour of the more capable `ProjectV2View#sort_by_fields` API. Check out the `ProjectV2View#sort_by_fields` API as an example for the more capable alternative. Removal on 2023-04-01 UTC.
+   */
   sortBy?: Maybe<ProjectV2SortByConnection>;
+  /** The view's sort-by config. */
+  sortByFields?: Maybe<ProjectV2SortByFieldConnection>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
-  /** The view's vertical-group-by field. */
+  /**
+   * The view's vertical-group-by field.
+   * @deprecated The `ProjectV2View#vertical_group_by` API is deprecated in favour of the more capable `ProjectV2View#vertical_group_by_fields` API. Check out the `ProjectV2View#vertical_group_by_fields` API as an example for the more capable alternative. Removal on 2023-04-01 UTC.
+   */
   verticalGroupBy?: Maybe<ProjectV2FieldConnection>;
+  /** The view's vertical-group-by field. */
+  verticalGroupByFields?: Maybe<ProjectV2FieldConfigurationConnection>;
   /**
    * The view's visible fields.
    * @deprecated The `ProjectV2View#visibleFields` API is deprecated in favour of the more capable `ProjectV2View#fields` API. Check out the `ProjectV2View#fields` API as an example for the more capable alternative. Removal on 2023-01-01 UTC.
@@ -15552,7 +15680,26 @@ export type ProjectV2ViewSortByArgs = {
 
 
 /** A view within a ProjectV2. */
+export type ProjectV2ViewSortByFieldsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+};
+
+
+/** A view within a ProjectV2. */
 export type ProjectV2ViewVerticalGroupByArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<ProjectV2FieldOrder>;
+};
+
+
+/** A view within a ProjectV2. */
+export type ProjectV2ViewVerticalGroupByFieldsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
@@ -17544,6 +17691,8 @@ export type Ref = Node & {
   associatedPullRequests: PullRequestConnection;
   /** Branch protection rules for this ref */
   branchProtectionRule?: Maybe<BranchProtectionRule>;
+  /** Compares the current ref as a base ref to another head ref, if the comparison can be made. */
+  compare?: Maybe<Comparison>;
   id: Scalars['ID'];
   /** The ref name. */
   name: Scalars['String'];
@@ -17569,6 +17718,12 @@ export type RefAssociatedPullRequestsArgs = {
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<IssueOrder>;
   states?: InputMaybe<Array<PullRequestState>>;
+};
+
+
+/** Represents a Git reference. */
+export type RefCompareArgs = {
+  headRef: Scalars['String'];
 };
 
 /** The connection type for Ref. */
@@ -19250,6 +19405,8 @@ export type Repository = Node & PackageOwner & ProjectOwner & ProjectV2Recent & 
   forks: RepositoryConnection;
   /** The funding links for this repository */
   fundingLinks: Array<FundingLink>;
+  /** Are discussions available on this repository? */
+  hasDiscussionsEnabled: Scalars['Boolean'];
   /** Indicates if the repository has issues feature enabled. */
   hasIssuesEnabled: Scalars['Boolean'];
   /** Indicates if the repository has the Projects feature enabled. */
@@ -22483,6 +22640,10 @@ export type Team = MemberStatusable & Node & Subscribable & {
   parentTeam?: Maybe<Team>;
   /** The level of privacy the team has. */
   privacy: TeamPrivacy;
+  /** Finds and returns the project according to the provided project number. */
+  projectV2?: Maybe<ProjectV2>;
+  /** List of projects this team has collaborator access to. */
+  projectsV2: ProjectV2Connection;
   /** A list of repositories this team has access to. */
   repositories: TeamRepositoryConnection;
   /** The HTTP path for this team's repositories */
@@ -22583,6 +22744,22 @@ export type TeamMembersArgs = {
   orderBy?: InputMaybe<TeamMemberOrder>;
   query?: InputMaybe<Scalars['String']>;
   role?: InputMaybe<TeamMemberRole>;
+};
+
+
+/** A team of users in an organization. */
+export type TeamProjectV2Args = {
+  number: Scalars['Int'];
+};
+
+
+/** A team of users in an organization. */
+export type TeamProjectsV2Args = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<ProjectV2Order>;
 };
 
 
@@ -23473,6 +23650,8 @@ export type TreeEntry = {
   extension?: Maybe<Scalars['String']>;
   /** Whether or not this tree entry is generated */
   isGenerated: Scalars['Boolean'];
+  /** The programming language this file is written in. */
+  language?: Maybe<Language>;
   /** Number of lines in the file. */
   lineCount?: Maybe<Scalars['Int']>;
   /** Entry file mode. */
@@ -23836,10 +24015,16 @@ export type UpdateBranchProtectionRuleInput = {
   dismissesStaleReviews?: InputMaybe<Scalars['Boolean']>;
   /** Can admins overwrite branch protection. */
   isAdminEnforced?: InputMaybe<Scalars['Boolean']>;
+  /** Whether users can pull changes from upstream when the branch is locked. Set to `true` to allow fork syncing. Set to `false` to prevent fork syncing. */
+  lockAllowsFetchAndMerge?: InputMaybe<Scalars['Boolean']>;
+  /** Whether to set the branch as read-only. If this is true, users will not be able to push to the branch. */
+  lockBranch?: InputMaybe<Scalars['Boolean']>;
   /** The glob-like pattern used to determine matching branches. */
   pattern?: InputMaybe<Scalars['String']>;
   /** A list of User, Team, or App IDs allowed to push to matching branches. */
   pushActorIds?: InputMaybe<Array<Scalars['ID']>>;
+  /** Whether someone other than the person who last pushed to the branch must approve this pull request */
+  requireLastPushApproval?: InputMaybe<Scalars['Boolean']>;
   /** Number of approving reviews required to update matching branches. */
   requiredApprovingReviewCount?: InputMaybe<Scalars['Int']>;
   /** List of required status check contexts that must pass for commits to be accepted to matching branches. */
@@ -24976,6 +25161,8 @@ export type UpdateRepositoryInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
   /** A new description for the repository. Pass an empty string to erase the existing description. */
   description?: InputMaybe<Scalars['String']>;
+  /** Indicates if the repository should have the discussions feature enabled. */
+  hasDiscussionsEnabled?: InputMaybe<Scalars['Boolean']>;
   /** Indicates if the repository should have the issues feature enabled. */
   hasIssuesEnabled?: InputMaybe<Scalars['Boolean']>;
   /** Indicates if the repository should have the project boards feature enabled. */
@@ -26383,6 +26570,9 @@ export type ResolversTypes = {
   CommitHistoryConnection: ResolverTypeWrapper<CommitHistoryConnection>;
   CommitMessage: CommitMessage;
   CommittableBranch: CommittableBranch;
+  Comparison: ResolverTypeWrapper<Comparison>;
+  ComparisonCommitConnection: ResolverTypeWrapper<ComparisonCommitConnection>;
+  ComparisonStatus: ComparisonStatus;
   ConnectedEvent: ResolverTypeWrapper<Omit<ConnectedEvent, 'source' | 'subject'> & { source: ResolversTypes['ReferencedSubject'], subject: ResolversTypes['ReferencedSubject'] }>;
   Contribution: ResolversTypes['CreatedCommitContribution'] | ResolversTypes['CreatedIssueContribution'] | ResolversTypes['CreatedPullRequestContribution'] | ResolversTypes['CreatedPullRequestReviewContribution'] | ResolversTypes['CreatedRepositoryContribution'] | ResolversTypes['JoinedGitHubContribution'] | ResolversTypes['RestrictedContribution'];
   ContributionCalendar: ResolverTypeWrapper<ContributionCalendar>;
@@ -26787,7 +26977,7 @@ export type ResolversTypes = {
   MoveProjectColumnPayload: ResolverTypeWrapper<MoveProjectColumnPayload>;
   MovedColumnsInProjectEvent: ResolverTypeWrapper<MovedColumnsInProjectEvent>;
   Mutation: ResolverTypeWrapper<{}>;
-  Node: ResolversTypes['AddedToProjectEvent'] | ResolversTypes['App'] | ResolversTypes['AssignedEvent'] | ResolversTypes['AutoMergeDisabledEvent'] | ResolversTypes['AutoMergeEnabledEvent'] | ResolversTypes['AutoRebaseEnabledEvent'] | ResolversTypes['AutoSquashEnabledEvent'] | ResolversTypes['AutomaticBaseChangeFailedEvent'] | ResolversTypes['AutomaticBaseChangeSucceededEvent'] | ResolversTypes['BaseRefChangedEvent'] | ResolversTypes['BaseRefDeletedEvent'] | ResolversTypes['BaseRefForcePushedEvent'] | ResolversTypes['Blob'] | ResolversTypes['Bot'] | ResolversTypes['BranchProtectionRule'] | ResolversTypes['BypassForcePushAllowance'] | ResolversTypes['BypassPullRequestAllowance'] | ResolversTypes['CWE'] | ResolversTypes['CheckRun'] | ResolversTypes['CheckSuite'] | ResolversTypes['ClosedEvent'] | ResolversTypes['CodeOfConduct'] | ResolversTypes['CommentDeletedEvent'] | ResolversTypes['Commit'] | ResolversTypes['CommitComment'] | ResolversTypes['CommitCommentThread'] | ResolversTypes['ConnectedEvent'] | ResolversTypes['ConvertToDraftEvent'] | ResolversTypes['ConvertedNoteToIssueEvent'] | ResolversTypes['ConvertedToDiscussionEvent'] | ResolversTypes['CrossReferencedEvent'] | ResolversTypes['DemilestonedEvent'] | ResolversTypes['DeployKey'] | ResolversTypes['DeployedEvent'] | ResolversTypes['Deployment'] | ResolversTypes['DeploymentEnvironmentChangedEvent'] | ResolversTypes['DeploymentReview'] | ResolversTypes['DeploymentStatus'] | ResolversTypes['DisconnectedEvent'] | ResolversTypes['Discussion'] | ResolversTypes['DiscussionCategory'] | ResolversTypes['DiscussionComment'] | ResolversTypes['DiscussionPoll'] | ResolversTypes['DiscussionPollOption'] | ResolversTypes['DraftIssue'] | ResolversTypes['Enterprise'] | ResolversTypes['EnterpriseAdministratorInvitation'] | ResolversTypes['EnterpriseIdentityProvider'] | ResolversTypes['EnterpriseRepositoryInfo'] | ResolversTypes['EnterpriseServerInstallation'] | ResolversTypes['EnterpriseServerUserAccount'] | ResolversTypes['EnterpriseServerUserAccountEmail'] | ResolversTypes['EnterpriseServerUserAccountsUpload'] | ResolversTypes['EnterpriseUserAccount'] | ResolversTypes['Environment'] | ResolversTypes['ExternalIdentity'] | ResolversTypes['Gist'] | ResolversTypes['GistComment'] | ResolversTypes['HeadRefDeletedEvent'] | ResolversTypes['HeadRefForcePushedEvent'] | ResolversTypes['HeadRefRestoredEvent'] | ResolversTypes['IpAllowListEntry'] | ResolversTypes['Issue'] | ResolversTypes['IssueComment'] | ResolversTypes['Label'] | ResolversTypes['LabeledEvent'] | ResolversTypes['Language'] | ResolversTypes['License'] | ResolversTypes['LinkedBranch'] | ResolversTypes['LockedEvent'] | ResolversTypes['Mannequin'] | ResolversTypes['MarkedAsDuplicateEvent'] | ResolversTypes['MarketplaceCategory'] | ResolversTypes['MarketplaceListing'] | ResolversTypes['MembersCanDeleteReposClearAuditEntry'] | ResolversTypes['MembersCanDeleteReposDisableAuditEntry'] | ResolversTypes['MembersCanDeleteReposEnableAuditEntry'] | ResolversTypes['MentionedEvent'] | ResolversTypes['MergedEvent'] | ResolversTypes['MigrationSource'] | ResolversTypes['Milestone'] | ResolversTypes['MilestonedEvent'] | ResolversTypes['MovedColumnsInProjectEvent'] | ResolversTypes['OIDCProvider'] | ResolversTypes['OauthApplicationCreateAuditEntry'] | ResolversTypes['OrgAddBillingManagerAuditEntry'] | ResolversTypes['OrgAddMemberAuditEntry'] | ResolversTypes['OrgBlockUserAuditEntry'] | ResolversTypes['OrgConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversTypes['OrgConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversTypes['OrgCreateAuditEntry'] | ResolversTypes['OrgDisableOauthAppRestrictionsAuditEntry'] | ResolversTypes['OrgDisableSamlAuditEntry'] | ResolversTypes['OrgDisableTwoFactorRequirementAuditEntry'] | ResolversTypes['OrgEnableOauthAppRestrictionsAuditEntry'] | ResolversTypes['OrgEnableSamlAuditEntry'] | ResolversTypes['OrgEnableTwoFactorRequirementAuditEntry'] | ResolversTypes['OrgInviteMemberAuditEntry'] | ResolversTypes['OrgInviteToBusinessAuditEntry'] | ResolversTypes['OrgOauthAppAccessApprovedAuditEntry'] | ResolversTypes['OrgOauthAppAccessDeniedAuditEntry'] | ResolversTypes['OrgOauthAppAccessRequestedAuditEntry'] | ResolversTypes['OrgRemoveBillingManagerAuditEntry'] | ResolversTypes['OrgRemoveMemberAuditEntry'] | ResolversTypes['OrgRemoveOutsideCollaboratorAuditEntry'] | ResolversTypes['OrgRestoreMemberAuditEntry'] | ResolversTypes['OrgUnblockUserAuditEntry'] | ResolversTypes['OrgUpdateDefaultRepositoryPermissionAuditEntry'] | ResolversTypes['OrgUpdateMemberAuditEntry'] | ResolversTypes['OrgUpdateMemberRepositoryCreationPermissionAuditEntry'] | ResolversTypes['OrgUpdateMemberRepositoryInvitationPermissionAuditEntry'] | ResolversTypes['Organization'] | ResolversTypes['OrganizationIdentityProvider'] | ResolversTypes['OrganizationInvitation'] | ResolversTypes['Package'] | ResolversTypes['PackageFile'] | ResolversTypes['PackageTag'] | ResolversTypes['PackageVersion'] | ResolversTypes['PinnedDiscussion'] | ResolversTypes['PinnedEvent'] | ResolversTypes['PinnedIssue'] | ResolversTypes['PrivateRepositoryForkingDisableAuditEntry'] | ResolversTypes['PrivateRepositoryForkingEnableAuditEntry'] | ResolversTypes['Project'] | ResolversTypes['ProjectCard'] | ResolversTypes['ProjectColumn'] | ResolversTypes['ProjectNext'] | ResolversTypes['ProjectNextField'] | ResolversTypes['ProjectNextItem'] | ResolversTypes['ProjectNextItemFieldValue'] | ResolversTypes['ProjectV2'] | ResolversTypes['ProjectV2Field'] | ResolversTypes['ProjectV2Item'] | ResolversTypes['ProjectV2ItemFieldDateValue'] | ResolversTypes['ProjectV2ItemFieldIterationValue'] | ResolversTypes['ProjectV2ItemFieldNumberValue'] | ResolversTypes['ProjectV2ItemFieldSingleSelectValue'] | ResolversTypes['ProjectV2ItemFieldTextValue'] | ResolversTypes['ProjectV2IterationField'] | ResolversTypes['ProjectV2SingleSelectField'] | ResolversTypes['ProjectV2View'] | ResolversTypes['ProjectView'] | ResolversTypes['PublicKey'] | ResolversTypes['PullRequest'] | ResolversTypes['PullRequestCommit'] | ResolversTypes['PullRequestCommitCommentThread'] | ResolversTypes['PullRequestReview'] | ResolversTypes['PullRequestReviewComment'] | ResolversTypes['PullRequestReviewThread'] | ResolversTypes['PullRequestThread'] | ResolversTypes['Push'] | ResolversTypes['PushAllowance'] | ResolversTypes['Reaction'] | ResolversTypes['ReadyForReviewEvent'] | ResolversTypes['Ref'] | ResolversTypes['ReferencedEvent'] | ResolversTypes['Release'] | ResolversTypes['ReleaseAsset'] | ResolversTypes['RemovedFromProjectEvent'] | ResolversTypes['RenamedTitleEvent'] | ResolversTypes['ReopenedEvent'] | ResolversTypes['RepoAccessAuditEntry'] | ResolversTypes['RepoAddMemberAuditEntry'] | ResolversTypes['RepoAddTopicAuditEntry'] | ResolversTypes['RepoArchivedAuditEntry'] | ResolversTypes['RepoChangeMergeSettingAuditEntry'] | ResolversTypes['RepoConfigDisableAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversTypes['RepoConfigDisableContributorsOnlyAuditEntry'] | ResolversTypes['RepoConfigDisableSockpuppetDisallowedAuditEntry'] | ResolversTypes['RepoConfigEnableAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversTypes['RepoConfigEnableContributorsOnlyAuditEntry'] | ResolversTypes['RepoConfigEnableSockpuppetDisallowedAuditEntry'] | ResolversTypes['RepoConfigLockAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoConfigUnlockAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoCreateAuditEntry'] | ResolversTypes['RepoDestroyAuditEntry'] | ResolversTypes['RepoRemoveMemberAuditEntry'] | ResolversTypes['RepoRemoveTopicAuditEntry'] | ResolversTypes['Repository'] | ResolversTypes['RepositoryInvitation'] | ResolversTypes['RepositoryMigration'] | ResolversTypes['RepositoryTopic'] | ResolversTypes['RepositoryVisibilityChangeDisableAuditEntry'] | ResolversTypes['RepositoryVisibilityChangeEnableAuditEntry'] | ResolversTypes['RepositoryVulnerabilityAlert'] | ResolversTypes['ReviewDismissalAllowance'] | ResolversTypes['ReviewDismissedEvent'] | ResolversTypes['ReviewRequest'] | ResolversTypes['ReviewRequestRemovedEvent'] | ResolversTypes['ReviewRequestedEvent'] | ResolversTypes['SavedReply'] | ResolversTypes['SecurityAdvisory'] | ResolversTypes['SponsorsActivity'] | ResolversTypes['SponsorsListing'] | ResolversTypes['SponsorsTier'] | ResolversTypes['Sponsorship'] | ResolversTypes['SponsorshipNewsletter'] | ResolversTypes['Status'] | ResolversTypes['StatusCheckRollup'] | ResolversTypes['StatusContext'] | ResolversTypes['SubscribedEvent'] | ResolversTypes['Tag'] | ResolversTypes['Team'] | ResolversTypes['TeamAddMemberAuditEntry'] | ResolversTypes['TeamAddRepositoryAuditEntry'] | ResolversTypes['TeamChangeParentTeamAuditEntry'] | ResolversTypes['TeamDiscussion'] | ResolversTypes['TeamDiscussionComment'] | ResolversTypes['TeamRemoveMemberAuditEntry'] | ResolversTypes['TeamRemoveRepositoryAuditEntry'] | ResolversTypes['Topic'] | ResolversTypes['TransferredEvent'] | ResolversTypes['Tree'] | ResolversTypes['UnassignedEvent'] | ResolversTypes['UnlabeledEvent'] | ResolversTypes['UnlockedEvent'] | ResolversTypes['UnmarkedAsDuplicateEvent'] | ResolversTypes['UnpinnedEvent'] | ResolversTypes['UnsubscribedEvent'] | ResolversTypes['User'] | ResolversTypes['UserBlockedEvent'] | ResolversTypes['UserContentEdit'] | ResolversTypes['UserStatus'] | ResolversTypes['VerifiableDomain'] | ResolversTypes['Workflow'] | ResolversTypes['WorkflowRun'];
+  Node: ResolversTypes['AddedToProjectEvent'] | ResolversTypes['App'] | ResolversTypes['AssignedEvent'] | ResolversTypes['AutoMergeDisabledEvent'] | ResolversTypes['AutoMergeEnabledEvent'] | ResolversTypes['AutoRebaseEnabledEvent'] | ResolversTypes['AutoSquashEnabledEvent'] | ResolversTypes['AutomaticBaseChangeFailedEvent'] | ResolversTypes['AutomaticBaseChangeSucceededEvent'] | ResolversTypes['BaseRefChangedEvent'] | ResolversTypes['BaseRefDeletedEvent'] | ResolversTypes['BaseRefForcePushedEvent'] | ResolversTypes['Blob'] | ResolversTypes['Bot'] | ResolversTypes['BranchProtectionRule'] | ResolversTypes['BypassForcePushAllowance'] | ResolversTypes['BypassPullRequestAllowance'] | ResolversTypes['CWE'] | ResolversTypes['CheckRun'] | ResolversTypes['CheckSuite'] | ResolversTypes['ClosedEvent'] | ResolversTypes['CodeOfConduct'] | ResolversTypes['CommentDeletedEvent'] | ResolversTypes['Commit'] | ResolversTypes['CommitComment'] | ResolversTypes['CommitCommentThread'] | ResolversTypes['Comparison'] | ResolversTypes['ConnectedEvent'] | ResolversTypes['ConvertToDraftEvent'] | ResolversTypes['ConvertedNoteToIssueEvent'] | ResolversTypes['ConvertedToDiscussionEvent'] | ResolversTypes['CrossReferencedEvent'] | ResolversTypes['DemilestonedEvent'] | ResolversTypes['DeployKey'] | ResolversTypes['DeployedEvent'] | ResolversTypes['Deployment'] | ResolversTypes['DeploymentEnvironmentChangedEvent'] | ResolversTypes['DeploymentReview'] | ResolversTypes['DeploymentStatus'] | ResolversTypes['DisconnectedEvent'] | ResolversTypes['Discussion'] | ResolversTypes['DiscussionCategory'] | ResolversTypes['DiscussionComment'] | ResolversTypes['DiscussionPoll'] | ResolversTypes['DiscussionPollOption'] | ResolversTypes['DraftIssue'] | ResolversTypes['Enterprise'] | ResolversTypes['EnterpriseAdministratorInvitation'] | ResolversTypes['EnterpriseIdentityProvider'] | ResolversTypes['EnterpriseRepositoryInfo'] | ResolversTypes['EnterpriseServerInstallation'] | ResolversTypes['EnterpriseServerUserAccount'] | ResolversTypes['EnterpriseServerUserAccountEmail'] | ResolversTypes['EnterpriseServerUserAccountsUpload'] | ResolversTypes['EnterpriseUserAccount'] | ResolversTypes['Environment'] | ResolversTypes['ExternalIdentity'] | ResolversTypes['Gist'] | ResolversTypes['GistComment'] | ResolversTypes['HeadRefDeletedEvent'] | ResolversTypes['HeadRefForcePushedEvent'] | ResolversTypes['HeadRefRestoredEvent'] | ResolversTypes['IpAllowListEntry'] | ResolversTypes['Issue'] | ResolversTypes['IssueComment'] | ResolversTypes['Label'] | ResolversTypes['LabeledEvent'] | ResolversTypes['Language'] | ResolversTypes['License'] | ResolversTypes['LinkedBranch'] | ResolversTypes['LockedEvent'] | ResolversTypes['Mannequin'] | ResolversTypes['MarkedAsDuplicateEvent'] | ResolversTypes['MarketplaceCategory'] | ResolversTypes['MarketplaceListing'] | ResolversTypes['MembersCanDeleteReposClearAuditEntry'] | ResolversTypes['MembersCanDeleteReposDisableAuditEntry'] | ResolversTypes['MembersCanDeleteReposEnableAuditEntry'] | ResolversTypes['MentionedEvent'] | ResolversTypes['MergedEvent'] | ResolversTypes['MigrationSource'] | ResolversTypes['Milestone'] | ResolversTypes['MilestonedEvent'] | ResolversTypes['MovedColumnsInProjectEvent'] | ResolversTypes['OIDCProvider'] | ResolversTypes['OauthApplicationCreateAuditEntry'] | ResolversTypes['OrgAddBillingManagerAuditEntry'] | ResolversTypes['OrgAddMemberAuditEntry'] | ResolversTypes['OrgBlockUserAuditEntry'] | ResolversTypes['OrgConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversTypes['OrgConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversTypes['OrgCreateAuditEntry'] | ResolversTypes['OrgDisableOauthAppRestrictionsAuditEntry'] | ResolversTypes['OrgDisableSamlAuditEntry'] | ResolversTypes['OrgDisableTwoFactorRequirementAuditEntry'] | ResolversTypes['OrgEnableOauthAppRestrictionsAuditEntry'] | ResolversTypes['OrgEnableSamlAuditEntry'] | ResolversTypes['OrgEnableTwoFactorRequirementAuditEntry'] | ResolversTypes['OrgInviteMemberAuditEntry'] | ResolversTypes['OrgInviteToBusinessAuditEntry'] | ResolversTypes['OrgOauthAppAccessApprovedAuditEntry'] | ResolversTypes['OrgOauthAppAccessDeniedAuditEntry'] | ResolversTypes['OrgOauthAppAccessRequestedAuditEntry'] | ResolversTypes['OrgRemoveBillingManagerAuditEntry'] | ResolversTypes['OrgRemoveMemberAuditEntry'] | ResolversTypes['OrgRemoveOutsideCollaboratorAuditEntry'] | ResolversTypes['OrgRestoreMemberAuditEntry'] | ResolversTypes['OrgUnblockUserAuditEntry'] | ResolversTypes['OrgUpdateDefaultRepositoryPermissionAuditEntry'] | ResolversTypes['OrgUpdateMemberAuditEntry'] | ResolversTypes['OrgUpdateMemberRepositoryCreationPermissionAuditEntry'] | ResolversTypes['OrgUpdateMemberRepositoryInvitationPermissionAuditEntry'] | ResolversTypes['Organization'] | ResolversTypes['OrganizationIdentityProvider'] | ResolversTypes['OrganizationInvitation'] | ResolversTypes['Package'] | ResolversTypes['PackageFile'] | ResolversTypes['PackageTag'] | ResolversTypes['PackageVersion'] | ResolversTypes['PinnedDiscussion'] | ResolversTypes['PinnedEvent'] | ResolversTypes['PinnedIssue'] | ResolversTypes['PrivateRepositoryForkingDisableAuditEntry'] | ResolversTypes['PrivateRepositoryForkingEnableAuditEntry'] | ResolversTypes['Project'] | ResolversTypes['ProjectCard'] | ResolversTypes['ProjectColumn'] | ResolversTypes['ProjectNext'] | ResolversTypes['ProjectNextField'] | ResolversTypes['ProjectNextItem'] | ResolversTypes['ProjectNextItemFieldValue'] | ResolversTypes['ProjectV2'] | ResolversTypes['ProjectV2Field'] | ResolversTypes['ProjectV2Item'] | ResolversTypes['ProjectV2ItemFieldDateValue'] | ResolversTypes['ProjectV2ItemFieldIterationValue'] | ResolversTypes['ProjectV2ItemFieldNumberValue'] | ResolversTypes['ProjectV2ItemFieldSingleSelectValue'] | ResolversTypes['ProjectV2ItemFieldTextValue'] | ResolversTypes['ProjectV2IterationField'] | ResolversTypes['ProjectV2SingleSelectField'] | ResolversTypes['ProjectV2View'] | ResolversTypes['ProjectView'] | ResolversTypes['PublicKey'] | ResolversTypes['PullRequest'] | ResolversTypes['PullRequestCommit'] | ResolversTypes['PullRequestCommitCommentThread'] | ResolversTypes['PullRequestReview'] | ResolversTypes['PullRequestReviewComment'] | ResolversTypes['PullRequestReviewThread'] | ResolversTypes['PullRequestThread'] | ResolversTypes['Push'] | ResolversTypes['PushAllowance'] | ResolversTypes['Reaction'] | ResolversTypes['ReadyForReviewEvent'] | ResolversTypes['Ref'] | ResolversTypes['ReferencedEvent'] | ResolversTypes['Release'] | ResolversTypes['ReleaseAsset'] | ResolversTypes['RemovedFromProjectEvent'] | ResolversTypes['RenamedTitleEvent'] | ResolversTypes['ReopenedEvent'] | ResolversTypes['RepoAccessAuditEntry'] | ResolversTypes['RepoAddMemberAuditEntry'] | ResolversTypes['RepoAddTopicAuditEntry'] | ResolversTypes['RepoArchivedAuditEntry'] | ResolversTypes['RepoChangeMergeSettingAuditEntry'] | ResolversTypes['RepoConfigDisableAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversTypes['RepoConfigDisableContributorsOnlyAuditEntry'] | ResolversTypes['RepoConfigDisableSockpuppetDisallowedAuditEntry'] | ResolversTypes['RepoConfigEnableAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversTypes['RepoConfigEnableContributorsOnlyAuditEntry'] | ResolversTypes['RepoConfigEnableSockpuppetDisallowedAuditEntry'] | ResolversTypes['RepoConfigLockAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoConfigUnlockAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoCreateAuditEntry'] | ResolversTypes['RepoDestroyAuditEntry'] | ResolversTypes['RepoRemoveMemberAuditEntry'] | ResolversTypes['RepoRemoveTopicAuditEntry'] | ResolversTypes['Repository'] | ResolversTypes['RepositoryInvitation'] | ResolversTypes['RepositoryMigration'] | ResolversTypes['RepositoryTopic'] | ResolversTypes['RepositoryVisibilityChangeDisableAuditEntry'] | ResolversTypes['RepositoryVisibilityChangeEnableAuditEntry'] | ResolversTypes['RepositoryVulnerabilityAlert'] | ResolversTypes['ReviewDismissalAllowance'] | ResolversTypes['ReviewDismissedEvent'] | ResolversTypes['ReviewRequest'] | ResolversTypes['ReviewRequestRemovedEvent'] | ResolversTypes['ReviewRequestedEvent'] | ResolversTypes['SavedReply'] | ResolversTypes['SecurityAdvisory'] | ResolversTypes['SponsorsActivity'] | ResolversTypes['SponsorsListing'] | ResolversTypes['SponsorsTier'] | ResolversTypes['Sponsorship'] | ResolversTypes['SponsorshipNewsletter'] | ResolversTypes['Status'] | ResolversTypes['StatusCheckRollup'] | ResolversTypes['StatusContext'] | ResolversTypes['SubscribedEvent'] | ResolversTypes['Tag'] | ResolversTypes['Team'] | ResolversTypes['TeamAddMemberAuditEntry'] | ResolversTypes['TeamAddRepositoryAuditEntry'] | ResolversTypes['TeamChangeParentTeamAuditEntry'] | ResolversTypes['TeamDiscussion'] | ResolversTypes['TeamDiscussionComment'] | ResolversTypes['TeamRemoveMemberAuditEntry'] | ResolversTypes['TeamRemoveRepositoryAuditEntry'] | ResolversTypes['Topic'] | ResolversTypes['TransferredEvent'] | ResolversTypes['Tree'] | ResolversTypes['UnassignedEvent'] | ResolversTypes['UnlabeledEvent'] | ResolversTypes['UnlockedEvent'] | ResolversTypes['UnmarkedAsDuplicateEvent'] | ResolversTypes['UnpinnedEvent'] | ResolversTypes['UnsubscribedEvent'] | ResolversTypes['User'] | ResolversTypes['UserBlockedEvent'] | ResolversTypes['UserContentEdit'] | ResolversTypes['UserStatus'] | ResolversTypes['VerifiableDomain'] | ResolversTypes['Workflow'] | ResolversTypes['WorkflowRun'];
   NotificationRestrictionSettingValue: NotificationRestrictionSettingValue;
   OIDCProvider: ResolverTypeWrapper<OidcProvider>;
   OIDCProviderType: OidcProviderType;
@@ -26993,6 +27183,9 @@ export type ResolversTypes = {
   ProjectV2SortBy: ResolverTypeWrapper<ProjectV2SortBy>;
   ProjectV2SortByConnection: ResolverTypeWrapper<ProjectV2SortByConnection>;
   ProjectV2SortByEdge: ResolverTypeWrapper<ProjectV2SortByEdge>;
+  ProjectV2SortByField: ResolverTypeWrapper<Omit<ProjectV2SortByField, 'field'> & { field: ResolversTypes['ProjectV2FieldConfiguration'] }>;
+  ProjectV2SortByFieldConnection: ResolverTypeWrapper<ProjectV2SortByFieldConnection>;
+  ProjectV2SortByFieldEdge: ResolverTypeWrapper<ProjectV2SortByFieldEdge>;
   ProjectV2View: ResolverTypeWrapper<ProjectV2View>;
   ProjectV2ViewConnection: ResolverTypeWrapper<ProjectV2ViewConnection>;
   ProjectV2ViewEdge: ResolverTypeWrapper<ProjectV2ViewEdge>;
@@ -27703,6 +27896,8 @@ export type ResolversParentTypes = {
   CommitHistoryConnection: CommitHistoryConnection;
   CommitMessage: CommitMessage;
   CommittableBranch: CommittableBranch;
+  Comparison: Comparison;
+  ComparisonCommitConnection: ComparisonCommitConnection;
   ConnectedEvent: Omit<ConnectedEvent, 'source' | 'subject'> & { source: ResolversParentTypes['ReferencedSubject'], subject: ResolversParentTypes['ReferencedSubject'] };
   Contribution: ResolversParentTypes['CreatedCommitContribution'] | ResolversParentTypes['CreatedIssueContribution'] | ResolversParentTypes['CreatedPullRequestContribution'] | ResolversParentTypes['CreatedPullRequestReviewContribution'] | ResolversParentTypes['CreatedRepositoryContribution'] | ResolversParentTypes['JoinedGitHubContribution'] | ResolversParentTypes['RestrictedContribution'];
   ContributionCalendar: ContributionCalendar;
@@ -28054,7 +28249,7 @@ export type ResolversParentTypes = {
   MoveProjectColumnPayload: MoveProjectColumnPayload;
   MovedColumnsInProjectEvent: MovedColumnsInProjectEvent;
   Mutation: {};
-  Node: ResolversParentTypes['AddedToProjectEvent'] | ResolversParentTypes['App'] | ResolversParentTypes['AssignedEvent'] | ResolversParentTypes['AutoMergeDisabledEvent'] | ResolversParentTypes['AutoMergeEnabledEvent'] | ResolversParentTypes['AutoRebaseEnabledEvent'] | ResolversParentTypes['AutoSquashEnabledEvent'] | ResolversParentTypes['AutomaticBaseChangeFailedEvent'] | ResolversParentTypes['AutomaticBaseChangeSucceededEvent'] | ResolversParentTypes['BaseRefChangedEvent'] | ResolversParentTypes['BaseRefDeletedEvent'] | ResolversParentTypes['BaseRefForcePushedEvent'] | ResolversParentTypes['Blob'] | ResolversParentTypes['Bot'] | ResolversParentTypes['BranchProtectionRule'] | ResolversParentTypes['BypassForcePushAllowance'] | ResolversParentTypes['BypassPullRequestAllowance'] | ResolversParentTypes['CWE'] | ResolversParentTypes['CheckRun'] | ResolversParentTypes['CheckSuite'] | ResolversParentTypes['ClosedEvent'] | ResolversParentTypes['CodeOfConduct'] | ResolversParentTypes['CommentDeletedEvent'] | ResolversParentTypes['Commit'] | ResolversParentTypes['CommitComment'] | ResolversParentTypes['CommitCommentThread'] | ResolversParentTypes['ConnectedEvent'] | ResolversParentTypes['ConvertToDraftEvent'] | ResolversParentTypes['ConvertedNoteToIssueEvent'] | ResolversParentTypes['ConvertedToDiscussionEvent'] | ResolversParentTypes['CrossReferencedEvent'] | ResolversParentTypes['DemilestonedEvent'] | ResolversParentTypes['DeployKey'] | ResolversParentTypes['DeployedEvent'] | ResolversParentTypes['Deployment'] | ResolversParentTypes['DeploymentEnvironmentChangedEvent'] | ResolversParentTypes['DeploymentReview'] | ResolversParentTypes['DeploymentStatus'] | ResolversParentTypes['DisconnectedEvent'] | ResolversParentTypes['Discussion'] | ResolversParentTypes['DiscussionCategory'] | ResolversParentTypes['DiscussionComment'] | ResolversParentTypes['DiscussionPoll'] | ResolversParentTypes['DiscussionPollOption'] | ResolversParentTypes['DraftIssue'] | ResolversParentTypes['Enterprise'] | ResolversParentTypes['EnterpriseAdministratorInvitation'] | ResolversParentTypes['EnterpriseIdentityProvider'] | ResolversParentTypes['EnterpriseRepositoryInfo'] | ResolversParentTypes['EnterpriseServerInstallation'] | ResolversParentTypes['EnterpriseServerUserAccount'] | ResolversParentTypes['EnterpriseServerUserAccountEmail'] | ResolversParentTypes['EnterpriseServerUserAccountsUpload'] | ResolversParentTypes['EnterpriseUserAccount'] | ResolversParentTypes['Environment'] | ResolversParentTypes['ExternalIdentity'] | ResolversParentTypes['Gist'] | ResolversParentTypes['GistComment'] | ResolversParentTypes['HeadRefDeletedEvent'] | ResolversParentTypes['HeadRefForcePushedEvent'] | ResolversParentTypes['HeadRefRestoredEvent'] | ResolversParentTypes['IpAllowListEntry'] | ResolversParentTypes['Issue'] | ResolversParentTypes['IssueComment'] | ResolversParentTypes['Label'] | ResolversParentTypes['LabeledEvent'] | ResolversParentTypes['Language'] | ResolversParentTypes['License'] | ResolversParentTypes['LinkedBranch'] | ResolversParentTypes['LockedEvent'] | ResolversParentTypes['Mannequin'] | ResolversParentTypes['MarkedAsDuplicateEvent'] | ResolversParentTypes['MarketplaceCategory'] | ResolversParentTypes['MarketplaceListing'] | ResolversParentTypes['MembersCanDeleteReposClearAuditEntry'] | ResolversParentTypes['MembersCanDeleteReposDisableAuditEntry'] | ResolversParentTypes['MembersCanDeleteReposEnableAuditEntry'] | ResolversParentTypes['MentionedEvent'] | ResolversParentTypes['MergedEvent'] | ResolversParentTypes['MigrationSource'] | ResolversParentTypes['Milestone'] | ResolversParentTypes['MilestonedEvent'] | ResolversParentTypes['MovedColumnsInProjectEvent'] | ResolversParentTypes['OIDCProvider'] | ResolversParentTypes['OauthApplicationCreateAuditEntry'] | ResolversParentTypes['OrgAddBillingManagerAuditEntry'] | ResolversParentTypes['OrgAddMemberAuditEntry'] | ResolversParentTypes['OrgBlockUserAuditEntry'] | ResolversParentTypes['OrgConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['OrgConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['OrgCreateAuditEntry'] | ResolversParentTypes['OrgDisableOauthAppRestrictionsAuditEntry'] | ResolversParentTypes['OrgDisableSamlAuditEntry'] | ResolversParentTypes['OrgDisableTwoFactorRequirementAuditEntry'] | ResolversParentTypes['OrgEnableOauthAppRestrictionsAuditEntry'] | ResolversParentTypes['OrgEnableSamlAuditEntry'] | ResolversParentTypes['OrgEnableTwoFactorRequirementAuditEntry'] | ResolversParentTypes['OrgInviteMemberAuditEntry'] | ResolversParentTypes['OrgInviteToBusinessAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessApprovedAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessDeniedAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessRequestedAuditEntry'] | ResolversParentTypes['OrgRemoveBillingManagerAuditEntry'] | ResolversParentTypes['OrgRemoveMemberAuditEntry'] | ResolversParentTypes['OrgRemoveOutsideCollaboratorAuditEntry'] | ResolversParentTypes['OrgRestoreMemberAuditEntry'] | ResolversParentTypes['OrgUnblockUserAuditEntry'] | ResolversParentTypes['OrgUpdateDefaultRepositoryPermissionAuditEntry'] | ResolversParentTypes['OrgUpdateMemberAuditEntry'] | ResolversParentTypes['OrgUpdateMemberRepositoryCreationPermissionAuditEntry'] | ResolversParentTypes['OrgUpdateMemberRepositoryInvitationPermissionAuditEntry'] | ResolversParentTypes['Organization'] | ResolversParentTypes['OrganizationIdentityProvider'] | ResolversParentTypes['OrganizationInvitation'] | ResolversParentTypes['Package'] | ResolversParentTypes['PackageFile'] | ResolversParentTypes['PackageTag'] | ResolversParentTypes['PackageVersion'] | ResolversParentTypes['PinnedDiscussion'] | ResolversParentTypes['PinnedEvent'] | ResolversParentTypes['PinnedIssue'] | ResolversParentTypes['PrivateRepositoryForkingDisableAuditEntry'] | ResolversParentTypes['PrivateRepositoryForkingEnableAuditEntry'] | ResolversParentTypes['Project'] | ResolversParentTypes['ProjectCard'] | ResolversParentTypes['ProjectColumn'] | ResolversParentTypes['ProjectNext'] | ResolversParentTypes['ProjectNextField'] | ResolversParentTypes['ProjectNextItem'] | ResolversParentTypes['ProjectNextItemFieldValue'] | ResolversParentTypes['ProjectV2'] | ResolversParentTypes['ProjectV2Field'] | ResolversParentTypes['ProjectV2Item'] | ResolversParentTypes['ProjectV2ItemFieldDateValue'] | ResolversParentTypes['ProjectV2ItemFieldIterationValue'] | ResolversParentTypes['ProjectV2ItemFieldNumberValue'] | ResolversParentTypes['ProjectV2ItemFieldSingleSelectValue'] | ResolversParentTypes['ProjectV2ItemFieldTextValue'] | ResolversParentTypes['ProjectV2IterationField'] | ResolversParentTypes['ProjectV2SingleSelectField'] | ResolversParentTypes['ProjectV2View'] | ResolversParentTypes['ProjectView'] | ResolversParentTypes['PublicKey'] | ResolversParentTypes['PullRequest'] | ResolversParentTypes['PullRequestCommit'] | ResolversParentTypes['PullRequestCommitCommentThread'] | ResolversParentTypes['PullRequestReview'] | ResolversParentTypes['PullRequestReviewComment'] | ResolversParentTypes['PullRequestReviewThread'] | ResolversParentTypes['PullRequestThread'] | ResolversParentTypes['Push'] | ResolversParentTypes['PushAllowance'] | ResolversParentTypes['Reaction'] | ResolversParentTypes['ReadyForReviewEvent'] | ResolversParentTypes['Ref'] | ResolversParentTypes['ReferencedEvent'] | ResolversParentTypes['Release'] | ResolversParentTypes['ReleaseAsset'] | ResolversParentTypes['RemovedFromProjectEvent'] | ResolversParentTypes['RenamedTitleEvent'] | ResolversParentTypes['ReopenedEvent'] | ResolversParentTypes['RepoAccessAuditEntry'] | ResolversParentTypes['RepoAddMemberAuditEntry'] | ResolversParentTypes['RepoAddTopicAuditEntry'] | ResolversParentTypes['RepoArchivedAuditEntry'] | ResolversParentTypes['RepoChangeMergeSettingAuditEntry'] | ResolversParentTypes['RepoConfigDisableAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigDisableContributorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigDisableSockpuppetDisallowedAuditEntry'] | ResolversParentTypes['RepoConfigEnableAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigEnableContributorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigEnableSockpuppetDisallowedAuditEntry'] | ResolversParentTypes['RepoConfigLockAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoConfigUnlockAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoCreateAuditEntry'] | ResolversParentTypes['RepoDestroyAuditEntry'] | ResolversParentTypes['RepoRemoveMemberAuditEntry'] | ResolversParentTypes['RepoRemoveTopicAuditEntry'] | ResolversParentTypes['Repository'] | ResolversParentTypes['RepositoryInvitation'] | ResolversParentTypes['RepositoryMigration'] | ResolversParentTypes['RepositoryTopic'] | ResolversParentTypes['RepositoryVisibilityChangeDisableAuditEntry'] | ResolversParentTypes['RepositoryVisibilityChangeEnableAuditEntry'] | ResolversParentTypes['RepositoryVulnerabilityAlert'] | ResolversParentTypes['ReviewDismissalAllowance'] | ResolversParentTypes['ReviewDismissedEvent'] | ResolversParentTypes['ReviewRequest'] | ResolversParentTypes['ReviewRequestRemovedEvent'] | ResolversParentTypes['ReviewRequestedEvent'] | ResolversParentTypes['SavedReply'] | ResolversParentTypes['SecurityAdvisory'] | ResolversParentTypes['SponsorsActivity'] | ResolversParentTypes['SponsorsListing'] | ResolversParentTypes['SponsorsTier'] | ResolversParentTypes['Sponsorship'] | ResolversParentTypes['SponsorshipNewsletter'] | ResolversParentTypes['Status'] | ResolversParentTypes['StatusCheckRollup'] | ResolversParentTypes['StatusContext'] | ResolversParentTypes['SubscribedEvent'] | ResolversParentTypes['Tag'] | ResolversParentTypes['Team'] | ResolversParentTypes['TeamAddMemberAuditEntry'] | ResolversParentTypes['TeamAddRepositoryAuditEntry'] | ResolversParentTypes['TeamChangeParentTeamAuditEntry'] | ResolversParentTypes['TeamDiscussion'] | ResolversParentTypes['TeamDiscussionComment'] | ResolversParentTypes['TeamRemoveMemberAuditEntry'] | ResolversParentTypes['TeamRemoveRepositoryAuditEntry'] | ResolversParentTypes['Topic'] | ResolversParentTypes['TransferredEvent'] | ResolversParentTypes['Tree'] | ResolversParentTypes['UnassignedEvent'] | ResolversParentTypes['UnlabeledEvent'] | ResolversParentTypes['UnlockedEvent'] | ResolversParentTypes['UnmarkedAsDuplicateEvent'] | ResolversParentTypes['UnpinnedEvent'] | ResolversParentTypes['UnsubscribedEvent'] | ResolversParentTypes['User'] | ResolversParentTypes['UserBlockedEvent'] | ResolversParentTypes['UserContentEdit'] | ResolversParentTypes['UserStatus'] | ResolversParentTypes['VerifiableDomain'] | ResolversParentTypes['Workflow'] | ResolversParentTypes['WorkflowRun'];
+  Node: ResolversParentTypes['AddedToProjectEvent'] | ResolversParentTypes['App'] | ResolversParentTypes['AssignedEvent'] | ResolversParentTypes['AutoMergeDisabledEvent'] | ResolversParentTypes['AutoMergeEnabledEvent'] | ResolversParentTypes['AutoRebaseEnabledEvent'] | ResolversParentTypes['AutoSquashEnabledEvent'] | ResolversParentTypes['AutomaticBaseChangeFailedEvent'] | ResolversParentTypes['AutomaticBaseChangeSucceededEvent'] | ResolversParentTypes['BaseRefChangedEvent'] | ResolversParentTypes['BaseRefDeletedEvent'] | ResolversParentTypes['BaseRefForcePushedEvent'] | ResolversParentTypes['Blob'] | ResolversParentTypes['Bot'] | ResolversParentTypes['BranchProtectionRule'] | ResolversParentTypes['BypassForcePushAllowance'] | ResolversParentTypes['BypassPullRequestAllowance'] | ResolversParentTypes['CWE'] | ResolversParentTypes['CheckRun'] | ResolversParentTypes['CheckSuite'] | ResolversParentTypes['ClosedEvent'] | ResolversParentTypes['CodeOfConduct'] | ResolversParentTypes['CommentDeletedEvent'] | ResolversParentTypes['Commit'] | ResolversParentTypes['CommitComment'] | ResolversParentTypes['CommitCommentThread'] | ResolversParentTypes['Comparison'] | ResolversParentTypes['ConnectedEvent'] | ResolversParentTypes['ConvertToDraftEvent'] | ResolversParentTypes['ConvertedNoteToIssueEvent'] | ResolversParentTypes['ConvertedToDiscussionEvent'] | ResolversParentTypes['CrossReferencedEvent'] | ResolversParentTypes['DemilestonedEvent'] | ResolversParentTypes['DeployKey'] | ResolversParentTypes['DeployedEvent'] | ResolversParentTypes['Deployment'] | ResolversParentTypes['DeploymentEnvironmentChangedEvent'] | ResolversParentTypes['DeploymentReview'] | ResolversParentTypes['DeploymentStatus'] | ResolversParentTypes['DisconnectedEvent'] | ResolversParentTypes['Discussion'] | ResolversParentTypes['DiscussionCategory'] | ResolversParentTypes['DiscussionComment'] | ResolversParentTypes['DiscussionPoll'] | ResolversParentTypes['DiscussionPollOption'] | ResolversParentTypes['DraftIssue'] | ResolversParentTypes['Enterprise'] | ResolversParentTypes['EnterpriseAdministratorInvitation'] | ResolversParentTypes['EnterpriseIdentityProvider'] | ResolversParentTypes['EnterpriseRepositoryInfo'] | ResolversParentTypes['EnterpriseServerInstallation'] | ResolversParentTypes['EnterpriseServerUserAccount'] | ResolversParentTypes['EnterpriseServerUserAccountEmail'] | ResolversParentTypes['EnterpriseServerUserAccountsUpload'] | ResolversParentTypes['EnterpriseUserAccount'] | ResolversParentTypes['Environment'] | ResolversParentTypes['ExternalIdentity'] | ResolversParentTypes['Gist'] | ResolversParentTypes['GistComment'] | ResolversParentTypes['HeadRefDeletedEvent'] | ResolversParentTypes['HeadRefForcePushedEvent'] | ResolversParentTypes['HeadRefRestoredEvent'] | ResolversParentTypes['IpAllowListEntry'] | ResolversParentTypes['Issue'] | ResolversParentTypes['IssueComment'] | ResolversParentTypes['Label'] | ResolversParentTypes['LabeledEvent'] | ResolversParentTypes['Language'] | ResolversParentTypes['License'] | ResolversParentTypes['LinkedBranch'] | ResolversParentTypes['LockedEvent'] | ResolversParentTypes['Mannequin'] | ResolversParentTypes['MarkedAsDuplicateEvent'] | ResolversParentTypes['MarketplaceCategory'] | ResolversParentTypes['MarketplaceListing'] | ResolversParentTypes['MembersCanDeleteReposClearAuditEntry'] | ResolversParentTypes['MembersCanDeleteReposDisableAuditEntry'] | ResolversParentTypes['MembersCanDeleteReposEnableAuditEntry'] | ResolversParentTypes['MentionedEvent'] | ResolversParentTypes['MergedEvent'] | ResolversParentTypes['MigrationSource'] | ResolversParentTypes['Milestone'] | ResolversParentTypes['MilestonedEvent'] | ResolversParentTypes['MovedColumnsInProjectEvent'] | ResolversParentTypes['OIDCProvider'] | ResolversParentTypes['OauthApplicationCreateAuditEntry'] | ResolversParentTypes['OrgAddBillingManagerAuditEntry'] | ResolversParentTypes['OrgAddMemberAuditEntry'] | ResolversParentTypes['OrgBlockUserAuditEntry'] | ResolversParentTypes['OrgConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['OrgConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['OrgCreateAuditEntry'] | ResolversParentTypes['OrgDisableOauthAppRestrictionsAuditEntry'] | ResolversParentTypes['OrgDisableSamlAuditEntry'] | ResolversParentTypes['OrgDisableTwoFactorRequirementAuditEntry'] | ResolversParentTypes['OrgEnableOauthAppRestrictionsAuditEntry'] | ResolversParentTypes['OrgEnableSamlAuditEntry'] | ResolversParentTypes['OrgEnableTwoFactorRequirementAuditEntry'] | ResolversParentTypes['OrgInviteMemberAuditEntry'] | ResolversParentTypes['OrgInviteToBusinessAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessApprovedAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessDeniedAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessRequestedAuditEntry'] | ResolversParentTypes['OrgRemoveBillingManagerAuditEntry'] | ResolversParentTypes['OrgRemoveMemberAuditEntry'] | ResolversParentTypes['OrgRemoveOutsideCollaboratorAuditEntry'] | ResolversParentTypes['OrgRestoreMemberAuditEntry'] | ResolversParentTypes['OrgUnblockUserAuditEntry'] | ResolversParentTypes['OrgUpdateDefaultRepositoryPermissionAuditEntry'] | ResolversParentTypes['OrgUpdateMemberAuditEntry'] | ResolversParentTypes['OrgUpdateMemberRepositoryCreationPermissionAuditEntry'] | ResolversParentTypes['OrgUpdateMemberRepositoryInvitationPermissionAuditEntry'] | ResolversParentTypes['Organization'] | ResolversParentTypes['OrganizationIdentityProvider'] | ResolversParentTypes['OrganizationInvitation'] | ResolversParentTypes['Package'] | ResolversParentTypes['PackageFile'] | ResolversParentTypes['PackageTag'] | ResolversParentTypes['PackageVersion'] | ResolversParentTypes['PinnedDiscussion'] | ResolversParentTypes['PinnedEvent'] | ResolversParentTypes['PinnedIssue'] | ResolversParentTypes['PrivateRepositoryForkingDisableAuditEntry'] | ResolversParentTypes['PrivateRepositoryForkingEnableAuditEntry'] | ResolversParentTypes['Project'] | ResolversParentTypes['ProjectCard'] | ResolversParentTypes['ProjectColumn'] | ResolversParentTypes['ProjectNext'] | ResolversParentTypes['ProjectNextField'] | ResolversParentTypes['ProjectNextItem'] | ResolversParentTypes['ProjectNextItemFieldValue'] | ResolversParentTypes['ProjectV2'] | ResolversParentTypes['ProjectV2Field'] | ResolversParentTypes['ProjectV2Item'] | ResolversParentTypes['ProjectV2ItemFieldDateValue'] | ResolversParentTypes['ProjectV2ItemFieldIterationValue'] | ResolversParentTypes['ProjectV2ItemFieldNumberValue'] | ResolversParentTypes['ProjectV2ItemFieldSingleSelectValue'] | ResolversParentTypes['ProjectV2ItemFieldTextValue'] | ResolversParentTypes['ProjectV2IterationField'] | ResolversParentTypes['ProjectV2SingleSelectField'] | ResolversParentTypes['ProjectV2View'] | ResolversParentTypes['ProjectView'] | ResolversParentTypes['PublicKey'] | ResolversParentTypes['PullRequest'] | ResolversParentTypes['PullRequestCommit'] | ResolversParentTypes['PullRequestCommitCommentThread'] | ResolversParentTypes['PullRequestReview'] | ResolversParentTypes['PullRequestReviewComment'] | ResolversParentTypes['PullRequestReviewThread'] | ResolversParentTypes['PullRequestThread'] | ResolversParentTypes['Push'] | ResolversParentTypes['PushAllowance'] | ResolversParentTypes['Reaction'] | ResolversParentTypes['ReadyForReviewEvent'] | ResolversParentTypes['Ref'] | ResolversParentTypes['ReferencedEvent'] | ResolversParentTypes['Release'] | ResolversParentTypes['ReleaseAsset'] | ResolversParentTypes['RemovedFromProjectEvent'] | ResolversParentTypes['RenamedTitleEvent'] | ResolversParentTypes['ReopenedEvent'] | ResolversParentTypes['RepoAccessAuditEntry'] | ResolversParentTypes['RepoAddMemberAuditEntry'] | ResolversParentTypes['RepoAddTopicAuditEntry'] | ResolversParentTypes['RepoArchivedAuditEntry'] | ResolversParentTypes['RepoChangeMergeSettingAuditEntry'] | ResolversParentTypes['RepoConfigDisableAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigDisableContributorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigDisableSockpuppetDisallowedAuditEntry'] | ResolversParentTypes['RepoConfigEnableAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigEnableContributorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigEnableSockpuppetDisallowedAuditEntry'] | ResolversParentTypes['RepoConfigLockAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoConfigUnlockAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoCreateAuditEntry'] | ResolversParentTypes['RepoDestroyAuditEntry'] | ResolversParentTypes['RepoRemoveMemberAuditEntry'] | ResolversParentTypes['RepoRemoveTopicAuditEntry'] | ResolversParentTypes['Repository'] | ResolversParentTypes['RepositoryInvitation'] | ResolversParentTypes['RepositoryMigration'] | ResolversParentTypes['RepositoryTopic'] | ResolversParentTypes['RepositoryVisibilityChangeDisableAuditEntry'] | ResolversParentTypes['RepositoryVisibilityChangeEnableAuditEntry'] | ResolversParentTypes['RepositoryVulnerabilityAlert'] | ResolversParentTypes['ReviewDismissalAllowance'] | ResolversParentTypes['ReviewDismissedEvent'] | ResolversParentTypes['ReviewRequest'] | ResolversParentTypes['ReviewRequestRemovedEvent'] | ResolversParentTypes['ReviewRequestedEvent'] | ResolversParentTypes['SavedReply'] | ResolversParentTypes['SecurityAdvisory'] | ResolversParentTypes['SponsorsActivity'] | ResolversParentTypes['SponsorsListing'] | ResolversParentTypes['SponsorsTier'] | ResolversParentTypes['Sponsorship'] | ResolversParentTypes['SponsorshipNewsletter'] | ResolversParentTypes['Status'] | ResolversParentTypes['StatusCheckRollup'] | ResolversParentTypes['StatusContext'] | ResolversParentTypes['SubscribedEvent'] | ResolversParentTypes['Tag'] | ResolversParentTypes['Team'] | ResolversParentTypes['TeamAddMemberAuditEntry'] | ResolversParentTypes['TeamAddRepositoryAuditEntry'] | ResolversParentTypes['TeamChangeParentTeamAuditEntry'] | ResolversParentTypes['TeamDiscussion'] | ResolversParentTypes['TeamDiscussionComment'] | ResolversParentTypes['TeamRemoveMemberAuditEntry'] | ResolversParentTypes['TeamRemoveRepositoryAuditEntry'] | ResolversParentTypes['Topic'] | ResolversParentTypes['TransferredEvent'] | ResolversParentTypes['Tree'] | ResolversParentTypes['UnassignedEvent'] | ResolversParentTypes['UnlabeledEvent'] | ResolversParentTypes['UnlockedEvent'] | ResolversParentTypes['UnmarkedAsDuplicateEvent'] | ResolversParentTypes['UnpinnedEvent'] | ResolversParentTypes['UnsubscribedEvent'] | ResolversParentTypes['User'] | ResolversParentTypes['UserBlockedEvent'] | ResolversParentTypes['UserContentEdit'] | ResolversParentTypes['UserStatus'] | ResolversParentTypes['VerifiableDomain'] | ResolversParentTypes['Workflow'] | ResolversParentTypes['WorkflowRun'];
   OIDCProvider: OidcProvider;
   OauthApplicationAuditEntryData: ResolversParentTypes['OauthApplicationCreateAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessApprovedAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessDeniedAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessRequestedAuditEntry'];
   OauthApplicationCreateAuditEntry: Omit<OauthApplicationCreateAuditEntry, 'actor'> & { actor?: Maybe<ResolversParentTypes['AuditEntryActor']> };
@@ -28216,6 +28411,9 @@ export type ResolversParentTypes = {
   ProjectV2SortBy: ProjectV2SortBy;
   ProjectV2SortByConnection: ProjectV2SortByConnection;
   ProjectV2SortByEdge: ProjectV2SortByEdge;
+  ProjectV2SortByField: Omit<ProjectV2SortByField, 'field'> & { field: ResolversParentTypes['ProjectV2FieldConfiguration'] };
+  ProjectV2SortByFieldConnection: ProjectV2SortByFieldConnection;
+  ProjectV2SortByFieldEdge: ProjectV2SortByFieldEdge;
   ProjectV2View: ProjectV2View;
   ProjectV2ViewConnection: ProjectV2ViewConnection;
   ProjectV2ViewEdge: ProjectV2ViewEdge;
@@ -29093,10 +29291,13 @@ export type BranchProtectionRuleResolvers<ContextType = any, ParentType extends 
   dismissesStaleReviews?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isAdminEnforced?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  lockAllowsFetchAndMerge?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  lockBranch?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   matchingRefs?: Resolver<ResolversTypes['RefConnection'], ParentType, ContextType, Partial<BranchProtectionRuleMatchingRefsArgs>>;
   pattern?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   pushAllowances?: Resolver<ResolversTypes['PushAllowanceConnection'], ParentType, ContextType, Partial<BranchProtectionRulePushAllowancesArgs>>;
   repository?: Resolver<Maybe<ResolversTypes['Repository']>, ParentType, ContextType>;
+  requireLastPushApproval?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   requiredApprovingReviewCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   requiredStatusCheckContexts?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   requiredStatusChecks?: Resolver<Maybe<Array<ResolversTypes['RequiredStatusCheckDescription']>>, ParentType, ContextType>;
@@ -29610,6 +29811,26 @@ export type CommitEdgeResolvers<ContextType = any, ParentType extends ResolversP
 };
 
 export type CommitHistoryConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitHistoryConnection'] = ResolversParentTypes['CommitHistoryConnection']> = {
+  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['CommitEdge']>>>, ParentType, ContextType>;
+  nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['Commit']>>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ComparisonResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comparison'] = ResolversParentTypes['Comparison']> = {
+  aheadBy?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  baseTarget?: Resolver<ResolversTypes['GitObject'], ParentType, ContextType>;
+  behindBy?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  commits?: Resolver<ResolversTypes['ComparisonCommitConnection'], ParentType, ContextType, Partial<ComparisonCommitsArgs>>;
+  headTarget?: Resolver<ResolversTypes['GitObject'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['ComparisonStatus'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ComparisonCommitConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['ComparisonCommitConnection'] = ResolversParentTypes['ComparisonCommitConnection']> = {
+  authorCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['CommitEdge']>>>, ParentType, ContextType>;
   nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['Commit']>>>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
@@ -31459,6 +31680,7 @@ export type IssueOrPullRequestResolvers<ContextType = any, ParentType extends Re
 export type IssueTemplateResolvers<ContextType = any, ParentType extends ResolversParentTypes['IssueTemplate'] = ResolversParentTypes['IssueTemplate']> = {
   about?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   body?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  filename?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -32194,7 +32416,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'AddedToProjectEvent' | 'App' | 'AssignedEvent' | 'AutoMergeDisabledEvent' | 'AutoMergeEnabledEvent' | 'AutoRebaseEnabledEvent' | 'AutoSquashEnabledEvent' | 'AutomaticBaseChangeFailedEvent' | 'AutomaticBaseChangeSucceededEvent' | 'BaseRefChangedEvent' | 'BaseRefDeletedEvent' | 'BaseRefForcePushedEvent' | 'Blob' | 'Bot' | 'BranchProtectionRule' | 'BypassForcePushAllowance' | 'BypassPullRequestAllowance' | 'CWE' | 'CheckRun' | 'CheckSuite' | 'ClosedEvent' | 'CodeOfConduct' | 'CommentDeletedEvent' | 'Commit' | 'CommitComment' | 'CommitCommentThread' | 'ConnectedEvent' | 'ConvertToDraftEvent' | 'ConvertedNoteToIssueEvent' | 'ConvertedToDiscussionEvent' | 'CrossReferencedEvent' | 'DemilestonedEvent' | 'DeployKey' | 'DeployedEvent' | 'Deployment' | 'DeploymentEnvironmentChangedEvent' | 'DeploymentReview' | 'DeploymentStatus' | 'DisconnectedEvent' | 'Discussion' | 'DiscussionCategory' | 'DiscussionComment' | 'DiscussionPoll' | 'DiscussionPollOption' | 'DraftIssue' | 'Enterprise' | 'EnterpriseAdministratorInvitation' | 'EnterpriseIdentityProvider' | 'EnterpriseRepositoryInfo' | 'EnterpriseServerInstallation' | 'EnterpriseServerUserAccount' | 'EnterpriseServerUserAccountEmail' | 'EnterpriseServerUserAccountsUpload' | 'EnterpriseUserAccount' | 'Environment' | 'ExternalIdentity' | 'Gist' | 'GistComment' | 'HeadRefDeletedEvent' | 'HeadRefForcePushedEvent' | 'HeadRefRestoredEvent' | 'IpAllowListEntry' | 'Issue' | 'IssueComment' | 'Label' | 'LabeledEvent' | 'Language' | 'License' | 'LinkedBranch' | 'LockedEvent' | 'Mannequin' | 'MarkedAsDuplicateEvent' | 'MarketplaceCategory' | 'MarketplaceListing' | 'MembersCanDeleteReposClearAuditEntry' | 'MembersCanDeleteReposDisableAuditEntry' | 'MembersCanDeleteReposEnableAuditEntry' | 'MentionedEvent' | 'MergedEvent' | 'MigrationSource' | 'Milestone' | 'MilestonedEvent' | 'MovedColumnsInProjectEvent' | 'OIDCProvider' | 'OauthApplicationCreateAuditEntry' | 'OrgAddBillingManagerAuditEntry' | 'OrgAddMemberAuditEntry' | 'OrgBlockUserAuditEntry' | 'OrgConfigDisableCollaboratorsOnlyAuditEntry' | 'OrgConfigEnableCollaboratorsOnlyAuditEntry' | 'OrgCreateAuditEntry' | 'OrgDisableOauthAppRestrictionsAuditEntry' | 'OrgDisableSamlAuditEntry' | 'OrgDisableTwoFactorRequirementAuditEntry' | 'OrgEnableOauthAppRestrictionsAuditEntry' | 'OrgEnableSamlAuditEntry' | 'OrgEnableTwoFactorRequirementAuditEntry' | 'OrgInviteMemberAuditEntry' | 'OrgInviteToBusinessAuditEntry' | 'OrgOauthAppAccessApprovedAuditEntry' | 'OrgOauthAppAccessDeniedAuditEntry' | 'OrgOauthAppAccessRequestedAuditEntry' | 'OrgRemoveBillingManagerAuditEntry' | 'OrgRemoveMemberAuditEntry' | 'OrgRemoveOutsideCollaboratorAuditEntry' | 'OrgRestoreMemberAuditEntry' | 'OrgUnblockUserAuditEntry' | 'OrgUpdateDefaultRepositoryPermissionAuditEntry' | 'OrgUpdateMemberAuditEntry' | 'OrgUpdateMemberRepositoryCreationPermissionAuditEntry' | 'OrgUpdateMemberRepositoryInvitationPermissionAuditEntry' | 'Organization' | 'OrganizationIdentityProvider' | 'OrganizationInvitation' | 'Package' | 'PackageFile' | 'PackageTag' | 'PackageVersion' | 'PinnedDiscussion' | 'PinnedEvent' | 'PinnedIssue' | 'PrivateRepositoryForkingDisableAuditEntry' | 'PrivateRepositoryForkingEnableAuditEntry' | 'Project' | 'ProjectCard' | 'ProjectColumn' | 'ProjectNext' | 'ProjectNextField' | 'ProjectNextItem' | 'ProjectNextItemFieldValue' | 'ProjectV2' | 'ProjectV2Field' | 'ProjectV2Item' | 'ProjectV2ItemFieldDateValue' | 'ProjectV2ItemFieldIterationValue' | 'ProjectV2ItemFieldNumberValue' | 'ProjectV2ItemFieldSingleSelectValue' | 'ProjectV2ItemFieldTextValue' | 'ProjectV2IterationField' | 'ProjectV2SingleSelectField' | 'ProjectV2View' | 'ProjectView' | 'PublicKey' | 'PullRequest' | 'PullRequestCommit' | 'PullRequestCommitCommentThread' | 'PullRequestReview' | 'PullRequestReviewComment' | 'PullRequestReviewThread' | 'PullRequestThread' | 'Push' | 'PushAllowance' | 'Reaction' | 'ReadyForReviewEvent' | 'Ref' | 'ReferencedEvent' | 'Release' | 'ReleaseAsset' | 'RemovedFromProjectEvent' | 'RenamedTitleEvent' | 'ReopenedEvent' | 'RepoAccessAuditEntry' | 'RepoAddMemberAuditEntry' | 'RepoAddTopicAuditEntry' | 'RepoArchivedAuditEntry' | 'RepoChangeMergeSettingAuditEntry' | 'RepoConfigDisableAnonymousGitAccessAuditEntry' | 'RepoConfigDisableCollaboratorsOnlyAuditEntry' | 'RepoConfigDisableContributorsOnlyAuditEntry' | 'RepoConfigDisableSockpuppetDisallowedAuditEntry' | 'RepoConfigEnableAnonymousGitAccessAuditEntry' | 'RepoConfigEnableCollaboratorsOnlyAuditEntry' | 'RepoConfigEnableContributorsOnlyAuditEntry' | 'RepoConfigEnableSockpuppetDisallowedAuditEntry' | 'RepoConfigLockAnonymousGitAccessAuditEntry' | 'RepoConfigUnlockAnonymousGitAccessAuditEntry' | 'RepoCreateAuditEntry' | 'RepoDestroyAuditEntry' | 'RepoRemoveMemberAuditEntry' | 'RepoRemoveTopicAuditEntry' | 'Repository' | 'RepositoryInvitation' | 'RepositoryMigration' | 'RepositoryTopic' | 'RepositoryVisibilityChangeDisableAuditEntry' | 'RepositoryVisibilityChangeEnableAuditEntry' | 'RepositoryVulnerabilityAlert' | 'ReviewDismissalAllowance' | 'ReviewDismissedEvent' | 'ReviewRequest' | 'ReviewRequestRemovedEvent' | 'ReviewRequestedEvent' | 'SavedReply' | 'SecurityAdvisory' | 'SponsorsActivity' | 'SponsorsListing' | 'SponsorsTier' | 'Sponsorship' | 'SponsorshipNewsletter' | 'Status' | 'StatusCheckRollup' | 'StatusContext' | 'SubscribedEvent' | 'Tag' | 'Team' | 'TeamAddMemberAuditEntry' | 'TeamAddRepositoryAuditEntry' | 'TeamChangeParentTeamAuditEntry' | 'TeamDiscussion' | 'TeamDiscussionComment' | 'TeamRemoveMemberAuditEntry' | 'TeamRemoveRepositoryAuditEntry' | 'Topic' | 'TransferredEvent' | 'Tree' | 'UnassignedEvent' | 'UnlabeledEvent' | 'UnlockedEvent' | 'UnmarkedAsDuplicateEvent' | 'UnpinnedEvent' | 'UnsubscribedEvent' | 'User' | 'UserBlockedEvent' | 'UserContentEdit' | 'UserStatus' | 'VerifiableDomain' | 'Workflow' | 'WorkflowRun', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'AddedToProjectEvent' | 'App' | 'AssignedEvent' | 'AutoMergeDisabledEvent' | 'AutoMergeEnabledEvent' | 'AutoRebaseEnabledEvent' | 'AutoSquashEnabledEvent' | 'AutomaticBaseChangeFailedEvent' | 'AutomaticBaseChangeSucceededEvent' | 'BaseRefChangedEvent' | 'BaseRefDeletedEvent' | 'BaseRefForcePushedEvent' | 'Blob' | 'Bot' | 'BranchProtectionRule' | 'BypassForcePushAllowance' | 'BypassPullRequestAllowance' | 'CWE' | 'CheckRun' | 'CheckSuite' | 'ClosedEvent' | 'CodeOfConduct' | 'CommentDeletedEvent' | 'Commit' | 'CommitComment' | 'CommitCommentThread' | 'Comparison' | 'ConnectedEvent' | 'ConvertToDraftEvent' | 'ConvertedNoteToIssueEvent' | 'ConvertedToDiscussionEvent' | 'CrossReferencedEvent' | 'DemilestonedEvent' | 'DeployKey' | 'DeployedEvent' | 'Deployment' | 'DeploymentEnvironmentChangedEvent' | 'DeploymentReview' | 'DeploymentStatus' | 'DisconnectedEvent' | 'Discussion' | 'DiscussionCategory' | 'DiscussionComment' | 'DiscussionPoll' | 'DiscussionPollOption' | 'DraftIssue' | 'Enterprise' | 'EnterpriseAdministratorInvitation' | 'EnterpriseIdentityProvider' | 'EnterpriseRepositoryInfo' | 'EnterpriseServerInstallation' | 'EnterpriseServerUserAccount' | 'EnterpriseServerUserAccountEmail' | 'EnterpriseServerUserAccountsUpload' | 'EnterpriseUserAccount' | 'Environment' | 'ExternalIdentity' | 'Gist' | 'GistComment' | 'HeadRefDeletedEvent' | 'HeadRefForcePushedEvent' | 'HeadRefRestoredEvent' | 'IpAllowListEntry' | 'Issue' | 'IssueComment' | 'Label' | 'LabeledEvent' | 'Language' | 'License' | 'LinkedBranch' | 'LockedEvent' | 'Mannequin' | 'MarkedAsDuplicateEvent' | 'MarketplaceCategory' | 'MarketplaceListing' | 'MembersCanDeleteReposClearAuditEntry' | 'MembersCanDeleteReposDisableAuditEntry' | 'MembersCanDeleteReposEnableAuditEntry' | 'MentionedEvent' | 'MergedEvent' | 'MigrationSource' | 'Milestone' | 'MilestonedEvent' | 'MovedColumnsInProjectEvent' | 'OIDCProvider' | 'OauthApplicationCreateAuditEntry' | 'OrgAddBillingManagerAuditEntry' | 'OrgAddMemberAuditEntry' | 'OrgBlockUserAuditEntry' | 'OrgConfigDisableCollaboratorsOnlyAuditEntry' | 'OrgConfigEnableCollaboratorsOnlyAuditEntry' | 'OrgCreateAuditEntry' | 'OrgDisableOauthAppRestrictionsAuditEntry' | 'OrgDisableSamlAuditEntry' | 'OrgDisableTwoFactorRequirementAuditEntry' | 'OrgEnableOauthAppRestrictionsAuditEntry' | 'OrgEnableSamlAuditEntry' | 'OrgEnableTwoFactorRequirementAuditEntry' | 'OrgInviteMemberAuditEntry' | 'OrgInviteToBusinessAuditEntry' | 'OrgOauthAppAccessApprovedAuditEntry' | 'OrgOauthAppAccessDeniedAuditEntry' | 'OrgOauthAppAccessRequestedAuditEntry' | 'OrgRemoveBillingManagerAuditEntry' | 'OrgRemoveMemberAuditEntry' | 'OrgRemoveOutsideCollaboratorAuditEntry' | 'OrgRestoreMemberAuditEntry' | 'OrgUnblockUserAuditEntry' | 'OrgUpdateDefaultRepositoryPermissionAuditEntry' | 'OrgUpdateMemberAuditEntry' | 'OrgUpdateMemberRepositoryCreationPermissionAuditEntry' | 'OrgUpdateMemberRepositoryInvitationPermissionAuditEntry' | 'Organization' | 'OrganizationIdentityProvider' | 'OrganizationInvitation' | 'Package' | 'PackageFile' | 'PackageTag' | 'PackageVersion' | 'PinnedDiscussion' | 'PinnedEvent' | 'PinnedIssue' | 'PrivateRepositoryForkingDisableAuditEntry' | 'PrivateRepositoryForkingEnableAuditEntry' | 'Project' | 'ProjectCard' | 'ProjectColumn' | 'ProjectNext' | 'ProjectNextField' | 'ProjectNextItem' | 'ProjectNextItemFieldValue' | 'ProjectV2' | 'ProjectV2Field' | 'ProjectV2Item' | 'ProjectV2ItemFieldDateValue' | 'ProjectV2ItemFieldIterationValue' | 'ProjectV2ItemFieldNumberValue' | 'ProjectV2ItemFieldSingleSelectValue' | 'ProjectV2ItemFieldTextValue' | 'ProjectV2IterationField' | 'ProjectV2SingleSelectField' | 'ProjectV2View' | 'ProjectView' | 'PublicKey' | 'PullRequest' | 'PullRequestCommit' | 'PullRequestCommitCommentThread' | 'PullRequestReview' | 'PullRequestReviewComment' | 'PullRequestReviewThread' | 'PullRequestThread' | 'Push' | 'PushAllowance' | 'Reaction' | 'ReadyForReviewEvent' | 'Ref' | 'ReferencedEvent' | 'Release' | 'ReleaseAsset' | 'RemovedFromProjectEvent' | 'RenamedTitleEvent' | 'ReopenedEvent' | 'RepoAccessAuditEntry' | 'RepoAddMemberAuditEntry' | 'RepoAddTopicAuditEntry' | 'RepoArchivedAuditEntry' | 'RepoChangeMergeSettingAuditEntry' | 'RepoConfigDisableAnonymousGitAccessAuditEntry' | 'RepoConfigDisableCollaboratorsOnlyAuditEntry' | 'RepoConfigDisableContributorsOnlyAuditEntry' | 'RepoConfigDisableSockpuppetDisallowedAuditEntry' | 'RepoConfigEnableAnonymousGitAccessAuditEntry' | 'RepoConfigEnableCollaboratorsOnlyAuditEntry' | 'RepoConfigEnableContributorsOnlyAuditEntry' | 'RepoConfigEnableSockpuppetDisallowedAuditEntry' | 'RepoConfigLockAnonymousGitAccessAuditEntry' | 'RepoConfigUnlockAnonymousGitAccessAuditEntry' | 'RepoCreateAuditEntry' | 'RepoDestroyAuditEntry' | 'RepoRemoveMemberAuditEntry' | 'RepoRemoveTopicAuditEntry' | 'Repository' | 'RepositoryInvitation' | 'RepositoryMigration' | 'RepositoryTopic' | 'RepositoryVisibilityChangeDisableAuditEntry' | 'RepositoryVisibilityChangeEnableAuditEntry' | 'RepositoryVulnerabilityAlert' | 'ReviewDismissalAllowance' | 'ReviewDismissedEvent' | 'ReviewRequest' | 'ReviewRequestRemovedEvent' | 'ReviewRequestedEvent' | 'SavedReply' | 'SecurityAdvisory' | 'SponsorsActivity' | 'SponsorsListing' | 'SponsorsTier' | 'Sponsorship' | 'SponsorshipNewsletter' | 'Status' | 'StatusCheckRollup' | 'StatusContext' | 'SubscribedEvent' | 'Tag' | 'Team' | 'TeamAddMemberAuditEntry' | 'TeamAddRepositoryAuditEntry' | 'TeamChangeParentTeamAuditEntry' | 'TeamDiscussion' | 'TeamDiscussionComment' | 'TeamRemoveMemberAuditEntry' | 'TeamRemoveRepositoryAuditEntry' | 'Topic' | 'TransferredEvent' | 'Tree' | 'UnassignedEvent' | 'UnlabeledEvent' | 'UnlockedEvent' | 'UnmarkedAsDuplicateEvent' | 'UnpinnedEvent' | 'UnsubscribedEvent' | 'User' | 'UserBlockedEvent' | 'UserContentEdit' | 'UserStatus' | 'VerifiableDomain' | 'Workflow' | 'WorkflowRun', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -33681,6 +33903,7 @@ export type ProjectV2Resolvers<ContextType = any, ParentType extends ResolversPa
   repositories?: Resolver<ResolversTypes['RepositoryConnection'], ParentType, ContextType, RequireFields<ProjectV2RepositoriesArgs, 'orderBy'>>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   shortDescription?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  teams?: Resolver<ResolversTypes['TeamConnection'], ParentType, ContextType, RequireFields<ProjectV2TeamsArgs, 'orderBy'>>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
@@ -34002,6 +34225,26 @@ export type ProjectV2SortByEdgeResolvers<ContextType = any, ParentType extends R
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ProjectV2SortByFieldResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProjectV2SortByField'] = ResolversParentTypes['ProjectV2SortByField']> = {
+  direction?: Resolver<ResolversTypes['OrderDirection'], ParentType, ContextType>;
+  field?: Resolver<ResolversTypes['ProjectV2FieldConfiguration'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProjectV2SortByFieldConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProjectV2SortByFieldConnection'] = ResolversParentTypes['ProjectV2SortByFieldConnection']> = {
+  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProjectV2SortByFieldEdge']>>>, ParentType, ContextType>;
+  nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProjectV2SortByField']>>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProjectV2SortByFieldEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProjectV2SortByFieldEdge'] = ResolversParentTypes['ProjectV2SortByFieldEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['ProjectV2SortByField']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type ProjectV2ViewResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProjectV2View'] = ResolversParentTypes['ProjectV2View']> = {
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -34015,8 +34258,10 @@ export type ProjectV2ViewResolvers<ContextType = any, ParentType extends Resolve
   number?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   project?: Resolver<ResolversTypes['ProjectV2'], ParentType, ContextType>;
   sortBy?: Resolver<Maybe<ResolversTypes['ProjectV2SortByConnection']>, ParentType, ContextType, Partial<ProjectV2ViewSortByArgs>>;
+  sortByFields?: Resolver<Maybe<ResolversTypes['ProjectV2SortByFieldConnection']>, ParentType, ContextType, Partial<ProjectV2ViewSortByFieldsArgs>>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   verticalGroupBy?: Resolver<Maybe<ResolversTypes['ProjectV2FieldConnection']>, ParentType, ContextType, RequireFields<ProjectV2ViewVerticalGroupByArgs, 'orderBy'>>;
+  verticalGroupByFields?: Resolver<Maybe<ResolversTypes['ProjectV2FieldConfigurationConnection']>, ParentType, ContextType, RequireFields<ProjectV2ViewVerticalGroupByFieldsArgs, 'orderBy'>>;
   visibleFields?: Resolver<Maybe<ResolversTypes['ProjectV2FieldConnection']>, ParentType, ContextType, RequireFields<ProjectV2ViewVisibleFieldsArgs, 'orderBy'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -34658,6 +34903,7 @@ export type ReadyForReviewEventResolvers<ContextType = any, ParentType extends R
 export type RefResolvers<ContextType = any, ParentType extends ResolversParentTypes['Ref'] = ResolversParentTypes['Ref']> = {
   associatedPullRequests?: Resolver<ResolversTypes['PullRequestConnection'], ParentType, ContextType, Partial<RefAssociatedPullRequestsArgs>>;
   branchProtectionRule?: Resolver<Maybe<ResolversTypes['BranchProtectionRule']>, ParentType, ContextType>;
+  compare?: Resolver<Maybe<ResolversTypes['Comparison']>, ParentType, ContextType, RequireFields<RefCompareArgs, 'headRef'>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   prefix?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -35448,6 +35694,7 @@ export type RepositoryResolvers<ContextType = any, ParentType extends ResolversP
   forkingAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   forks?: Resolver<ResolversTypes['RepositoryConnection'], ParentType, ContextType, RequireFields<RepositoryForksArgs, 'ownerAffiliations'>>;
   fundingLinks?: Resolver<Array<ResolversTypes['FundingLink']>, ParentType, ContextType>;
+  hasDiscussionsEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasIssuesEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasProjectsEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasWikiEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -36574,6 +36821,8 @@ export type TeamResolvers<ContextType = any, ParentType extends ResolversParentT
   organization?: Resolver<ResolversTypes['Organization'], ParentType, ContextType>;
   parentTeam?: Resolver<Maybe<ResolversTypes['Team']>, ParentType, ContextType>;
   privacy?: Resolver<ResolversTypes['TeamPrivacy'], ParentType, ContextType>;
+  projectV2?: Resolver<Maybe<ResolversTypes['ProjectV2']>, ParentType, ContextType, RequireFields<TeamProjectV2Args, 'number'>>;
+  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<TeamProjectsV2Args, 'orderBy'>>;
   repositories?: Resolver<ResolversTypes['TeamRepositoryConnection'], ParentType, ContextType, Partial<TeamRepositoriesArgs>>;
   repositoriesResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   repositoriesUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
@@ -36953,6 +37202,7 @@ export type TreeResolvers<ContextType = any, ParentType extends ResolversParentT
 export type TreeEntryResolvers<ContextType = any, ParentType extends ResolversParentTypes['TreeEntry'] = ResolversParentTypes['TreeEntry']> = {
   extension?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   isGenerated?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  language?: Resolver<Maybe<ResolversTypes['Language']>, ParentType, ContextType>;
   lineCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   mode?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -37845,6 +38095,8 @@ export type Resolvers<ContextType = any> = {
   CommitContributionsByRepository?: CommitContributionsByRepositoryResolvers<ContextType>;
   CommitEdge?: CommitEdgeResolvers<ContextType>;
   CommitHistoryConnection?: CommitHistoryConnectionResolvers<ContextType>;
+  Comparison?: ComparisonResolvers<ContextType>;
+  ComparisonCommitConnection?: ComparisonCommitConnectionResolvers<ContextType>;
   ConnectedEvent?: ConnectedEventResolvers<ContextType>;
   Contribution?: ContributionResolvers<ContextType>;
   ContributionCalendar?: ContributionCalendarResolvers<ContextType>;
@@ -38258,6 +38510,9 @@ export type Resolvers<ContextType = any> = {
   ProjectV2SortBy?: ProjectV2SortByResolvers<ContextType>;
   ProjectV2SortByConnection?: ProjectV2SortByConnectionResolvers<ContextType>;
   ProjectV2SortByEdge?: ProjectV2SortByEdgeResolvers<ContextType>;
+  ProjectV2SortByField?: ProjectV2SortByFieldResolvers<ContextType>;
+  ProjectV2SortByFieldConnection?: ProjectV2SortByFieldConnectionResolvers<ContextType>;
+  ProjectV2SortByFieldEdge?: ProjectV2SortByFieldEdgeResolvers<ContextType>;
   ProjectV2View?: ProjectV2ViewResolvers<ContextType>;
   ProjectV2ViewConnection?: ProjectV2ViewConnectionResolvers<ContextType>;
   ProjectV2ViewEdge?: ProjectV2ViewEdgeResolvers<ContextType>;
