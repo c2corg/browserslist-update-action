@@ -50,7 +50,7 @@
     "eslint": "8.43.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-prettier": "4.2.1",
-    "graphql": "16.6.0",
+    "graphql": "16.7.0",
     "husky": "8.0.3",
     "prettier": "2.8.8",
     "pretty-quick": "3.1.3",
