@@ -45,7 +45,7 @@
     "@types/gettext-parser": "4.0.2",
     "@types/node": "18.11.7",
     "@typescript-eslint/eslint-plugin": "6.4.0",
-    "@typescript-eslint/parser": "6.4.0",
+    "@typescript-eslint/parser": "6.6.0",
     "@vercel/ncc": "0.36.1",
     "eslint": "8.48.0",
     "eslint-config-prettier": "9.0.0",
