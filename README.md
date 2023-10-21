@@ -45,6 +45,9 @@ jobs:
           labels: 'chores, github action'
 ```
 
+> [!IMPORTANT]  
+> This action can only create a pull request if the *Allow GitHub Actions to create and approve pull requests* option is enabled in *Settings > Actions > General*. 
+
 ## Action inputs
 
 Inputs with defaults are **optional**.
