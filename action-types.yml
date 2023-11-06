@@ -18,6 +18,16 @@ inputs:
     separator: ','
     list-item:
       type: string
+  reviewers:
+    type: list
+    separator: ','
+    list-item:
+      type: string
+  teams:
+    type: list
+    separator: ','
+    list-item:
+      type: string
 outputs:
   has_pr:
     type: boolean
