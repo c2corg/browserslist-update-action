@@ -48,7 +48,7 @@ jobs:
 ```
 
 > [!IMPORTANT]  
-> This action can only create a pull request if the *Allow GitHub Actions to create and approve pull requests* option is enabled in *Settings > Actions > General*. 
+> This action can only create a pull request if the _Allow GitHub Actions to create and approve pull requests_ option is enabled in _Settings > Actions > General_.
 
 ## Action inputs
 
@@ -64,8 +64,8 @@ Inputs with defaults are **optional**.
 | title          | The title of the pull request.                                                                                                                                                                            | `📈 Update caniuse database`                                                      |
 | body           | The body of the pull request.                                                                                                                                                                             | `Caniuse database has been updated. Review changes, merge this PR and have a 🍺.` |
 | labels         | A comma separated list of labels to apply to the pull request.                                                                                                                                            | (no label)                                                                        |
-| reviewers      | A comma separated list of users to be added to the the pull request reviewers list.                                                                                                                                                                           | (no users) |
-| teams          | A comma separated list of teams to be added to the the pull request reviewers list.                                                                                                                                                                          | (no teams) |
+| reviewers      | A comma separated list of users to be added to the the pull request reviewers list.                                                                                                                       | (no users)                                                                        |
+| teams          | A comma separated list of teams to be added to the the pull request reviewers list.                                                                                                                       | (no teams)                                                                        |
 
 One will usually run this action on a cron basis (say, every day or week)
 
