@@ -33,6 +33,12 @@ inputs:
   labels:
     description: Labels to associate to the pull request
     required: false
+  reviewers:
+    description: Users to associate to the pull request reviewers list
+    required: false
+  teams:
+    description: Teams to associate to the pull request reviewers list
+    required: false
 outputs:
   has_pr:
     description: A boolean set to true when changes were found and a pull request was created or updated.

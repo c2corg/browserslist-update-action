@@ -1,14 +1,18 @@
+import * as core from '@actions/core';
+import { exec } from '@actions/exec';
+import * as github from '@actions/github';
 import { join as path } from 'path';
 import { chdir, cwd } from 'process';
-import * as core from '@actions/core';
-import * as github from '@actions/github';
-import { exec } from '@actions/exec';
 import { parse } from './parse-browserslist-output';
 
+import { print } from 'graphql/language/printer';
 import {
   AddLabels,
   AddLabelsMutation,
   AddLabelsMutationVariables,
+  AddReviewers,
+  AddReviewersMutation,
+  AddReviewersMutationVariables,
   BrowserslistUpdateBranch,
   BrowserslistUpdateBranchQuery,
   BrowserslistUpdateBranchQueryVariables,
@@ -25,7 +29,6 @@ import {
   UpdatePullRequestMutation,
   UpdatePullRequestMutationVariables,
 } from './generated/graphql';
-import { print } from 'graphql/language/printer';
 
 const githubToken = core.getInput('github_token', { required: true });
 const repositoryOwner = github.context.repo.owner;
@@ -206,6 +209,30 @@ async function run(): Promise<void> {
         },
       };
       await octokit.graphql<AddLabelsMutation>({ query: print(AddLabels), ...addLabelsMutationData });
+    }
+
+    const reviewers = (core.getInput('reviewers') || '')
+      .split(',')
+      .map((reviewer) => reviewer.trim())
+      .filter((reviewer) => !!reviewer);
+    const teamReviewers = (core.getInput('teams') || '')
+      .split(',')
+      .map((team) => team.trim())
+      .filter((team) => !!team);
+    if (reviewers.length > 0 || teamReviewers.length > 0) {
+      core.info('adding reviewers to the PR');
+      const addReviewersMutationData: AddReviewersMutationVariables = {
+        input: {
+          pullRequestId: prId,
+          union: true,
+          userIds: reviewers,
+          teamIds: teamReviewers,
+        },
+      };
+      await octokit.graphql<AddReviewersMutation>({
+        query: print(AddReviewers),
+        ...addReviewersMutationData,
+      });
     }
 
     // go back to previous branch
