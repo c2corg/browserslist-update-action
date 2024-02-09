@@ -10,7 +10,7 @@
     "graphql": "graphql-codegen --config codegen.yml",
     "pack": "ncc build && cp src/*.sh dist/",
     "all": "npm run graphql && npm run lint && npm run build && npm run pack",
-    "prepare": "husky install",
+    "prepare": "husky",
     "preversion": "npm run all && git add -A src/generated dist"
   },
   "repository": {
