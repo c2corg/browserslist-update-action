@@ -7733,6 +7733,8 @@ export enum FundingPlatform {
   Otechie = 'OTECHIE',
   /** Patreon funding platform. */
   Patreon = 'PATREON',
+  /** Polar funding platform. */
+  Polar = 'POLAR',
   /** Tidelift funding platform. */
   Tidelift = 'TIDELIFT'
 }
@@ -17206,7 +17208,10 @@ export type PullRequest = Assignable & Closable & Comment & Labelable & Lockable
   createdAt: Scalars['DateTime']['output'];
   /** Check if this comment was created via an email reply. */
   createdViaEmail: Scalars['Boolean']['output'];
-  /** Identifies the primary key from the database. */
+  /**
+   * Identifies the primary key from the database.
+   * @deprecated `databaseId` will be removed because it does not support 64-bit signed integer identifiers. Use `fullDatabaseId` instead. Removal on 2024-07-01 UTC.
+   */
   databaseId?: Maybe<Scalars['Int']['output']>;
   /** The number of deletions in this pull request. */
   deletions: Scalars['Int']['output'];
@@ -17214,6 +17219,8 @@ export type PullRequest = Assignable & Closable & Comment & Labelable & Lockable
   editor?: Maybe<Actor>;
   /** Lists the files changed within this pull request. */
   files?: Maybe<PullRequestChangedFileConnection>;
+  /** Identifies the primary key from the database as a BigInt. */
+  fullDatabaseId?: Maybe<Scalars['BigInt']['output']>;
   /** Identifies the head Ref associated with the pull request. */
   headRef?: Maybe<Ref>;
   /** Identifies the name of the head Ref associated with the pull request, even if the ref has been deleted. */
@@ -17814,10 +17821,15 @@ export type PullRequestReview = Comment & Deletable & Minimizable & Node & React
   createdAt: Scalars['DateTime']['output'];
   /** Check if this comment was created via an email reply. */
   createdViaEmail: Scalars['Boolean']['output'];
-  /** Identifies the primary key from the database. */
+  /**
+   * Identifies the primary key from the database.
+   * @deprecated `databaseId` will be removed because it does not support 64-bit signed integer identifiers. Use `fullDatabaseId` instead. Removal on 2024-07-01 UTC.
+   */
   databaseId?: Maybe<Scalars['Int']['output']>;
   /** The actor who edited the comment. */
   editor?: Maybe<Actor>;
+  /** Identifies the primary key from the database as a BigInt. */
+  fullDatabaseId?: Maybe<Scalars['BigInt']['output']>;
   /** The Node ID of the PullRequestReview object */
   id: Scalars['ID']['output'];
   /** Check if this comment was edited and includes an edit with the creation data */
@@ -17923,7 +17935,10 @@ export type PullRequestReviewComment = Comment & Deletable & Minimizable & Node 
   createdAt: Scalars['DateTime']['output'];
   /** Check if this comment was created via an email reply. */
   createdViaEmail: Scalars['Boolean']['output'];
-  /** Identifies the primary key from the database. */
+  /**
+   * Identifies the primary key from the database.
+   * @deprecated `databaseId` will be removed because it does not support 64-bit signed integer identifiers. Use `fullDatabaseId` instead. Removal on 2024-07-01 UTC.
+   */
   databaseId?: Maybe<Scalars['Int']['output']>;
   /** The diff hunk to which the comment applies. */
   diffHunk: Scalars['String']['output'];
@@ -17931,6 +17946,8 @@ export type PullRequestReviewComment = Comment & Deletable & Minimizable & Node 
   draftedAt: Scalars['DateTime']['output'];
   /** The actor who edited the comment. */
   editor?: Maybe<Actor>;
+  /** Identifies the primary key from the database as a BigInt. */
+  fullDatabaseId?: Maybe<Scalars['BigInt']['output']>;
   /** The Node ID of the PullRequestReviewComment object */
   id: Scalars['ID']['output'];
   /** Check if this comment was edited and includes an edit with the creation data */
@@ -38391,6 +38408,7 @@ export type PullRequestResolvers<ContextType = any, ParentType extends Resolvers
   deletions?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   editor?: Resolver<Maybe<ResolversTypes['Actor']>, ParentType, ContextType>;
   files?: Resolver<Maybe<ResolversTypes['PullRequestChangedFileConnection']>, ParentType, ContextType, Partial<PullRequestFilesArgs>>;
+  fullDatabaseId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   headRef?: Resolver<Maybe<ResolversTypes['Ref']>, ParentType, ContextType>;
   headRefName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   headRefOid?: Resolver<ResolversTypes['GitObjectID'], ParentType, ContextType>;
@@ -38568,6 +38586,7 @@ export type PullRequestReviewResolvers<ContextType = any, ParentType extends Res
   createdViaEmail?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   editor?: Resolver<Maybe<ResolversTypes['Actor']>, ParentType, ContextType>;
+  fullDatabaseId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   includesCreatedEdit?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isMinimized?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -38607,6 +38626,7 @@ export type PullRequestReviewCommentResolvers<ContextType = any, ParentType exte
   diffHunk?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   draftedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   editor?: Resolver<Maybe<ResolversTypes['Actor']>, ParentType, ContextType>;
+  fullDatabaseId?: Resolver<Maybe<ResolversTypes['BigInt']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   includesCreatedEdit?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isMinimized?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
