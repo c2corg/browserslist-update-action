@@ -1,3 +1,5 @@
+import stripAnsi from 'strip-ansi';
+
 export type BrowserslistInfo = {
   latestVersion: string;
   installedVersion: string;
@@ -12,7 +14,6 @@ export const parse = async (output: string): Promise<BrowserslistInfo> => {
   const browsersRemoved: string[] = [];
 
   let isListingChanges = false;
-  const stripAnsi = (await import('strip-ansi')).default;
   stripAnsi(output)
     .split('\n')
     .forEach((line) => {
