@@ -7,7 +7,7 @@ export type BrowserslistInfo = {
   browsersRemoved: string[];
 };
 
-export const parse = async (output: string): Promise<BrowserslistInfo> => {
+export const parse = (output: string): BrowserslistInfo => {
   let latestVersion = '';
   let installedVersion = '';
   const browsersAdded: string[] = [];

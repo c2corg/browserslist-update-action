@@ -3,9 +3,9 @@ import { exec } from '@actions/exec';
 import * as github from '@actions/github';
 import { join as path } from 'path';
 import { chdir, cwd } from 'process';
-import { parse } from './parse-browserslist-output';
+import { parse } from './parse-browserslist-output.js';
 
-import { print } from 'graphql/language/printer';
+import { print } from 'graphql/language/printer.js';
 import {
   AddLabels,
   AddReviewers,
@@ -151,7 +151,7 @@ async function run(): Promise<void> {
     if (!browserslistUpdatePR) {
       core.info(`Creating new PR for branch ${branch}`);
       const title = core.getInput('title') || '📈 Update caniuse database';
-      const body = core.getInput('body') || (await prBody(browserslistOutput));
+      const body = core.getInput('body') || prBody(browserslistOutput);
       const mutationData: CreatePrMutationVariables = {
         input: {
           title,
@@ -170,7 +170,7 @@ async function run(): Promise<void> {
       core.setOutput('pr_status', 'created');
     } else {
       core.info('PR already exists, updating');
-      const body = core.getInput('body') || (await prBody(browserslistOutput));
+      const body = core.getInput('body') || prBody(browserslistOutput);
       const mutationData: UpdatePullRequestMutationVariables = {
         input: {
           pullRequestId: browserslistUpdatePR,
@@ -246,8 +246,8 @@ async function run(): Promise<void> {
   }
 }
 
-async function prBody(browserslistOutput: string): Promise<string> {
-  const info = await parse(browserslistOutput);
+function prBody(browserslistOutput: string): string {
+  const info = parse(browserslistOutput);
   const msg = ['Caniuse database has been updated. Review changes, merge this PR and have a 🍺.'];
   if (info.installedVersion) {
     msg.push(`Installed version: ${info.installedVersion}`);
