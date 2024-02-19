@@ -43531,18 +43531,43 @@ export const BrowserslistUpdateBranch = gql`
 }
     `;
 export const Labels = gql`
-    query Labels($owner: String!, $name: String!) {
+    query Labels($owner: String!, $name: String!, $cursor: String) {
   repository(owner: $owner, name: $name) {
     id
-    labels(first: 100) {
+    labels(first: 10, after: $cursor) {
       totalCount
-      edges {
-        node {
-          id
-          name
-        }
+      nodes {
+        id
+        name
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
       }
     }
+  }
+}
+    `;
+export const Organization = gql`
+    query Organization($login: String!, $cursor: String) {
+  organization(login: $login) {
+    teams(first: 10, after: $cursor) {
+      nodes {
+        id
+        name
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+    `;
+export const User = gql`
+    query User($login: String!) {
+  user(login: $login) {
+    id
   }
 }
     `;
@@ -43593,7 +43618,23 @@ export type BrowserslistUpdateBranchQuery = { __typename?: 'Query', repository?:
 export type LabelsQueryVariables = Exact<{
   owner: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  cursor?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type LabelsQuery = { __typename?: 'Query', repository?: { __typename?: 'Repository', id: string, labels?: { __typename?: 'LabelConnection', totalCount: number, edges?: Array<{ __typename?: 'LabelEdge', node?: { __typename?: 'Label', id: string, name: string } | null } | null> | null } | null } | null };
+export type LabelsQuery = { __typename?: 'Query', repository?: { __typename?: 'Repository', id: string, labels?: { __typename?: 'LabelConnection', totalCount: number, nodes?: Array<{ __typename?: 'Label', id: string, name: string } | null> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null } | null };
+
+export type OrganizationQueryVariables = Exact<{
+  login: Scalars['String']['input'];
+  cursor?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type OrganizationQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', teams: { __typename?: 'TeamConnection', nodes?: Array<{ __typename?: 'Team', id: string, name: string } | null> | null, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } } | null };
+
+export type UserQueryVariables = Exact<{
+  login: Scalars['String']['input'];
+}>;
+
+
+export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', id: string } | null };

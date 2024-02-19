@@ -1,11 +1,11 @@
 import * as core from '@actions/core';
 import { exec } from '@actions/exec';
 import * as github from '@actions/github';
+import { GitHub, getOctokitOptions } from '@actions/github/lib/utils.js';
+import { paginateGraphql } from '@octokit/plugin-paginate-graphql';
+import { print } from 'graphql/language/printer';
 import { join as path } from 'path';
 import { chdir, cwd } from 'process';
-import { parse } from './parse-browserslist-output';
-
-import { print } from 'graphql/language/printer';
 import {
   AddLabels,
   AddReviewers,
@@ -14,7 +14,13 @@ import {
   CreatePr,
   DeleteBranch,
   Labels,
+  Organization,
+  OrganizationQuery,
+  OrganizationQueryVariables,
   UpdatePullRequest,
+  User,
+  UserQuery,
+  UserQueryVariables,
   type AddLabelsMutation,
   type AddLabelsMutationVariables,
   type AddReviewersMutation,
@@ -29,6 +35,7 @@ import {
   type UpdatePullRequestMutation,
   type UpdatePullRequestMutationVariables,
 } from './generated/graphql';
+import { parse } from './parse-browserslist-output';
 
 const githubToken = core.getInput('github_token', { required: true });
 const repositoryOwner = github.context.repo.owner;
@@ -40,7 +47,8 @@ const labels = (core.getInput('labels') || '')
   .map((label) => label.trim())
   .filter((label) => !!label);
 
-const octokit = github.getOctokit(githubToken);
+const MyOctokit = GitHub.plugin(paginateGraphql);
+const octokit = new MyOctokit(getOctokitOptions(githubToken));
 
 async function run(): Promise<void> {
   try {
@@ -196,11 +204,11 @@ async function run(): Promise<void> {
       name: repositoryName,
     };
     const labelIds =
-      (await octokit.graphql<LabelsQuery>({ query: print(Labels), ...labelsQueryData })).repository?.labels?.edges
+      (await octokit.graphql.paginate<LabelsQuery>(print(Labels), labelsQueryData)).repository?.labels?.nodes
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-        ?.filter((edge) => labels.includes(edge?.node?.name!))
+        ?.filter((node) => labels.includes(node?.name!))
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
-        .map((edge) => edge?.node?.id!) ?? [];
+        .map((node) => node?.id!) ?? [];
     if (labelIds.length) {
       const addLabelsMutationData: AddLabelsMutationVariables = {
         input: {
@@ -211,16 +219,42 @@ async function run(): Promise<void> {
       await octokit.graphql<AddLabelsMutation>({ query: print(AddLabels), ...addLabelsMutationData });
     }
 
-    const reviewers = (core.getInput('reviewers') || '')
+    let reviewers = (core.getInput('reviewers') || '')
       .split(',')
       .map((reviewer) => reviewer.trim())
-      .filter((reviewer) => !!reviewer);
-    const teamReviewers = (core.getInput('teams') || '')
+      .filter(Boolean);
+    reviewers = await Promise.all(
+      reviewers.map(async (reviewer) => {
+        // try to replace reviewer login by its corresponding ID. Otherwise, consider we already deal with the ID
+        const userQueryData: UserQueryVariables = { login: reviewer };
+        return octokit.graphql<UserQuery>({ query: print(User), ...userQueryData }).then(
+          (response) => response?.user?.id ?? reviewer,
+          () => reviewer,
+        );
+      }),
+    );
+    let teamReviewers = (core.getInput('teams') || '')
       .split(',')
       .map((team) => team.trim())
       .filter((team) => !!team);
-    if (reviewers.length > 0 || teamReviewers.length > 0) {
-      core.info('adding reviewers to the PR');
+
+    if (teamReviewers.length) {
+      try {
+        const organizationQueryData: OrganizationQueryVariables = { login: repositoryOwner };
+        const teams = new Map(
+          (
+            (await octokit.graphql.paginate<OrganizationQuery>(print(Organization), organizationQueryData))
+              ?.organization?.teams?.nodes ?? []
+          ).map((team) => [team?.name, team?.id]),
+        );
+        teamReviewers = teamReviewers.map((team) => teams.get(team) ?? team);
+      } catch (err: unknown) {
+        core.warning('Unable to retrieve organization info. Is this repository owned by an organization?');
+      }
+    }
+
+    if (reviewers.length || teamReviewers.length) {
+      core.info('Adding reviewers to the PR');
       const addReviewersMutationData: AddReviewersMutationVariables = {
         input: {
           pullRequestId: prId,
