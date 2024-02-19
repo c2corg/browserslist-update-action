@@ -1,13 +1,15 @@
-query Labels($owner: String!, $name: String!) {
+query Labels($owner: String!, $name: String!, $cursor: String) {
   repository(owner: $owner, name: $name) {
     id
-    labels(first: 100) {
+    labels(first: 10, after: $cursor) {
       totalCount
-      edges {
-        node {
-          id
-          name
-        }
+      nodes {
+        id
+        name
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
       }
     }
   }
