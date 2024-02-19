@@ -47,5 +47,5 @@ outputs:
   pr_status:
     description: Whether the pull request was created or updated, if applies.
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
