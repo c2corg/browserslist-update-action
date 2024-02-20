@@ -46,7 +46,7 @@
     "@tsconfig/strictest": "2.0.3",
     "@types/gettext-parser": "4.0.4",
     "@types/node": "20.11.19",
-    "@typescript-eslint/eslint-plugin": "7.0.1",
+    "@typescript-eslint/eslint-plugin": "7.0.2",
     "@typescript-eslint/parser": "7.0.1",
     "@vercel/ncc": "0.38.1",
     "eslint": "8.56.0",
