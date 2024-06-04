@@ -31,8 +31,9 @@ jobs:
           fetch-depth: 0
       - name: Configure git
         run: |
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
+          # Setup for commiting using built-in token. See https://github.com/actions/checkout#push-a-commit-using-the-built-in-token
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Update Browserslist database and create PR if applies
         uses: c2corg/browserslist-update-action@v2
         with:
