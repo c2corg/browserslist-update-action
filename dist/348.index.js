@@ -1,9 +1,9 @@
 "use strict";
-exports.id = 770;
-exports.ids = [770];
+exports.id = 348;
+exports.ids = [348];
 exports.modules = {
 
-/***/ 8770:
+/***/ 348:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 // ESM COMPAT FLAG

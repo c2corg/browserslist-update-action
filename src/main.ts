@@ -119,7 +119,9 @@ async function run(): Promise<void> {
         },
       },
     });
-    subDir !== '.' && chdir(currentDir);
+    if (subDir !== '.') {
+      chdir(currentDir);
+    }
 
     core.info('Check whether new files bring modifications to the current branch');
     let gitStatus = '';
@@ -248,7 +250,7 @@ async function run(): Promise<void> {
           ).map((team) => [team?.name, team?.id]),
         );
         teamReviewers = teamReviewers.map((team) => teams.get(team) ?? team);
-      } catch (err: unknown) {
+      } catch {
         core.warning('Unable to retrieve organization info. Is this repository owned by an organization?');
       }
     }
