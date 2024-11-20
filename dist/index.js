@@ -3442,7 +3442,7 @@ async function run() {
             core.setFailed('Could not detect package manager');
             return;
         }
-        const { command, args } = (0, package_manager_detector_1.resolveCommand)(pkgMgr.agent, 'execute-local', ['update-browserslist-db@latest']);
+        const { command, args } = (0, package_manager_detector_1.resolveCommand)(pkgMgr.agent, 'execute', ['update-browserslist-db@latest']);
         await (0, exec_1.exec)(command, args, {
             listeners: {
                 stdout: (data) => {

@@ -118,7 +118,7 @@ async function run(): Promise<void> {
       core.setFailed('Could not detect package manager');
       return;
     }
-    const { command, args } = resolveCommand(pkgMgr.agent, 'execute-local', ['update-browserslist-db@latest'])!;
+    const { command, args } = resolveCommand(pkgMgr.agent, 'execute', ['update-browserslist-db@latest'])!;
     await exec(command, args, {
       listeners: {
         stdout: (data: Buffer) => {
