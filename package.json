@@ -6,7 +6,7 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
-    "lint": "prettier --check \"**/*.{ts,js,json,css,scss,less,md,html}\" && eslint src/**",
+    "lint": "prettier --check \"**/*.{ts,js,json,css,scss,less,md,html}\" && eslint . --report-unused-disable-directives",
     "graphql": "graphql-codegen --config codegen.yml",
     "pack": "ncc build && cp src/*.sh dist/",
     "all": "npm run graphql && npm run lint && npm run build && npm run pack",
@@ -37,6 +37,7 @@
     "strip-ansi": "7.1.0"
   },
   "devDependencies": {
+    "@eslint/js": "9.15.0",
     "@graphql-codegen/cli": "5.0.3",
     "@graphql-codegen/typescript": "4.1.1",
     "@graphql-codegen/typescript-document-nodes": "4.0.11",
@@ -47,16 +48,21 @@
     "@tsconfig/strictest": "2.0.5",
     "@types/gettext-parser": "4.0.4",
     "@types/node": "20.17.6",
-    "@typescript-eslint/eslint-plugin": "8.15.0",
-    "@typescript-eslint/parser": "8.15.0",
     "@vercel/ncc": "0.38.3",
-    "eslint": "8.57.1",
-    "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-prettier": "5.2.1",
+    "eslint": "9.15.0",
     "graphql": "16.9.0",
     "husky": "9.1.7",
     "lint-staged": "15.2.10",
     "prettier": "3.3.3",
-    "typescript": "5.6.3"
+    "typescript": "5.6.3",
+    "typescript-eslint": "8.15.0"
+  },
+  "lint-staged": {
+    "*.(ts|js|json|css|scss|md|html)": [
+      "prettier --write --ignore-unknown --list-different"
+    ],
+    "*.ts": [
+      "eslint --fix --report-unused-disable-directives"
+    ]
   }
 }

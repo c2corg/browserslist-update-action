@@ -3359,7 +3359,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(7484));
 const exec_1 = __nccwpck_require__(5236);
 const github = __importStar(__nccwpck_require__(3228));
-const utils_js_1 = __nccwpck_require__(8006);
+const utils_1 = __nccwpck_require__(8006);
 const plugin_paginate_graphql_1 = __nccwpck_require__(5089);
 const printer_1 = __nccwpck_require__(9936);
 const path_1 = __nccwpck_require__(6928);
@@ -3375,8 +3375,8 @@ const labels = (core.getInput('labels') || '')
     .split(',')
     .map((label) => label.trim())
     .filter((label) => !!label);
-const MyOctokit = utils_js_1.GitHub.plugin(plugin_paginate_graphql_1.paginateGraphql);
-const octokit = new MyOctokit((0, utils_js_1.getOctokitOptions)(githubToken));
+const MyOctokit = utils_1.GitHub.plugin(plugin_paginate_graphql_1.paginateGraphql);
+const octokit = new MyOctokit((0, utils_1.getOctokitOptions)(githubToken));
 async function run() {
     try {
         core.info('Check if there is a branch and a matching PR already existing for caniuse db update');

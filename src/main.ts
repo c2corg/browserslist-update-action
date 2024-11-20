@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import { exec } from '@actions/exec';
 import * as github from '@actions/github';
-import { GitHub, getOctokitOptions } from '@actions/github/lib/utils.js';
+import { GitHub, getOctokitOptions } from '@actions/github/lib/utils';
 import { paginateGraphql } from '@octokit/plugin-paginate-graphql';
 import { print } from 'graphql/language/printer';
 import { join as path } from 'path';
@@ -76,7 +76,7 @@ async function run(): Promise<void> {
       core.info(`Branch ${branch} already exists but no PR associated, delete it first`);
       const mutationData: DeleteBranchMutationVariables = {
         input: {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+          // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
           refId: browserslistUpdateBranchQuery.repository?.refs?.edges?.[0]?.node?.id!,
         },
       };
@@ -166,16 +166,16 @@ async function run(): Promise<void> {
         input: {
           title,
           body,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+          // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
           repositoryId: browserslistUpdateBranchQuery.repository?.id!,
           baseRefName: baseBranch,
           headRefName: branch,
         },
       };
       const response = await octokit.graphql<CreatePrMutation>({ query: print(CreatePr), ...mutationData });
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
       prNumber = response.createPullRequest?.pullRequest?.number!;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
       prId = response.createPullRequest?.pullRequest?.id!;
       core.setOutput('pr_status', 'created');
     } else {
@@ -191,9 +191,9 @@ async function run(): Promise<void> {
         query: print(UpdatePullRequest),
         ...mutationData,
       });
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
       prNumber = response.updatePullRequest?.pullRequest?.number!;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+      // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
       prId = response.updatePullRequest?.pullRequest?.id!;
 
       core.setOutput('pr_status', 'updated');
@@ -207,9 +207,9 @@ async function run(): Promise<void> {
     };
     const labelIds =
       (await octokit.graphql.paginate<LabelsQuery>(print(Labels), labelsQueryData)).repository?.labels?.nodes
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
         ?.filter((node) => labels.includes(node?.name!))
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
         .map((node) => node?.id!) ?? [];
     if (labelIds.length) {
       const addLabelsMutationData: AddLabelsMutationVariables = {
