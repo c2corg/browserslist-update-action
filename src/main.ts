@@ -4,6 +4,7 @@ import * as github from '@actions/github';
 import { GitHub, getOctokitOptions } from '@actions/github/lib/utils';
 import { paginateGraphql } from '@octokit/plugin-paginate-graphql';
 import { print } from 'graphql/language/printer';
+import { detect, resolveCommand } from 'package-manager-detector';
 import { join as path } from 'path';
 import { chdir, cwd } from 'process';
 import {
@@ -112,7 +113,13 @@ async function run(): Promise<void> {
       chdir(subDir);
     }
     let browserslistOutput = '';
-    await exec('npx', ['update-browserslist-db@latest'], {
+    const pkgMgr = await detect();
+    if (!pkgMgr) {
+      core.setFailed('Could not detect package manager');
+      return;
+    }
+    const { command, args } = resolveCommand(pkgMgr.agent, 'execute-local', ['update-browserslist-db@latest'])!;
+    await exec(command, args, {
       listeners: {
         stdout: (data: Buffer) => {
           browserslistOutput += data.toString();

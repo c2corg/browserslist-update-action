@@ -3362,6 +3362,7 @@ const github = __importStar(__nccwpck_require__(3228));
 const utils_1 = __nccwpck_require__(8006);
 const plugin_paginate_graphql_1 = __nccwpck_require__(5089);
 const printer_1 = __nccwpck_require__(9936);
+const package_manager_detector_1 = __nccwpck_require__(9343);
 const path_1 = __nccwpck_require__(6928);
 const process_1 = __nccwpck_require__(932);
 const graphql_1 = __nccwpck_require__(1395);
@@ -3402,7 +3403,7 @@ async function run() {
             core.info(`Branch ${branch} already exists but no PR associated, delete it first`);
             const mutationData = {
                 input: {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
                     refId: browserslistUpdateBranchQuery.repository?.refs?.edges?.[0]?.node?.id,
                 },
             };
@@ -3436,7 +3437,13 @@ async function run() {
             (0, process_1.chdir)(subDir);
         }
         let browserslistOutput = '';
-        await (0, exec_1.exec)('npx', ['update-browserslist-db@latest'], {
+        const pkgMgr = await (0, package_manager_detector_1.detect)();
+        if (!pkgMgr) {
+            core.setFailed('Could not detect package manager');
+            return;
+        }
+        const { command, args } = (0, package_manager_detector_1.resolveCommand)(pkgMgr.agent, 'execute-local', ['update-browserslist-db@latest']);
+        await (0, exec_1.exec)(command, args, {
             listeners: {
                 stdout: (data) => {
                     browserslistOutput += data.toString();
@@ -3484,16 +3491,16 @@ async function run() {
                 input: {
                     title,
                     body,
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
                     repositoryId: browserslistUpdateBranchQuery.repository?.id,
                     baseRefName: baseBranch,
                     headRefName: branch,
                 },
             };
             const response = await octokit.graphql({ query: (0, printer_1.print)(graphql_1.CreatePr), ...mutationData });
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+            // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
             prNumber = response.createPullRequest?.pullRequest?.number;
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+            // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
             prId = response.createPullRequest?.pullRequest?.id;
             core.setOutput('pr_status', 'created');
         }
@@ -3510,9 +3517,9 @@ async function run() {
                 query: (0, printer_1.print)(graphql_1.UpdatePullRequest),
                 ...mutationData,
             });
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+            // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
             prNumber = response.updatePullRequest?.pullRequest?.number;
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+            // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
             prId = response.updatePullRequest?.pullRequest?.id;
             core.setOutput('pr_status', 'updated');
         }
@@ -3523,9 +3530,9 @@ async function run() {
             name: repositoryName,
         };
         const labelIds = (await octokit.graphql.paginate((0, printer_1.print)(graphql_1.Labels), labelsQueryData)).repository?.labels?.nodes
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+            // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
             ?.filter((node) => labels.includes(node?.name))
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+            // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
             .map((node) => node?.id) ?? [];
         if (labelIds.length) {
             const addLabelsMutationData = {
@@ -59558,6 +59565,38 @@ module.exports = require("node:events");
 
 /***/ }),
 
+/***/ 3024:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:fs");
+
+/***/ }),
+
+/***/ 1455:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:fs/promises");
+
+/***/ }),
+
+/***/ 6760:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:path");
+
+/***/ }),
+
+/***/ 1708:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:process");
+
+/***/ }),
+
 /***/ 7075:
 /***/ ((module) => {
 
@@ -59691,6 +59730,339 @@ module.exports = require("worker_threads");
 
 "use strict";
 module.exports = require("zlib");
+
+/***/ }),
+
+/***/ 1351:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+function npmRun(agent) {
+  return (args) => {
+    if (args.length > 1) {
+      return [agent, "run", args[0], "--", ...args.slice(1)];
+    } else {
+      return [agent, "run", args[0]];
+    }
+  };
+}
+const yarn = {
+  "agent": ["yarn", 0],
+  "run": ["yarn", "run", 0],
+  "install": ["yarn", "install", 0],
+  "frozen": ["yarn", "install", "--frozen-lockfile"],
+  "global": ["yarn", "global", "add", 0],
+  "add": ["yarn", "add", 0],
+  "upgrade": ["yarn", "upgrade", 0],
+  "upgrade-interactive": ["yarn", "upgrade-interactive", 0],
+  "execute": ["npx", 0],
+  "execute-local": ["yarn", "exec", 0],
+  "uninstall": ["yarn", "remove", 0],
+  "global_uninstall": ["yarn", "global", "remove", 0]
+};
+const pnpm = {
+  "agent": ["pnpm", 0],
+  "run": ["pnpm", "run", 0],
+  "install": ["pnpm", "i", 0],
+  "frozen": ["pnpm", "i", "--frozen-lockfile"],
+  "global": ["pnpm", "add", "-g", 0],
+  "add": ["pnpm", "add", 0],
+  "upgrade": ["pnpm", "update", 0],
+  "upgrade-interactive": ["pnpm", "update", "-i", 0],
+  "execute": ["pnpm", "dlx", 0],
+  "execute-local": ["pnpm", "exec", 0],
+  "uninstall": ["pnpm", "remove", 0],
+  "global_uninstall": ["pnpm", "remove", "--global", 0]
+};
+const bun = {
+  "agent": ["bun", 0],
+  "run": ["bun", "run", 0],
+  "install": ["bun", "install", 0],
+  "frozen": ["bun", "install", "--frozen-lockfile"],
+  "global": ["bun", "add", "-g", 0],
+  "add": ["bun", "add", 0],
+  "upgrade": ["bun", "update", 0],
+  "upgrade-interactive": ["bun", "update", 0],
+  "execute": ["bun", "x", 0],
+  "execute-local": ["bun", "x", 0],
+  "uninstall": ["bun", "remove", 0],
+  "global_uninstall": ["bun", "remove", "-g", 0]
+};
+const deno = {
+  "agent": ["deno", 0],
+  "run": ["deno", "run", 0],
+  "install": ["deno", "install", 0],
+  "frozen": ["deno", "install", "--frozen"],
+  "global": ["deno", "install", "-g", 0],
+  "add": ["deno", "add", 0],
+  "upgrade": ["deno", "update", 0],
+  "upgrade-interactive": ["deno", "update", 0],
+  "execute": ["deno", "run", 0],
+  "execute-local": ["deno", "run", 0],
+  "uninstall": ["deno", "remove", 0],
+  "global_uninstall": ["deno", "uninstall", "-g", 0]
+};
+const COMMANDS = {
+  "npm": {
+    "agent": ["npm", 0],
+    "run": npmRun("npm"),
+    "install": ["npm", "i", 0],
+    "frozen": ["npm", "ci"],
+    "global": ["npm", "i", "-g", 0],
+    "add": ["npm", "i", 0],
+    "upgrade": ["npm", "update", 0],
+    "upgrade-interactive": null,
+    "execute": ["npx", 0],
+    "execute-local": ["npx", 0],
+    "uninstall": ["npm", "uninstall", 0],
+    "global_uninstall": ["npm", "uninstall", "-g", 0]
+  },
+  "yarn": yarn,
+  "yarn@berry": {
+    ...yarn,
+    "frozen": ["yarn", "install", "--immutable"],
+    "upgrade": ["yarn", "up", 0],
+    "upgrade-interactive": ["yarn", "up", "-i", 0],
+    "execute": ["yarn", "dlx", 0],
+    "execute-local": ["yarn", "exec", 0],
+    // Yarn 2+ removed 'global', see https://github.com/yarnpkg/berry/issues/821
+    "global": ["npm", "i", "-g", 0],
+    "global_uninstall": ["npm", "uninstall", "-g", 0]
+  },
+  "pnpm": pnpm,
+  // pnpm v6.x or below
+  "pnpm@6": {
+    ...pnpm,
+    run: npmRun("pnpm")
+  },
+  "bun": bun,
+  "deno": deno
+};
+function resolveCommand(agent, command, args) {
+  const value = COMMANDS[agent][command];
+  return constructCommand(value, args);
+}
+function constructCommand(value, args) {
+  if (value == null)
+    return null;
+  const list = typeof value === "function" ? value(args) : value.flatMap((v) => {
+    if (typeof v === "number")
+      return args;
+    return [v];
+  });
+  return {
+    command: list[0],
+    args: list.slice(1)
+  };
+}
+
+exports.COMMANDS = COMMANDS;
+exports.constructCommand = constructCommand;
+exports.resolveCommand = resolveCommand;
+
+
+/***/ }),
+
+/***/ 5528:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+const AGENTS = [
+  "npm",
+  "yarn",
+  "yarn@berry",
+  "pnpm",
+  "pnpm@6",
+  "bun",
+  "deno"
+];
+const LOCKS = {
+  "bun.lockb": "bun",
+  "deno.lock": "deno",
+  "pnpm-lock.yaml": "pnpm",
+  "yarn.lock": "yarn",
+  "package-lock.json": "npm",
+  "npm-shrinkwrap.json": "npm"
+};
+const INSTALL_PAGE = {
+  "bun": "https://bun.sh",
+  "deno": "https://deno.com",
+  "pnpm": "https://pnpm.io/installation",
+  "pnpm@6": "https://pnpm.io/6.x/installation",
+  "yarn": "https://classic.yarnpkg.com/en/docs/install",
+  "yarn@berry": "https://yarnpkg.com/getting-started/install",
+  "npm": "https://docs.npmjs.com/cli/v8/configuring-npm/install"
+};
+
+exports.AGENTS = AGENTS;
+exports.INSTALL_PAGE = INSTALL_PAGE;
+exports.LOCKS = LOCKS;
+
+
+/***/ }),
+
+/***/ 7496:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+const fs = __nccwpck_require__(3024);
+const fsPromises = __nccwpck_require__(1455);
+const path = __nccwpck_require__(6760);
+const process = __nccwpck_require__(1708);
+const constants = __nccwpck_require__(5528);
+
+function _interopDefaultCompat (e) { return e && typeof e === 'object' && 'default' in e ? e.default : e; }
+
+const fs__default = /*#__PURE__*/_interopDefaultCompat(fs);
+const fsPromises__default = /*#__PURE__*/_interopDefaultCompat(fsPromises);
+const path__default = /*#__PURE__*/_interopDefaultCompat(path);
+const process__default = /*#__PURE__*/_interopDefaultCompat(process);
+
+async function detect(options = {}) {
+  const { cwd, onUnknown } = options;
+  for (const directory of lookup(cwd)) {
+    for (const lock of Object.keys(constants.LOCKS)) {
+      if (await fileExists(path__default.join(directory, lock))) {
+        const name = constants.LOCKS[lock];
+        const result2 = await parsePackageJson(path__default.join(directory, "package.json"), onUnknown);
+        if (result2)
+          return result2;
+        else
+          return { name, agent: name };
+      }
+    }
+    const result = await parsePackageJson(path__default.join(directory, "package.json"), onUnknown);
+    if (result)
+      return result;
+  }
+  return null;
+}
+function detectSync(options = {}) {
+  const { cwd, onUnknown } = options;
+  for (const directory of lookup(cwd)) {
+    for (const lock of Object.keys(constants.LOCKS)) {
+      if (fileExistsSync(path__default.join(directory, lock))) {
+        const name = constants.LOCKS[lock];
+        const result2 = parsePackageJsonSync(path__default.join(directory, "package.json"), onUnknown);
+        if (result2)
+          return result2;
+        else
+          return { name, agent: name };
+      }
+    }
+    const result = parsePackageJsonSync(path__default.join(directory, "package.json"), onUnknown);
+    if (result)
+      return result;
+  }
+  return null;
+}
+function getUserAgent() {
+  const userAgent = process__default.env.npm_config_user_agent;
+  if (!userAgent) {
+    return null;
+  }
+  const name = userAgent.split("/")[0];
+  return constants.AGENTS.includes(name) ? name : null;
+}
+function* lookup(cwd = process__default.cwd()) {
+  let directory = path__default.resolve(cwd);
+  const { root } = path__default.parse(directory);
+  while (directory && directory !== root) {
+    yield directory;
+    directory = path__default.dirname(directory);
+  }
+}
+async function parsePackageJson(filepath, onUnknown) {
+  return !filepath || !await fileExists(filepath) ? null : handlePackageManager(filepath, onUnknown);
+}
+function parsePackageJsonSync(filepath, onUnknown) {
+  return !filepath || !fileExistsSync(filepath) ? null : handlePackageManager(filepath, onUnknown);
+}
+function handlePackageManager(filepath, onUnknown) {
+  try {
+    const pkg = JSON.parse(fs__default.readFileSync(filepath, "utf8"));
+    let agent;
+    if (typeof pkg.packageManager === "string") {
+      const [name, ver] = pkg.packageManager.replace(/^\^/, "").split("@");
+      let version = ver;
+      if (name === "yarn" && Number.parseInt(ver) > 1) {
+        agent = "yarn@berry";
+        version = "berry";
+        return { name, agent, version };
+      } else if (name === "pnpm" && Number.parseInt(ver) < 7) {
+        agent = "pnpm@6";
+        return { name, agent, version };
+      } else if (constants.AGENTS.includes(name)) {
+        agent = name;
+        return { name, agent, version };
+      } else {
+        return onUnknown?.(pkg.packageManager) ?? null;
+      }
+    }
+  } catch {
+  }
+  return null;
+}
+async function fileExists(filePath) {
+  try {
+    const stats = await fsPromises__default.stat(filePath);
+    if (stats.isFile()) {
+      return true;
+    }
+  } catch {
+  }
+  return false;
+}
+function fileExistsSync(filePath) {
+  try {
+    const stats = fs__default.statSync(filePath);
+    if (stats.isFile()) {
+      return true;
+    }
+  } catch {
+  }
+  return false;
+}
+
+exports.detect = detect;
+exports.detectSync = detectSync;
+exports.getUserAgent = getUserAgent;
+
+
+/***/ }),
+
+/***/ 9343:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+const commands = __nccwpck_require__(1351);
+const constants = __nccwpck_require__(5528);
+const detect = __nccwpck_require__(7496);
+__nccwpck_require__(3024);
+__nccwpck_require__(1455);
+__nccwpck_require__(6760);
+__nccwpck_require__(1708);
+
+
+
+exports.COMMANDS = commands.COMMANDS;
+exports.constructCommand = commands.constructCommand;
+exports.resolveCommand = commands.resolveCommand;
+exports.AGENTS = constants.AGENTS;
+exports.INSTALL_PAGE = constants.INSTALL_PAGE;
+exports.LOCKS = constants.LOCKS;
+exports.detect = detect.detect;
+exports.detectSync = detect.detectSync;
+exports.getUserAgent = detect.getUserAgent;
+
 
 /***/ })
 

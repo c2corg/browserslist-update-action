@@ -1,6 +1,6 @@
 # browserslist-update-action
 
-A GitHub Action that runs `npx update-browserslist-db@latest` on a repository and proposes a pull request to merge updates.
+A GitHub Action that runs `update-browserslist-db@latest` on a repository and proposes a pull request to merge updates. Since v2.5, also supports other package managers (yarn, pnpm, bun, deno).
 
 ## v2 vs v1
 
@@ -48,7 +48,7 @@ jobs:
           teams: 'team1'
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > This action can only create a pull request if the _Allow GitHub Actions to create and approve pull requests_ option is enabled in _Settings > Actions > General_.
 
 ## Action inputs
