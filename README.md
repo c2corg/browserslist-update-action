@@ -4,7 +4,7 @@ A GitHub Action that runs `update-browserslist-db@latest` on a repository and pr
 
 ## v2 vs v1
 
-`v1` uses command `npx browserslist@latest --update-db` which is now deprecated and to be removed in a future major `browserslist` release. It should be dropped in favor of `v2` which uses new command `npx update-browserslist-db@latest`.
+`v1` uses command `browserslist@latest --update-db` which is now deprecated and to be removed in a future major `browserslist` release. It should be dropped in favor of `v2` which uses new command `update-browserslist-db@latest`.
 
 :warning: v2 requires at least Node 15 (`npm` 6). Stick to `v1` otherwise.
 
