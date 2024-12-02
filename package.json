@@ -50,7 +50,7 @@
     "@types/gettext-parser": "4.0.4",
     "@types/node": "20.17.6",
     "@vercel/ncc": "0.38.3",
-    "eslint": "9.15.0",
+    "eslint": "9.16.0",
     "graphql": "16.9.0",
     "husky": "9.1.7",
     "lint-staged": "15.2.10",
