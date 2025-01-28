@@ -41,7 +41,7 @@
     "@eslint/js": "9.19.0",
     "@graphql-codegen/cli": "5.0.3",
     "@graphql-codegen/typescript": "4.1.1",
-    "@graphql-codegen/typescript-document-nodes": "4.0.11",
+    "@graphql-codegen/typescript-document-nodes": "4.0.12",
     "@graphql-codegen/typescript-operations": "4.3.1",
     "@graphql-codegen/typescript-resolvers": "4.4.0",
     "@octokit/graphql-schema": "15.25.0",
