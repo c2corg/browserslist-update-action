@@ -34,7 +34,7 @@
     "@octokit/core": "6.1.4",
     "@octokit/graphql": "8.2.1",
     "@octokit/plugin-paginate-graphql": "5.2.4",
-    "package-manager-detector": "0.2.11",
+    "package-manager-detector": "1.0.0",
     "strip-ansi": "7.1.0"
   },
   "devDependencies": {
