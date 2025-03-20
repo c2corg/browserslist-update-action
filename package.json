@@ -56,7 +56,7 @@
     "lint-staged": "15.4.3",
     "prettier": "3.5.3",
     "typescript": "5.8.2",
-    "typescript-eslint": "8.26.1"
+    "typescript-eslint": "8.27.0"
   },
   "lint-staged": {
     "*.(ts|js|json|css|scss|md|html)": [
