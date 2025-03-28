@@ -43,7 +43,7 @@
     "@graphql-codegen/typescript": "4.1.5",
     "@graphql-codegen/typescript-document-nodes": "4.0.15",
     "@graphql-codegen/typescript-operations": "4.5.1",
-    "@graphql-codegen/typescript-resolvers": "4.4.4",
+    "@graphql-codegen/typescript-resolvers": "4.5.0",
     "@octokit/graphql-schema": "15.26.0",
     "@tsconfig/node20": "20.1.5",
     "@tsconfig/strictest": "2.0.5",
