@@ -48,7 +48,7 @@
     "@tsconfig/node20": "20.1.5",
     "@tsconfig/strictest": "2.0.5",
     "@types/gettext-parser": "8.0.0",
-    "@types/node": "22.14.0",
+    "@types/node": "22.15.17",
     "@vercel/ncc": "0.38.3",
     "eslint": "9.24.0",
     "graphql": "16.10.0",
