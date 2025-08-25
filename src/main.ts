@@ -135,20 +135,32 @@ async function run(): Promise<void> {
     await exec('git', ['status', '-s'], {
       listeners: {
         stdout: (data: Buffer): void => {
-          gitStatus += data.toString().trim();
+          gitStatus += data.toString();
         },
       },
     });
-    if (!gitStatus.trim()) {
+    const changedFiles = gitStatus
+      .trim()
+      .split('\n')
+      .map((line) => line.trim().split(' ').slice(1).join(' '));
+    const lockfile = {
+      npm: 'package-lock.json',
+      yarn: 'yarn.lock',
+      pnpm: 'pnpm-lock.yaml',
+    }[pkgMgr.agent];
+    const filesToCommit = changedFiles.filter(
+      (file) => file === 'package.json' || (lockfile && file === lockfile) || file === '.browserslistrc',
+    );
+    if (filesToCommit.length === 0) {
       core.setOutput('has_pr', false);
-      core.info('No changes. Exiting');
+      core.info('No changes to package.json, lockfile or .browserslistrc. Exiting');
       return;
     }
 
     core.setOutput('has_pr', true);
 
     core.info('Add files and commit on base branch');
-    await exec('git', ['add', '.']);
+    await exec('git', ['add', ...filesToCommit]);
     await exec('git', ['commit', '-m', core.getInput('commit_message') || 'Update caniuse database']);
 
     // setup credentials
