@@ -45,7 +45,7 @@
     "@graphql-codegen/typescript-operations": "4.6.1",
     "@graphql-codegen/typescript-resolvers": "4.5.2",
     "@octokit/graphql-schema": "15.26.0",
-    "@tsconfig/node20": "20.1.5",
+    "@tsconfig/node20": "20.1.6",
     "@tsconfig/strictest": "2.0.5",
     "@types/gettext-parser": "8.0.0",
     "@types/node": "22.15.29",
