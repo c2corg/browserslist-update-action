@@ -49,7 +49,7 @@
     "@tsconfig/strictest": "2.0.5",
     "@types/gettext-parser": "8.0.0",
     "@types/node": "22.15.29",
-    "@vercel/ncc": "0.38.3",
+    "@vercel/ncc": "0.38.4",
     "eslint": "9.34.0",
     "graphql": "16.11.0",
     "husky": "9.1.7",
