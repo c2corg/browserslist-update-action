@@ -3,13 +3,19 @@ updates:
   - package-ecosystem: npm
     directory: '/'
     schedule:
-      interval: daily
-    open-pull-requests-limit: 99
+      interval: weekly
     labels:
       - dependabot
+    groups:
+      dev-dependencies:
+        dependency-type: development
+        update-types: [minor, patch]
+      dependencies:
+        dependency-type: production
+        update-types: [minor, patch]
   - package-ecosystem: github-actions
     directory: '/'
     schedule:
-      interval: 'weekly'
+      interval: weekly
     labels:
       - dependabot
