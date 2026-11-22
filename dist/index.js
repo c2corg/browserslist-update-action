@@ -35516,7 +35516,7 @@ const parse = (output) => {
             }
             continue;
         }
-        const latest = /Latest version:\s+(.*)/.exec(line)?.[1];
+        const latest = /(?:Latest version|Registry latest):\s+(.*)/.exec(line)?.[1];
         if (latest) {
             latestVersion = latest.trim();
             continue;
@@ -35605,9 +35605,13 @@ async function run(inputs, octokit, { owner, repo, serverUrl }) {
         setOutput('has_pr', true);
         info('Commit changes');
         await git(['add', '--update', '--', directory]);
-        const hasIdentity = (await git(['config', 'user.name'], { ignoreReturnCode: true, silent: true })).exitCode === 0;
-        const identity = hasIdentity ? [] : ['-c', `user.name=${BOT_NAME}`, '-c', `user.email=${BOT_EMAIL}`];
-        await git([...identity, 'commit', '--message', inputs.commitMessage]);
+        const hasConfig = async (key) => (await git(['config', key], { ignoreReturnCode: true, silent: true })).exitCode === 0;
+        const identity = [
+            ...((await hasConfig('user.name')) ? [] : ['-c', `user.name=${BOT_NAME}`]),
+            ...((await hasConfig('user.email')) ? [] : ['-c', `user.email=${BOT_EMAIL}`]),
+        ];
+        // pathspec: never commit changes staged outside of the directory by earlier steps
+        await git([...identity, 'commit', '--message', inputs.commitMessage, '--', directory]);
         info(`Push branch ${branch}`);
         const basicAuth = Buffer.from(`x-access-token:${inputs.token}`).toString('base64');
         setSecret(basicAuth);
@@ -35627,7 +35631,8 @@ async function run(inputs, octokit, { owner, repo, serverUrl }) {
         let pr;
         if (existingPr) {
             info(`Update pull request #${existingPr.number}`);
-            pr = (await octokit.rest.pulls.update({ owner, repo, pull_number: existingPr.number, body })).data;
+            pr = (await octokit.rest.pulls.update({ owner, repo, pull_number: existingPr.number, body, base: baseBranch }))
+                .data;
             setOutput('pr_status', 'updated');
         }
         else {

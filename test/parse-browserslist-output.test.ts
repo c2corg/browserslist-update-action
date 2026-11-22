@@ -3,12 +3,12 @@ import { parse, prBody } from '../src/parse-browserslist-output.js';
 
 // output of update-browserslist-db 1.4, colors included
 const withChanges = [
-  'Latest version:     1.0.30001821',
   'Installed version:       \u001b[1m\u001b[31m1.0.30001820\u001b[39m\u001b[22m',
   'Removing old caniuse-lite from lock file',
   'Installing new caniuse-lite version',
   '\u001b[33m$ npm install caniuse-lite baseline-browser-mapping\u001b[39m',
   'caniuse-lite has been successfully updated',
+  'Registry latest:         \u001b[1m\u001b[32m1.0.30001821\u001b[39m\u001b[22m',
   '',
   'Target browser changes:',
   '\u001b[31m- and_chr 141\u001b[39m',
@@ -25,6 +25,10 @@ describe('parse', () => {
       browsersAdded: ['and_chr 142', 'safari 26.2'],
       browsersRemoved: ['and_chr 141'],
     });
+  });
+
+  it('reads the latest version label of older versions', () => {
+    expect(parse('Latest version:     1.0.30001821\n').latestVersion).toBe('1.0.30001821');
   });
 
   it('handles several installed versions and no target changes', () => {

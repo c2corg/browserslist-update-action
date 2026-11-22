@@ -38,7 +38,7 @@ jobs:
 > [!IMPORTANT]
 > With the default `GITHUB_TOKEN`, the _Allow GitHub Actions to create and approve pull requests_ option must be enabled in _Settings > Actions > General_.
 >
-> Pull requests opened with `GITHUB_TOKEN` do not trigger other workflows (e.g. your CI). Use a [fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) or a GitHub App token in `github_token` if you need them to.
+> Workflows (e.g. your CI) do not start automatically on pull requests opened with `GITHUB_TOKEN`: depending on the event, they do not run at all or wait for a user with write access to select _Approve workflows to run_. Use a [fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) or a GitHub App token in `github_token` for them to start without approval.
 
 How it works:
 
@@ -110,8 +110,9 @@ INTEGRATION=1 npm test  # also run the integration test (real git and npm, needs
 2. Tag the merge commit and move the major tag:
 
    ```sh
-   git tag -a v3.0.1 -m v3.0.1
-   git tag -fa v3 -m v3
+   git fetch origin
+   git tag -a v3.0.1 -m v3.0.1 origin/main
+   git tag -fa v3 -m v3 origin/main
    git push origin v3.0.1
    git push --force origin v3
    ```

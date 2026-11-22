@@ -99,9 +99,14 @@ export async function run(inputs: Inputs, octokit: Octokit, { owner, repo, serve
 
     core.info('Commit changes');
     await git(['add', '--update', '--', directory]);
-    const hasIdentity = (await git(['config', 'user.name'], { ignoreReturnCode: true, silent: true })).exitCode === 0;
-    const identity = hasIdentity ? [] : ['-c', `user.name=${BOT_NAME}`, '-c', `user.email=${BOT_EMAIL}`];
-    await git([...identity, 'commit', '--message', inputs.commitMessage]);
+    const hasConfig = async (key: string): Promise<boolean> =>
+      (await git(['config', key], { ignoreReturnCode: true, silent: true })).exitCode === 0;
+    const identity = [
+      ...((await hasConfig('user.name')) ? [] : ['-c', `user.name=${BOT_NAME}`]),
+      ...((await hasConfig('user.email')) ? [] : ['-c', `user.email=${BOT_EMAIL}`]),
+    ];
+    // pathspec: never commit changes staged outside of the directory by earlier steps
+    await git([...identity, 'commit', '--message', inputs.commitMessage, '--', directory]);
 
     core.info(`Push branch ${branch}`);
     const basicAuth = Buffer.from(`x-access-token:${inputs.token}`).toString('base64');
@@ -123,7 +128,8 @@ export async function run(inputs: Inputs, octokit: Octokit, { owner, repo, serve
     let pr: { number: number; node_id: string };
     if (existingPr) {
       core.info(`Update pull request #${existingPr.number}`);
-      pr = (await octokit.rest.pulls.update({ owner, repo, pull_number: existingPr.number, body })).data;
+      pr = (await octokit.rest.pulls.update({ owner, repo, pull_number: existingPr.number, body, base: baseBranch }))
+        .data;
       core.setOutput('pr_status', 'updated');
     } else {
       core.info(`Create pull request for branch ${branch}`);

@@ -24,7 +24,8 @@ const basicAuth = Buffer.from(`x-access-token:${token}`).toString('base64');
 let dir: string;
 let calls: string[][];
 let gitStatus: string;
-let hasIdentity: boolean;
+let hasName: boolean;
+let hasEmail: boolean;
 
 const inputs = (overrides: Partial<Inputs> = {}): Inputs => ({
   token,
@@ -47,7 +48,8 @@ beforeEach(() => {
   writeFileSync(join(dir, 'package-lock.json'), '{}');
   calls = [];
   gitStatus = ' M package-lock.json\n';
-  hasIdentity = true;
+  hasName = true;
+  hasEmail = true;
   vi.mocked(getExecOutput).mockImplementation((command, args = []) => {
     calls.push([command, ...args]);
     if (command !== 'git') {
@@ -60,7 +62,8 @@ beforeEach(() => {
       return ok(gitStatus);
     }
     if (args[0] === 'config') {
-      return ok(hasIdentity ? 'someone\n' : '', hasIdentity ? 0 : 1);
+      const configured = args[1] === 'user.name' ? hasName : hasEmail;
+      return ok(configured ? 'value\n' : '', configured ? 0 : 1);
     }
     return ok();
   });
@@ -87,7 +90,8 @@ describe('run', () => {
       `git status --porcelain --untracked-files=no -- ${dir}`,
       `git add --update -- ${dir}`,
       'git config user.name',
-      'git commit --message Update caniuse database',
+      'git config user.email',
+      `git commit --message Update caniuse database -- ${dir}`,
       `git -c http.https://github.com/.extraheader= -c http.https://github.com/.extraheader=AUTHORIZATION: basic ${basicAuth} push --force origin HEAD:refs/heads/browserslist-update`,
       'git checkout master',
     ]);
@@ -133,6 +137,7 @@ describe('run', () => {
       repo: 'c2c_ui',
       pull_number: 12,
       body: 'Custom body',
+      base: 'master',
     });
     expect(core.setOutput).toHaveBeenCalledWith('pr_status', 'updated');
     expect(core.setOutput).toHaveBeenCalledWith('pr_number', 12);
@@ -171,11 +176,21 @@ describe('run', () => {
   });
 
   it('commits as github-actions[bot] when git has no identity', async () => {
-    hasIdentity = false;
+    hasName = false;
+    hasEmail = false;
     await run(inputs(), asOctokit(fakeOctokit()), repository);
 
     expect(gitCalls()).toContain(
-      'git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit --message Update caniuse database',
+      `git -c user.name=github-actions[bot] -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit --message Update caniuse database -- ${dir}`,
+    );
+  });
+
+  it('completes a partial git identity', async () => {
+    hasEmail = false;
+    await run(inputs(), asOctokit(fakeOctokit()), repository);
+
+    expect(gitCalls()).toContain(
+      `git -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit --message Update caniuse database -- ${dir}`,
     );
   });
 

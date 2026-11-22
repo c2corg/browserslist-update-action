@@ -24,7 +24,7 @@ export const parse = (output: string): BrowserslistInfo => {
       }
       continue;
     }
-    const latest = /Latest version:\s+(.*)/.exec(line)?.[1];
+    const latest = /(?:Latest version|Registry latest):\s+(.*)/.exec(line)?.[1];
     if (latest) {
       latestVersion = latest.trim();
       continue;
