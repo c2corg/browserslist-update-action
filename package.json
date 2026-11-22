@@ -1,17 +1,20 @@
 {
   "name": "browserslist-update-action",
-  "version": "2.5.0",
-  "private": "true",
-  "description": "A Github Action to run `npx browserslist@latest --update-db` on a repository and propose a pull request to merge updates",
-  "main": "lib/main.js",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A GitHub Action to run `update-browserslist-db@latest` on a repository and propose a pull request to merge updates",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
-    "build": "tsc",
-    "lint": "prettier --check \"**/*.{ts,js,json,css,scss,less,md,html}\" && eslint . --report-unused-disable-directives",
-    "graphql": "graphql-codegen --config codegen.yml",
-    "pack": "ncc build && cp src/*.sh dist/",
-    "all": "npm run graphql && npm run lint && npm run build && npm run pack",
-    "prepare": "husky",
-    "preversion": "npm run all && git add -A src/generated dist"
+    "build": "rollup --config rollup.config.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "prettier --check . && eslint . --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "all": "npm run lint && npm run typecheck && npm test && npm run build",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -19,7 +22,8 @@
   },
   "keywords": [
     "actions",
-    "node"
+    "browserslist",
+    "caniuse"
   ],
   "author": "Camptocamp Association",
   "license": "MIT",
@@ -28,42 +32,33 @@
   },
   "homepage": "https://github.com/c2corg/browserslist-update-action#readme",
   "dependencies": {
-    "@actions/core": "1.11.1",
-    "@actions/exec": "1.1.1",
-    "@actions/github": "6.0.1",
-    "@octokit/core": "7.0.3",
-    "@octokit/graphql": "9.0.1",
-    "@octokit/plugin-paginate-graphql": "6.0.0",
-    "package-manager-detector": "1.3.0",
-    "strip-ansi": "7.1.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "9.34.0",
-    "@graphql-codegen/cli": "5.0.7",
-    "@graphql-codegen/typescript": "4.1.6",
-    "@graphql-codegen/typescript-document-nodes": "4.0.16",
-    "@graphql-codegen/typescript-operations": "4.6.1",
-    "@graphql-codegen/typescript-resolvers": "4.5.2",
-    "@octokit/graphql-schema": "15.26.0",
-    "@tsconfig/node20": "20.1.6",
-    "@tsconfig/strictest": "2.0.5",
-    "@types/gettext-parser": "8.0.0",
-    "@types/node": "22.15.29",
-    "@vercel/ncc": "0.38.3",
-    "eslint": "9.34.0",
-    "graphql": "16.11.0",
-    "husky": "9.1.7",
-    "lint-staged": "16.1.6",
-    "prettier": "3.6.2",
-    "typescript": "5.9.2",
-    "typescript-eslint": "8.42.0"
+    "@actions/core": "3.0.1",
+    "@actions/exec": "3.0.0",
+    "@actions/github": "9.1.1",
+    "package-manager-detector": "1.9.0",
+    "strip-ansi": "7.2.0"
   },
   "lint-staged": {
-    "*.(ts|js|json|css|scss|md|html)": [
-      "prettier --write --ignore-unknown --list-different"
-    ],
-    "*.ts": [
-      "eslint --fix --report-unused-disable-directives"
-    ]
+    "*": "prettier --write --ignore-unknown --list-different",
+    "*.ts": "eslint --fix --report-unused-disable-directives"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@rollup/plugin-commonjs": "29.0.3",
+    "@rollup/plugin-json": "6.1.0",
+    "@rollup/plugin-node-resolve": "16.0.3",
+    "@rollup/plugin-typescript": "12.3.1",
+    "@tsconfig/node24": "24.0.6",
+    "@tsconfig/strictest": "2.0.8",
+    "@types/node": "24.19.2",
+    "eslint": "10.15.0",
+    "husky": "9.1.7",
+    "lint-staged": "17.6.2",
+    "prettier": "3.10.1",
+    "rollup": "4.68.8",
+    "tslib": "2.9.1",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.73.0",
+    "vitest": "5.1.1"
   }
 }

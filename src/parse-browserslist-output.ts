@@ -1,3 +1,5 @@
+import stripAnsi from 'strip-ansi';
+
 export type BrowserslistInfo = {
   latestVersion: string;
   installedVersion: string;
@@ -5,45 +7,54 @@ export type BrowserslistInfo = {
   browsersRemoved: string[];
 };
 
-export const parse = async (output: string): Promise<BrowserslistInfo> => {
+export const parse = (output: string): BrowserslistInfo => {
   let latestVersion = '';
   let installedVersion = '';
   const browsersAdded: string[] = [];
   const browsersRemoved: string[] = [];
 
   let isListingChanges = false;
-  const stripAnsi = (await import('strip-ansi')).default;
-  stripAnsi(output)
-    .split('\n')
-    .forEach((line) => {
-      let match: string[] | null;
-      if (isListingChanges) {
-        match = line.match('([-+])\\s(.*)');
-        if (match?.[1] === '+') {
-          browsersAdded.push(match[2] as string);
-        } else if (match?.[1] === '-') {
-          browsersRemoved.push(match[2] as string);
-        }
-        return;
+  for (const line of stripAnsi(output).split('\n')) {
+    if (isListingChanges) {
+      const match = /^\s*([-+])\s(.*)$/.exec(line);
+      if (match?.[1] === '+') {
+        browsersAdded.push((match[2] as string).trim());
+      } else if (match?.[1] === '-') {
+        browsersRemoved.push((match[2] as string).trim());
       }
-      match = line.match('Latest version:\\s+(.*)');
-      if (match?.[1]) {
-        latestVersion = match?.[1];
-        return;
-      }
-      match = line.match('Installed version:\\s+(.*)');
-      if (match?.[1]) {
-        installedVersion = match?.[1];
-        return;
-      }
-      if (line.match('Target browser changes:')) {
-        isListingChanges = true;
-      }
-    });
-  return {
-    installedVersion,
-    latestVersion,
-    browsersAdded,
-    browsersRemoved,
-  };
+      continue;
+    }
+    const latest = /Latest version:\s+(.*)/.exec(line)?.[1];
+    if (latest) {
+      latestVersion = latest.trim();
+      continue;
+    }
+    const installed = /Installed versions?:\s+(.*)/.exec(line)?.[1];
+    if (installed) {
+      installedVersion = installed.trim();
+      continue;
+    }
+    if (line.includes('Target browser changes:')) {
+      isListingChanges = true;
+    }
+  }
+  return { installedVersion, latestVersion, browsersAdded, browsersRemoved };
+};
+
+export const prBody = (browserslistOutput: string): string => {
+  const info = parse(browserslistOutput);
+  const msg = ['Caniuse database has been updated. Review changes, merge this PR and have a 🍺.'];
+  if (info.installedVersion) {
+    msg.push(`Installed version: ${info.installedVersion}`);
+  }
+  if (info.latestVersion) {
+    msg.push(`Latest version: ${info.latestVersion}`);
+  }
+  if (info.browsersAdded.length || info.browsersRemoved.length) {
+    msg.push('Target browsers changes:', '', '```diff');
+    info.browsersRemoved.forEach((value) => msg.push(`- ${value}`));
+    info.browsersAdded.forEach((value) => msg.push(`+ ${value}`));
+    msg.push('```');
+  }
+  return msg.join('\n');
 };
