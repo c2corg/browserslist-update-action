@@ -1,8 +1,10 @@
 # browserslist-update-action
 
-A GitHub Action that runs [`update-browserslist-db@latest`](https://github.com/browserslist/update-db) on a repository and proposes a pull request with the updated lockfile.
+A GitHub Action that runs [`update-browserslist-db@latest`](https://github.com/browserslist/update-db) on a repository
+and proposes a pull request with the updated lockfile.
 
-Dependabot does not update transitive dependencies such as `caniuse-lite`, so without this action the browsers targeted by your Browserslist config slowly go out of date.
+Dependabot does not update transitive dependencies such as `caniuse-lite`, so without this action the browsers targeted
+by your Browserslist config slowly go out of date.
 
 Supported package managers: npm, yarn, pnpm, bun and deno, detected from the lockfile.
 
@@ -36,15 +38,21 @@ jobs:
 ```
 
 > [!IMPORTANT]
-> With the default `GITHUB_TOKEN`, the _Allow GitHub Actions to create and approve pull requests_ option must be enabled in _Settings > Actions > General_.
+> With the default `GITHUB_TOKEN`, the _Allow GitHub Actions to create and approve pull requests_ option must be enabled
+> in _Settings > Actions > General_.
 >
-> Workflows (e.g. your CI) do not start automatically on pull requests opened with `GITHUB_TOKEN`: depending on the event, they do not run at all or wait for a user with write access to select _Approve workflows to run_. Use a [fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) or a GitHub App token in `github_token` for them to start without approval.
+> Workflows (e.g. your CI) do not start automatically on pull requests opened with `GITHUB_TOKEN`: depending on the
+> event, they do not run at all or wait for a user with write access to select _Approve workflows to run_. Use a
+> [fine-grained personal access
+> token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+> or a GitHub App token in `github_token` for them to start without approval.
 
 How it works:
 
 1. If the pull request branch exists without an open pull request, it is deleted.
 2. The branch is (re)created from the up-to-date base branch, then `update-browserslist-db@latest` runs in `directory`.
-3. If tracked files changed, they are committed and force-pushed to the branch, and the pull request is created, or updated if it already exists.
+3. If tracked files changed, they are committed and force-pushed to the branch, and the pull request is created, or
+   updated if it already exists.
 
 The pull request branch belongs to the action: do not push commits to it, they are overwritten on the next run.
 
